@@ -19,7 +19,6 @@ public abstract class InfoLine {
     protected final EntityClientPlayerMP playerMP = mc.thePlayer;
     protected final World world = playerMP.worldObj;
     protected final WorldProvider worldProvider = world.provider;
-    protected final BiomeGenBase biomeGenBase = world.getBiomeGenForCoords(getX(), getZ());
     protected static final String[] ROUGHDIRECTION = { "South", "West", "North", "East" };
 
     public InfoLine(int order) {

@@ -40,4 +40,5 @@ dependencies {
     compileOnly('com.github.GTNewHorizons:BloodMagic:1.8.14:dev') {transitive = false}
     compileOnly('thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev') {transitive = false}
     compileOnly('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev') {transitive=false}
+    runtimeOnlyNonPublishable(rfg.deobf("curse.maven:spark-361579:4271867"))
 }

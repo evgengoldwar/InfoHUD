@@ -15,7 +15,7 @@ public class JoinWorldEvent {
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event) {
         if (event.entity instanceof EntityPlayer player) {
-            DataStorage.resetTPS();
+            DataStorage.reset();
             BloodMagicEvent.playerMaxLP.remove(player.getDisplayName());
         }
     }
@@ -25,7 +25,7 @@ public class JoinWorldEvent {
     public void onEntityJoinWorldClient(EntityJoinWorldEvent event) {
         if (event.entity instanceof EntityClientPlayerMP playerMP) {
             Hud.initLines();
-            DataStorage.resetTPS();
+            DataStorage.reset();
             BloodMagicEvent.playerMaxLP.remove(playerMP.getDisplayName());
         }
     }

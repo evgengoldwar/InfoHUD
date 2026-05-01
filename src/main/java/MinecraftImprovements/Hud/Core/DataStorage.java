@@ -60,8 +60,11 @@ public class DataStorage {
         memSubscribers.remove(player.getUniqueID());
     }
 
-    public static void resetTPS() {
+    public static void reset() {
         tps = -1;
         mspt = -1;
+        serverMemAllocated = -1;
+        serverMemMax = -1;
+        serverMemUsed = -1;
     }
 }
