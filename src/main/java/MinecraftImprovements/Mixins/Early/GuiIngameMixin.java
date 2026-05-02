@@ -41,6 +41,10 @@ public class GuiIngameMixin extends GuiIngame {
             target = "Lnet/minecraft/client/settings/GameSettings;showDebugInfo:Z",
             shift = At.Shift.BEFORE))
     private void renderHud(int width, int height, CallbackInfo ci) {
+        if (mc.currentScreen != null) return;
+
+        if (mc.gameSettings.showDebugInfo) return;
+
         int hudY = HudConfig.hudGeneral.HudY;
 
         List<InfoLine> orderedLines = Hud.lines;
