@@ -1,5 +1,8 @@
 package MinecraftImprovements;
 
+import net.minecraftforge.client.ClientCommandHandler;
+
+import MinecraftImprovements.Commands.CommandHUD;
 import MinecraftImprovements.Hud.Hud;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 
@@ -13,5 +16,7 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
 
         Hud.initEvent();
+
+        ClientCommandHandler.instance.registerCommand(new CommandHUD());
     }
 }

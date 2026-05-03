@@ -23,9 +23,22 @@ public class InfoSlimeChunk extends InfoLine {
 
     @Override
     public boolean canRender() {
-        return HudConfig.hudEnabled.SlimeChunkEnable && HudUtils.isSlimeChunk(
-            DataStorage.worldSeed == -1 ? mc.getIntegratedServer().worldServers[0].getSeed() : DataStorage.worldSeed,
-            playerMP,
-            world);
+        if (!HudConfig.hudEnabled.SlimeChunkEnable) {
+            return false;
+        }
+
+        long seed = DataStorage.worldSeed;
+
+        if (seed == -1) {
+            if (mc.getIntegratedServer() != null) {
+                seed = mc.getIntegratedServer().worldServers[0].getSeed();
+            } else if (world != null) {
+                seed = world.getSeed();
+            } else {
+                return false;
+            }
+        }
+
+        return HudUtils.isSlimeChunk(seed, playerMP, world);
     }
 }
