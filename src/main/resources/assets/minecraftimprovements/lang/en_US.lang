@@ -15,6 +15,6 @@ minecraftimprovements.hud.info_line.info_warp=Warp: §6%s §r(P: §c%s §r| S: �
 minecraftimprovements.hud.info_line.info_dimension=Dim: §6%s §a%s
 minecraftimprovements.hud.info_line.info_biome=Biome: §6%s §rHumidity: §a%s%%
 minecraftimprovements.hud.info_line.info_direction=Facing: §6%s
-minecraftimprovements.hud.info_line.info_orechunk=This is an §a§nore chunk
-minecraftimprovements.hud.info_line.info_slimechunk=This is a §a§nslime chunk
+minecraftimprovements.hud.info_line.info_orechunk=This is an §a§nore chunk§r
+minecraftimprovements.hud.info_line.info_slimechunk=This is a §a§nslime chunk§r
 
