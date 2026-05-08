@@ -76,7 +76,7 @@ public abstract class InfoLine {
         return cachedStack;
     }
 
-    public static String tr(String key, Object... params) {
+    protected static String tr(String key, Object... params) {
         return StatCollector.translateToLocalFormatted("minecraftimprovements.hud.info_line." + key, params);
     }
 }

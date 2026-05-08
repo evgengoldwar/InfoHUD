@@ -26,6 +26,7 @@ minecraftimprovements.hud.info_line.info_playtime.2=Play time: §6%sh
 minecraftimprovements.hud.info_line.info_sessiontime.0=Session: §6%ss
 minecraftimprovements.hud.info_line.info_sessiontime.1=Session: §6%sm %ss
 minecraftimprovements.hud.info_line.info_sessiontime.2=Session: §6%sh %sm %ss
+infohud.keybind.desc.light_overlay=Toggle Light Overlay
 infohud.light_overlay.mode_off=§cDisabled
 infohud.light_overlay.mode_all=§aAll Light Levels
 infohud.light_overlay.mode_spawnable=§eMob Spawnable Only (0-7)
