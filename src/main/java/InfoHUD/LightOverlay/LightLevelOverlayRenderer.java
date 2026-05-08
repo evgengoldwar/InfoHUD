@@ -1,11 +1,11 @@
 package InfoHUD.LightOverlay;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
 public class LightLevelOverlayRenderer {
@@ -37,42 +37,37 @@ public class LightLevelOverlayRenderer {
 
         FontRenderer fr = mc.fontRenderer;
 
-        int bx = (int) player.posX;
-        int by = (int) player.posY;
-        int bz = (int) player.posZ;
+        int bx = (int) Math.floor(player.posX);
+        int by = (int) Math.floor(player.posY);
+        int bz = (int) Math.floor(player.posZ);
 
         for (int x = bx - RADIUS; x <= bx + RADIUS; x++) {
             for (int z = bz - RADIUS; z <= bz + RADIUS; z++) {
-
-                int top = world.getHeightValue(x, z);
-
                 for (int y = by - HEIGHT; y <= by + HEIGHT; y++) {
 
-                    if (y < 0 || y > top + 1) continue;
+                    if (y < 0 || y > 255) continue;
 
-                    int blockLight = world.getChunkFromBlockCoords(x, z)
-                        .getSavedLightValue(EnumSkyBlock.Block, x & 15, y, z & 15);
+                    Block block = world.getBlock(x, y, z);
+                    Block blockAbove = world.getBlock(x, y + 1, z);
 
-                    int skyLight = world.getChunkFromBlockCoords(x, z)
-                        .getSavedLightValue(EnumSkyBlock.Sky, x & 15, y, z & 15);
+                    if (block == null || !block.getMaterial().isSolid()) continue;
+                    if (blockAbove == null || blockAbove.getMaterial().isSolid()) continue;
 
-                    int light = Math.max(blockLight, skyLight);
+                    int blockLight = world.getSavedLightValue(EnumSkyBlock.Block, x, y + 1, z);
 
-                    if (light <= 0) continue;
-
-                    String text = String.valueOf(light);
-
-                    int color = getColor(light);
+                    String text = String.valueOf(blockLight);
+                    int color = getColor(blockLight);
 
                     GL11.glPushMatrix();
-                    GL11.glTranslated(x + 0.5, y + 0.02, z + 0.5);
+                    GL11.glTranslated(x + 0.5, y + 1.005, z + 0.5);
 
                     GL11.glRotatef(90F, 1F, 0F, 0F);
                     GL11.glRotatef(180F, 0F, 0F, 1F);
-                    GL11.glScalef(-0.02F, -0.02F, 0.02F);
+
+                    GL11.glScalef(-0.08F, -0.08F, 0.08F);
 
                     int w = fr.getStringWidth(text);
-                    fr.drawString(text, -w / 2, 0, color);
+                    fr.drawString(text, -w / 2, -fr.FONT_HEIGHT / 2, color);
 
                     GL11.glPopMatrix();
                 }
