@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import InfoHUD.Configs.HudConfig;
+import InfoHUD.Hud.Core.BackhandHandler;
 import InfoHUD.Hud.Core.InfoLine;
 import InfoHUD.Hud.Core.InfoLines.InfoCountItem;
 import InfoHUD.Hud.Hud;
@@ -125,24 +126,39 @@ public class GuiIngameMixin extends GuiIngame {
         int hotbarX = width / 2 - 91;
 
         int x = hotbarX - 22;
-        int y = height - 19;
+
+        if (BackhandHandler.isBackhandAvailable() && BackhandHandler.getOffhandItem(mc.thePlayer) != null) {
+            x = hotbarX - 55;
+        }
+
+        int y = height - 24;
 
         GL11.glPushMatrix();
 
         RenderHelper.enableGUIStandardItemLighting();
-
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 
         renderItem.zLevel = 100.0F;
-
         renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, heldItem, x, y);
-
         renderItem.zLevel = 0.0F;
 
         GL11.glDisable(GL11.GL_LIGHTING);
 
-        fr.drawStringWithShadow(text, x - fr.getStringWidth(text) - 2, y + 4, 16777215);
+        GL11.glPushMatrix();
+
+        float scaleText = 0.6F;
+
+        int textWidth = fr.getStringWidth(text);
+        float centeredX = x + 8 - (textWidth * scaleText) / 2;
+        float textY = y + 17;
+
+        GL11.glTranslatef(centeredX, textY, 0);
+        GL11.glScalef(scaleText, scaleText, scaleText);
+
+        fr.drawStringWithShadow(text, 0, 0, 16777215);
+
+        GL11.glPopMatrix();
 
         GL11.glPopMatrix();
     }

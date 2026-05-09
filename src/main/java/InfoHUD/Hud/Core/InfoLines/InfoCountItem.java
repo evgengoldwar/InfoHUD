@@ -1,9 +1,12 @@
 package InfoHUD.Hud.Core.InfoLines;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import InfoHUD.Configs.HudConfig;
 import InfoHUD.Hud.Core.InfoLine;
+import cpw.mods.fml.common.Loader;
+import xonin.backhand.api.core.BackhandUtils;
 
 public class InfoCountItem extends InfoLine {
 
@@ -13,11 +16,15 @@ public class InfoCountItem extends InfoLine {
 
     @Override
     public String getLineString() {
-        ItemStack heldItem = playerMP.getHeldItem();
 
-        if (heldItem == null) {
+        ItemStack heldItemStack = playerMP.getHeldItem();
+
+        if (heldItemStack == null) {
             return "";
         }
+
+        Item heldItem = heldItemStack.getItem();
+        int heldMeta = heldItemStack.getItemDamage();
 
         int count = 0;
 
@@ -26,8 +33,16 @@ public class InfoCountItem extends InfoLine {
                 continue;
             }
 
-            if (stack.getItem() == heldItem.getItem() && stack.getItemDamage() == heldItem.getItemDamage()) {
+            if (stack.getItem() == heldItem && stack.getItemDamage() == heldMeta) {
                 count += stack.stackSize;
+            }
+        }
+
+        if (Loader.isModLoaded("backhand")) {
+            ItemStack backHand = BackhandUtils.getOffhandItem(playerMP);
+
+            if (backHand != null && backHand.getItem() == heldItem && backHand.getItemDamage() == heldMeta) {
+                count += backHand.stackSize;
             }
         }
 
@@ -36,9 +51,12 @@ public class InfoCountItem extends InfoLine {
 
     @Override
     public boolean canRender() {
-        ItemStack heldItem = playerMP.getHeldItem();
+        ItemStack heldItemStack = playerMP.getHeldItem();
 
-        if (heldItem == null) return false;
+        if (heldItemStack == null) return false;
+
+        Item heldItem = heldItemStack.getItem();
+        int heldMeta = heldItemStack.getItemDamage();
 
         int count = 0;
 
@@ -47,7 +65,15 @@ public class InfoCountItem extends InfoLine {
                 continue;
             }
 
-            if (stack.getItem() == heldItem.getItem() && stack.getItemDamage() == heldItem.getItemDamage()) {
+            if (stack.getItem() == heldItem && stack.getItemDamage() == heldMeta) {
+                count++;
+            }
+        }
+
+        if (Loader.isModLoaded("backhand")) {
+            ItemStack backHand = BackhandUtils.getOffhandItem(playerMP);
+
+            if (backHand != null && backHand.getItem() == heldItem && backHand.getItemDamage() == heldMeta) {
                 count++;
             }
         }
