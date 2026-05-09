@@ -32,6 +32,7 @@ infohud.light_overlay.mode_off=§cDisabled
 infohud.light_overlay.mode_all=§aAll Light Levels
 infohud.light_overlay.mode_spawnable=§eMob Spawnable Only (0-7)
 infohud.light_overlay.mode_sky=§bSky Light Only
+infohud.light_overlay.mode_can_spawn=§6Spawn Check
 infohud.light_overlay.chat=§6[LightOverlay] §r
 
 
