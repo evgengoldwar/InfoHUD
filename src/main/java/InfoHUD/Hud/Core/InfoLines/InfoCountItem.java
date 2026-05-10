@@ -5,8 +5,6 @@ import net.minecraft.item.ItemStack;
 
 import InfoHUD.Configs.HudConfig;
 import InfoHUD.Hud.Core.InfoLine;
-import cpw.mods.fml.common.Loader;
-import xonin.backhand.api.core.BackhandUtils;
 
 public class InfoCountItem extends InfoLine {
 
@@ -38,14 +36,6 @@ public class InfoCountItem extends InfoLine {
             }
         }
 
-        if (Loader.isModLoaded("backhand")) {
-            ItemStack backHand = BackhandUtils.getOffhandItem(playerMP);
-
-            if (backHand != null && backHand.getItem() == heldItem && backHand.getItemDamage() == heldMeta) {
-                count += backHand.stackSize;
-            }
-        }
-
         return String.valueOf(count);
     }
 
@@ -66,14 +56,6 @@ public class InfoCountItem extends InfoLine {
             }
 
             if (stack.getItem() == heldItem && stack.getItemDamage() == heldMeta) {
-                count++;
-            }
-        }
-
-        if (Loader.isModLoaded("backhand")) {
-            ItemStack backHand = BackhandUtils.getOffhandItem(playerMP);
-
-            if (backHand != null && backHand.getItem() == heldItem && backHand.getItemDamage() == heldMeta) {
                 count++;
             }
         }
