@@ -117,6 +117,11 @@ public class HudConfig {
         @Config.Order(16)
         public int SessionTimeOrder;
 
+        @Config.DefaultInt(17)
+        @Config.RangeInt(min = 1, max = 100)
+        @Config.Order(17)
+        public int JumpOrder;
+
     }
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_icons.name")
@@ -185,6 +190,10 @@ public class HudConfig {
         @Config.DefaultString("minecraft:golden_apple/1")
         @Config.Order(16)
         public String SessionTimeItem;
+
+        @Config.DefaultString("minecraft:slime_ball")
+        @Config.Order(17)
+        public String JumpItem;
     }
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_toggles.name")
@@ -257,6 +266,10 @@ public class HudConfig {
         @Config.DefaultBoolean(true)
         @Config.Order(17)
         public boolean CountItemEnable;
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(18)
+        public boolean JumpEnable;
     }
 
 }
