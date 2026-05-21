@@ -5,6 +5,7 @@ minecraftimprovements.config.hud.hud_general.name=§aHUD General
 minecraftimprovements.config.hud.hud_order.name=§aHUD Order
 minecraftimprovements.config.hud.hud_icons.name=§aHUD Icons
 minecraftimprovements.config.hud.hud_toggles.name=§aHUD Toggles
+minecraftimprovements.config.hud.hud_potion.name=§aHUD Potion
 minecraftimprovements.hud.info_line.info_blood_magic=LP: §6%s / %s
 minecraftimprovements.hud.info_line.info_fps=§6%s §rFPS: §a%s
 minecraftimprovements.hud.info_line.info_server_memory=Server RAM: §a%sMB §r/ §a%sMB

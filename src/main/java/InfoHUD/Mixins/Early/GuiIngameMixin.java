@@ -1,5 +1,7 @@
 package InfoHUD.Mixins.Early;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -7,8 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.GuiIngameForge;
 
 import org.lwjgl.opengl.GL11;
@@ -44,15 +50,20 @@ public class GuiIngameMixin extends GuiIngame {
             shift = At.Shift.BEFORE))
     private void renderHud(int width, int height, CallbackInfo ci) {
         if (mc.currentScreen != null) return;
-
         if (mc.gameSettings.showDebugInfo) return;
-
         if (HudConfig.hudGeneral.HudDisable) return;
 
         int hudY = HudConfig.hudGeneral.HudY;
 
-        List<InfoLine> orderedLines = Hud.lines;
+        if (HudConfig.hudPotion.PotionEnable) {
+            int potionsHeight = drawActivePotions(HudConfig.hudGeneral.HudX + 5, hudY + 2);
 
+            if (potionsHeight > 0) {
+                hudY += potionsHeight + 1;
+            }
+        }
+
+        List<InfoLine> orderedLines = Hud.lines;
         orderedLines.sort(Comparator.comparingInt(InfoLine::getOrder));
 
         for (InfoLine line : orderedLines) {
@@ -66,6 +77,98 @@ public class GuiIngameMixin extends GuiIngame {
             drawHudInfo(line.getLineString(), HudConfig.hudGeneral.HudX, hudY, line.getChachedItemStack());
             hudY += 11;
         }
+    }
+
+    @Unique
+    private int drawActivePotions(int x, int y) {
+        if (mc.thePlayer == null) return 0;
+
+        Collection<PotionEffect> activePotions = mc.thePlayer.getActivePotionEffects();
+
+        if (activePotions.isEmpty()) return 0;
+
+        FontRenderer fr = mc.fontRenderer;
+
+        GL11.glPushMatrix();
+        float scaleHud = HudConfig.hudGeneral.HudScale;
+        GL11.glScalef(scaleHud, scaleHud, scaleHud);
+
+        List<PotionEffect> sortedEffects = new ArrayList<>(activePotions);
+        sortedEffects.sort(Comparator.comparingInt(PotionEffect::getPotionID));
+
+        int currentX = x;
+        int iconSize = 18;
+        int spacing = 1;
+
+        int levelWidth = fr.getStringWidth("00") + 2;
+
+        for (PotionEffect effect : sortedEffects) {
+            Potion potion = Potion.potionTypes[effect.getPotionID()];
+            if (potion == null || !potion.hasStatusIcon()) continue;
+
+            if (currentX + iconSize + levelWidth > mc.displayWidth / scaleHud) break;
+
+            drawPotionIcon(potion, currentX, y, iconSize);
+
+            int duration = effect.getDuration() / 20;
+            String timeString;
+            if (duration > 1800) {
+                timeString = "∞";
+            } else {
+                int minutes = duration / 60;
+                int seconds = duration % 60;
+                timeString = String.format("%d:%02d", minutes, seconds);
+            }
+
+            String levelString = getLevel(effect.getAmplifier() + 1);
+
+            int timeWidth = fr.getStringWidth(timeString);
+            int timeX = currentX + (iconSize / 2) - (timeWidth / 2);
+
+            if (HudConfig.hudPotion.TimeEnable) {
+                fr.drawStringWithShadow(timeString, timeX, y + iconSize + 1, 0xFFFFFF);
+            }
+
+            if (!levelString.isEmpty() && HudConfig.hudPotion.LevelEnable) {
+                fr.drawStringWithShadow(levelString, currentX + iconSize + 3, y + (iconSize / 2) - 4, 0xFFAA00);
+            }
+
+            currentX += iconSize + spacing + levelWidth;
+        }
+
+        GL11.glPopMatrix();
+
+        return (int)((iconSize + 11) * scaleHud);
+    }
+
+    @Unique
+    private void drawPotionIcon(Potion potion, int x, int y, int size) {
+        ResourceLocation inventoryTexture = new ResourceLocation("textures/gui/container/inventory.png");
+        mc.renderEngine.bindTexture(inventoryTexture);
+
+        int iconIndex = potion.getStatusIconIndex();
+        int textureX = iconIndex % 8 * 18;
+        int textureY = 198 + iconIndex / 8 * 18;
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + size, 0, textureX / 256.0, (textureY + 18) / 256.0);
+        tessellator.addVertexWithUV(x + size, y + size, 0, (textureX + 18) / 256.0, (textureY + 18) / 256.0);
+        tessellator.addVertexWithUV(x + size, y, 0, (textureX + 18) / 256.0, textureY / 256.0);
+        tessellator.addVertexWithUV(x, y, 0, textureX / 256.0, textureY / 256.0);
+        tessellator.draw();
+
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    @Unique
+    private String getLevel(int level) {
+        if (level <= 1) return "";
+        return String.valueOf(level);
     }
 
     @Unique
@@ -111,7 +214,6 @@ public class GuiIngameMixin extends GuiIngame {
 
     @Unique
     private void drawHeldItemCounter(InfoCountItem line, int width, int height) {
-
         ItemStack heldItem = mc.thePlayer.getHeldItem();
 
         if (heldItem == null) {

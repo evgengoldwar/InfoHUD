@@ -12,12 +12,13 @@ public class HudConfig {
     public static final HudOrder hudOrder = new HudOrder();
     public static final HudItems hudItems = new HudItems();
     public static final HudEnabled hudEnabled = new HudEnabled();
+    public static final HudPotion hudPotion = new HudPotion();
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_general.name")
     public static class HudGeneral {
 
         @Config.DefaultInt(0)
-        @Config.Order(2)
+        @Config.Order(1)
         public int HudX;
 
         @Config.DefaultInt(0)
@@ -32,6 +33,22 @@ public class HudConfig {
         @Config.DefaultBoolean(false)
         @Config.Order(4)
         public boolean HudDisable;
+    }
+
+    @Config.LangKey("minecraftimprovements.config.hud.hud_potion.name")
+    public static class HudPotion {
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(1)
+        public boolean PotionEnable;
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(2)
+        public boolean TimeEnable;
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(3)
+        public boolean LevelEnable;
     }
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_order.name")
