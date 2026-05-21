@@ -138,7 +138,7 @@ public class GuiIngameMixin extends GuiIngame {
 
         GL11.glPopMatrix();
 
-        return (int)((iconSize + 11) * scaleHud);
+        return (int) ((iconSize + 11) * scaleHud);
     }
 
     @Unique

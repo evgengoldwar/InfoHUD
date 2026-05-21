@@ -52,6 +52,7 @@ public class InfoJump extends InfoLine {
     }
 
     public static class JumpEvent {
+
         @SubscribeEvent
         public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
             if (event.entity == Minecraft.getMinecraft().thePlayer) {
