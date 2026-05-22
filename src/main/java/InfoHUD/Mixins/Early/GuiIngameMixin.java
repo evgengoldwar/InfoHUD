@@ -53,13 +53,14 @@ public class GuiIngameMixin extends GuiIngame {
         if (mc.gameSettings.showDebugInfo) return;
         if (HudConfig.hudGeneral.HudDisable) return;
 
+        float scaleHud = HudConfig.hudGeneral.HudScale;
         int hudY = HudConfig.hudGeneral.HudY;
 
         if (HudConfig.hudPotion.PotionEnable) {
             int potionsHeight = drawActivePotions(HudConfig.hudGeneral.HudX + 5, hudY + 2);
 
             if (potionsHeight > 0) {
-                hudY += potionsHeight + 1;
+                hudY += potionsHeight + (int) (1 * scaleHud);
             }
         }
 
@@ -75,7 +76,7 @@ public class GuiIngameMixin extends GuiIngame {
             }
 
             drawHudInfo(line.getLineString(), HudConfig.hudGeneral.HudX, hudY, line.getChachedItemStack());
-            hudY += 11;
+            hudY += (int) (11 * scaleHud);
         }
     }
 
@@ -84,14 +85,15 @@ public class GuiIngameMixin extends GuiIngame {
         if (mc.thePlayer == null) return 0;
 
         Collection<PotionEffect> activePotions = mc.thePlayer.getActivePotionEffects();
-
         if (activePotions.isEmpty()) return 0;
 
         FontRenderer fr = mc.fontRenderer;
+        float scaleHud = HudConfig.hudGeneral.HudScale;
 
         GL11.glPushMatrix();
-        float scaleHud = HudConfig.hudGeneral.HudScale;
+        GL11.glTranslatef(x, y, 0);
         GL11.glScalef(scaleHud, scaleHud, scaleHud);
+        GL11.glTranslatef(-x, -y, 0);
 
         List<PotionEffect> sortedEffects = new ArrayList<>(activePotions);
         sortedEffects.sort(Comparator.comparingInt(PotionEffect::getPotionID));
@@ -99,7 +101,6 @@ public class GuiIngameMixin extends GuiIngame {
         int currentX = x;
         int iconSize = 18;
         int spacing = 1;
-
         int levelWidth = fr.getStringWidth("00") + 2;
 
         for (PotionEffect effect : sortedEffects) {
@@ -138,7 +139,8 @@ public class GuiIngameMixin extends GuiIngame {
 
         GL11.glPopMatrix();
 
-        return (int) ((iconSize + 11) * scaleHud);
+        int totalHeight = iconSize + (HudConfig.hudPotion.TimeEnable ? 10 : 0) + 1;
+        return (int) (totalHeight * scaleHud);
     }
 
     @Unique
@@ -175,18 +177,23 @@ public class GuiIngameMixin extends GuiIngame {
     private void drawHudInfo(String string, int x, int y, ItemStack itemStack) {
         GL11.glPushMatrix();
         float scaleHud = HudConfig.hudGeneral.HudScale;
-        GL11.glScalef(scaleHud, scaleHud, scaleHud);
 
         FontRenderer fr = mc.fontRenderer;
 
         if (itemStack != null) {
+            GL11.glTranslatef(x, y, 0);
+            GL11.glScalef(scaleHud, scaleHud, scaleHud);
+            GL11.glTranslatef(-x, -y, 0);
+
             GL11.glPushMatrix();
 
             float scaleItem = 0.5F;
+            GL11.glTranslatef(x + 2, y + 2, 0);
             GL11.glScalef(scaleItem, scaleItem, scaleItem);
+            GL11.glTranslatef(-(x + 2), -(y + 2), 0);
 
-            int scaledX = (int) ((x + 2) / scaleItem);
-            int scaledY = (int) ((y + 2) / scaleItem) + 3;
+            int scaledX = x + 2;
+            int scaledY = y + 5;
 
             RenderHelper.enableGUIStandardItemLighting();
 
@@ -206,6 +213,10 @@ public class GuiIngameMixin extends GuiIngame {
 
             fr.drawStringWithShadow(string, x + 12, y + 4, 14737632);
         } else {
+            GL11.glTranslatef(x, y, 0);
+            GL11.glScalef(scaleHud, scaleHud, scaleHud);
+            GL11.glTranslatef(-x, -y, 0);
+
             fr.drawStringWithShadow(string, x + 4, y + 4, 14737632);
         }
 
