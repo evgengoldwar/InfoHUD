@@ -13,6 +13,7 @@ import InfoHUD.Hud.Core.InfoLines.InfoCountItem;
 import InfoHUD.Hud.Core.InfoLines.InfoDimension;
 import InfoHUD.Hud.Core.InfoLines.InfoDirection;
 import InfoHUD.Hud.Core.InfoLines.InfoFPS;
+import InfoHUD.Hud.Core.InfoLines.InfoForestry;
 import InfoHUD.Hud.Core.InfoLines.InfoJump;
 import InfoHUD.Hud.Core.InfoLines.InfoMemory;
 import InfoHUD.Hud.Core.InfoLines.InfoOreChunk;
@@ -64,7 +65,7 @@ public class Hud {
         lines.add(new InfoWorldTime(HudConfig.hudOrder.PlayTimeOrder, false));
         lines.add(new InfoWorldTime(HudConfig.hudOrder.WorldTimeOrder, true));
         lines.add(new InfoSessionTime(HudConfig.hudOrder.SessionTimeOrder));
-        lines.add(new InfoJump(20));
+        lines.add(new InfoJump(HudConfig.hudOrder.JumpOrder));
 
         lines.add(new InfoCountItem(0));
 
@@ -78,6 +79,10 @@ public class Hud {
 
         if (Loader.isModLoaded(HudUtils.GREG_TECH_ID)) {
             lines.add(new InfoOreChunk(HudConfig.hudOrder.OreChunkOrder));
+        }
+
+        if (Loader.isModLoaded(HudUtils.FORESTRY_ID)) {
+            lines.add(new InfoForestry(HudConfig.hudOrder.ForestryOrder));
         }
     }
 }

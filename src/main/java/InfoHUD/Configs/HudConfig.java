@@ -139,6 +139,11 @@ public class HudConfig {
         @Config.Order(17)
         public int JumpOrder;
 
+        @Config.DefaultInt(18)
+        @Config.RangeInt(min = 1, max = 100)
+        @Config.Order(18)
+        public int ForestryOrder;
+
     }
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_icons.name")
@@ -211,6 +216,10 @@ public class HudConfig {
         @Config.DefaultString("minecraft:slime_ball")
         @Config.Order(17)
         public String JumpItem;
+
+        @Config.DefaultString("Forestry:beeDroneGE")
+        @Config.Order(18)
+        public String ForestryItem;
     }
 
     @Config.LangKey("minecraftimprovements.config.hud.hud_toggles.name")
@@ -287,6 +296,10 @@ public class HudConfig {
         @Config.DefaultBoolean(true)
         @Config.Order(18)
         public boolean JumpEnable;
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(19)
+        public boolean ForestryEnable;
     }
 
 }
