@@ -32,13 +32,13 @@ public class InfoSlimeChunk extends InfoLine {
         if (seed == -1) {
             if (mc.getIntegratedServer() != null) {
                 seed = mc.getIntegratedServer().worldServers[0].getSeed();
-            } else if (getPlayer().worldObj != null) {
-                seed = getPlayer().worldObj.getSeed();
+            } else if (getWorld() != null) {
+                seed = getWorld().getSeed();
             } else {
                 return false;
             }
         }
 
-        return HudUtils.isSlimeChunk(seed, getPlayer(), getPlayer().worldObj);
+        return HudUtils.isSlimeChunk(seed, getPlayer(), getWorld());
     }
 }

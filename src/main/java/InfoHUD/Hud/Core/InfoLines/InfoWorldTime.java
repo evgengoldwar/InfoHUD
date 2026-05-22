@@ -18,8 +18,8 @@ public class InfoWorldTime extends InfoLine {
     @Override
     public String getLineString() {
         if (isServer) {
-            long totalTicks = getPlayer().worldObj.getTotalWorldTime();
-            long worldTime = getPlayer().worldObj.getWorldTime();
+            long totalTicks = getWorld().getTotalWorldTime();
+            long worldTime = getWorld().getWorldTime();
 
             long totalSeconds = totalTicks / 20;
             long totalMinutes = (totalSeconds % 3600) / 60;
