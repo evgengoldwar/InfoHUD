@@ -11,7 +11,10 @@ public class InfoDimension extends InfoLine {
 
     @Override
     public String getLineString() {
-        return tr("info_dimension", worldProvider.getDimensionName(), worldProvider.dimensionId);
+        return tr(
+            "info_dimension",
+            getProvider().getDimensionName(),
+            getProvider().dimensionId);
     }
 
     @Override

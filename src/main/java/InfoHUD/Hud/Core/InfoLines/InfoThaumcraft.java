@@ -18,10 +18,10 @@ public class InfoThaumcraft extends InfoLine {
     public String getLineString() {
         return tr(
             "info_warp",
-            getWarpTotal(playerMP),
-            getWarpPerm(playerMP),
-            getWarpSticky(playerMP),
-            getWarpTemp(playerMP));
+            getWarpTotal(getPlayer()),
+            getWarpPerm(getPlayer()),
+            getWarpSticky(getPlayer()),
+            getWarpTemp(getPlayer()));
     }
 
     @Override

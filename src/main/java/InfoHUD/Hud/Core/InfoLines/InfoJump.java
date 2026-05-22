@@ -22,7 +22,7 @@ public class InfoJump extends InfoLine {
 
     @Override
     public String getLineString() {
-        int jump = playerMP.getStatFileWriter()
+        int jump = getPlayer().getStatFileWriter()
             .writeStat(StatList.jumpStat) + jumpCount;
         return tr("info_jump", jump);
     }
@@ -39,7 +39,7 @@ public class InfoJump extends InfoLine {
 
     @SubscribeEvent
     public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
-        if (event.entity == playerMP) {
+        if (event.entity == getPlayer()) {
             jumpCount++;
         }
     }

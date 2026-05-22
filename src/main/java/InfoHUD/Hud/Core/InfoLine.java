@@ -8,6 +8,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class InfoLine {
 
@@ -15,9 +16,6 @@ public abstract class InfoLine {
     private ItemStack cachedStack = null;
     private String cachedItemName = null;
     protected final Minecraft mc = Minecraft.getMinecraft();
-    protected final EntityClientPlayerMP playerMP = mc.thePlayer;
-    protected final World world = playerMP.worldObj;
-    protected final WorldProvider worldProvider = world.provider;
     protected static final String[] ROUGHDIRECTION = { "South", "West", "North", "East" };
 
     public InfoLine(int order) {
@@ -37,15 +35,31 @@ public abstract class InfoLine {
     }
 
     public int getX() {
-        return MathHelper.floor_double(playerMP.posX);
+        return MathHelper.floor_double(getPlayer().posX);
     }
 
     public int getY() {
-        return MathHelper.floor_double(playerMP.boundingBox.minY);
+        return MathHelper.floor_double(getPlayer().boundingBox.minY);
     }
 
     public int getZ() {
-        return MathHelper.floor_double(playerMP.posZ);
+        return MathHelper.floor_double(getPlayer().posZ);
+    }
+
+    public EntityClientPlayerMP getPlayer() {
+        return mc.thePlayer;
+    }
+
+    public World getWorld() {
+        return getPlayer().worldObj;
+    }
+
+    public WorldProvider getProvider() {
+        return getWorld().provider;
+    }
+
+    public BiomeGenBase getBiome() {
+        return getWorld().getBiomeGenForCoords(getX(), getZ());
     }
 
     public String getItemName() {

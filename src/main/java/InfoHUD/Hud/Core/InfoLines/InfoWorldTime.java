@@ -18,8 +18,8 @@ public class InfoWorldTime extends InfoLine {
     @Override
     public String getLineString() {
         if (isServer) {
-            long totalTicks = world.getTotalWorldTime();
-            long worldTime = world.getWorldTime();
+            long totalTicks = getPlayer().worldObj.getTotalWorldTime();
+            long worldTime = getPlayer().worldObj.getWorldTime();
 
             long totalSeconds = totalTicks / 20;
             long totalMinutes = (totalSeconds % 3600) / 60;
@@ -48,7 +48,7 @@ public class InfoWorldTime extends InfoLine {
                 return tr("info_worldtime.0", totalSeconds, String.format("%02d:%02d", hours, minutes), nightSuffix);
             }
         } else {
-            int playTicks = playerMP.getStatFileWriter()
+            int playTicks = getPlayer().getStatFileWriter()
                 .writeStat(StatList.minutesPlayedStat);
             long playSeconds = playTicks / 20;
             long playMinutes = (playSeconds % 3600) / 60;

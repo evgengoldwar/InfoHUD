@@ -17,13 +17,13 @@ public class InfoBloodMagic extends InfoLine {
     }
 
     private String getCurrentLP() {
-        return String.format("%,d", HudUtils.getPlayerLPTag(playerMP));
+        return String.format("%,d", HudUtils.getPlayerLPTag(getPlayer()));
     }
 
     private String getMaxLP() {
         return String.format(
             "%,d",
-            Math.max(HudUtils.getPlayerMaxLPTag(playerMP), BloodMagicEvent.getMaxLP(playerMP.getDisplayName())));
+            Math.max(HudUtils.getPlayerMaxLPTag(getPlayer()), BloodMagicEvent.getMaxLP(getPlayer().getDisplayName())));
     }
 
     @Override

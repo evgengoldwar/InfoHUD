@@ -15,7 +15,7 @@ public class InfoDirection extends InfoLine {
     public String getLineString() {
         return tr(
             "info_direction",
-            ROUGHDIRECTION[MathHelper.floor_double(playerMP.rotationYaw * 4.0 / 360.0 + 0.5) & 3]);
+            ROUGHDIRECTION[MathHelper.floor_double(getPlayer().rotationYaw * 4.0 / 360.0 + 0.5) & 3]);
     }
 
     @Override

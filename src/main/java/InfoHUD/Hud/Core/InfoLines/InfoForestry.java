@@ -17,7 +17,7 @@ public class InfoForestry extends InfoLine {
 
     @Override
     public String getLineString() {
-        BiomeGenBase biomeGenBase = world.getBiomeGenForCoordsBody(getX(), getZ());
+        BiomeGenBase biomeGenBase = getPlayer().worldObj.getBiomeGenForCoordsBody(getX(), getZ());
         EnumTemperature temperature = EnumTemperature.getFromBiome(biomeGenBase);
         EnumHumidity humidity = EnumHumidity.getFromValue(biomeGenBase.rainfall);
         float exactTemperature = biomeGenBase.getFloatTemperature(getX(), getY(), getZ());

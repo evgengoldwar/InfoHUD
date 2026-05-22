@@ -15,7 +15,7 @@ public class InfoCountItem extends InfoLine {
     @Override
     public String getLineString() {
 
-        ItemStack heldItemStack = playerMP.getHeldItem();
+        ItemStack heldItemStack = getPlayer().getHeldItem();
 
         if (heldItemStack == null) {
             return "";
@@ -26,7 +26,7 @@ public class InfoCountItem extends InfoLine {
 
         int count = 0;
 
-        for (ItemStack stack : playerMP.inventory.mainInventory) {
+        for (ItemStack stack : getPlayer().inventory.mainInventory) {
             if (stack == null) {
                 continue;
             }
@@ -41,7 +41,7 @@ public class InfoCountItem extends InfoLine {
 
     @Override
     public boolean canRender() {
-        ItemStack heldItemStack = playerMP.getHeldItem();
+        ItemStack heldItemStack = getPlayer().getHeldItem();
 
         if (heldItemStack == null) return false;
 
@@ -50,7 +50,7 @@ public class InfoCountItem extends InfoLine {
 
         int count = 0;
 
-        for (ItemStack stack : playerMP.inventory.mainInventory) {
+        for (ItemStack stack : getPlayer().inventory.mainInventory) {
             if (stack == null) {
                 continue;
             }
