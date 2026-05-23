@@ -15,8 +15,8 @@ public class ProgressBar extends Gui {
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static void drawBar(int x, int y, int width, int height, float current, float max, boolean showFraction,
-                               int barColor, int backgroundColor, ResourceLocation texture, int textureSize, IconPosition iconPosition,
-                               TextPosition textPosition) {
+        int barColor, int backgroundColor, ResourceLocation texture, int textureSize, IconPosition iconPosition,
+        TextPosition textPosition) {
 
         FontRenderer fr = mc.fontRenderer;
 
@@ -153,7 +153,8 @@ public class ProgressBar extends Gui {
         GL11.glPopMatrix();
     }
 
-    public static void drawOverlay(int x, int y, int width, int height, float current, float future, float max, int color) {
+    public static void drawOverlay(int x, int y, int width, int height, float current, float future, float max,
+        int color) {
 
         float progressCurrent = current / max;
         float progressFuture = future / max;
