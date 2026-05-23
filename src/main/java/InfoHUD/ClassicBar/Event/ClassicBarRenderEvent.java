@@ -57,7 +57,7 @@ public class ClassicBarRenderEvent {
             .setNumberFormat(NumberFormat.CURRENT)
             .setBorderWidth(1)
             .setShowGradient(true)
-            .setAnimationStyle(AnimationStyle.NONE);
+            .setAnimationStyle(AnimationStyle.ELASTIC);
 
         healthBar = new ProgressBarBuilder(leftX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFF5555)
             .setBackgroundColor(0xFF222222)
@@ -92,8 +92,7 @@ public class ClassicBarRenderEvent {
             .setNumberFormat(NumberFormat.FRACTION)
             .setBorderWidth(1)
             .setShowGradient(true)
-            .setAnimationStyle(AnimationStyle.SMOOTH)
-            .setAnimationSpeed(0.1f);
+            .setEnableDamageFlash(false);
 
         foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0x88FFFF44)
             .setShowBackground(false)
@@ -117,8 +116,7 @@ public class ClassicBarRenderEvent {
         if (mc.thePlayer.getAir() < 300) airBar.setProgress(mc.thePlayer.getAir(), 300F);
 
         ItemStack held = mc.thePlayer.getHeldItem();
-        if (held != null && held.getItem() instanceof ItemFood) {
-            ItemFood food = (ItemFood) held.getItem();
+        if (held != null && held.getItem() instanceof ItemFood food) {
             float currentFood = mc.thePlayer.getFoodStats()
                 .getFoodLevel();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);

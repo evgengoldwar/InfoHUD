@@ -40,6 +40,7 @@ public class ProgressBarBuilder {
     long lastUpdateTime;
     float damageFlash;
     boolean firstRender;
+    boolean enableDamageFlash;
 
     public ProgressBarBuilder(int x, int y, int width, int height) {
         this.x = x;
@@ -66,11 +67,12 @@ public class ProgressBarBuilder {
         this.damageFlash = 0.0f;
         this.showGradient = true;
         this.firstRender = true;
+        this.enableDamageFlash = true;
     }
 
     public ProgressBarBuilder setProgress(float current, float max) {
         float newProgress = max > 0 ? current / max : 0;
-        if (newProgress < this.progress && this.progress > 0) {
+        if (enableDamageFlash && newProgress < this.progress && this.progress > 0) {
             this.damageFlash = 1.0f;
         }
         this.currentProgress = current;
@@ -85,6 +87,11 @@ public class ProgressBarBuilder {
 
     public ProgressBarBuilder setProgress(float progress) {
         return setProgress(progress * maxProgress, maxProgress);
+    }
+
+    public ProgressBarBuilder setEnableDamageFlash(boolean enable) {
+        this.enableDamageFlash = enable;
+        return this;
     }
 
     public ProgressBarBuilder setBackgroundColor(int color) {
@@ -185,7 +192,6 @@ public class ProgressBarBuilder {
         float deltaTime = (currentTime - lastUpdateTime) / 1000.0f;
         lastUpdateTime = currentTime;
         if (deltaTime > 0.1f) deltaTime = 0.1f;
-
         float speed = animationSpeed * deltaTime * 60;
 
         switch (animationStyle) {
@@ -204,28 +210,25 @@ public class ProgressBarBuilder {
                     displayProgress += diff * speed * 1.5f;
                 } else {
                     displayProgress += diff * speed * (1.0f + Math.abs(diff) * 0.5f);
-                    if (displayProgress < progress) {
-                        displayProgress = progress + (progress - displayProgress) * 0.3f;
-                    }
+                    if (displayProgress < progress) displayProgress = progress + (progress - displayProgress) * 0.3f;
                 }
                 break;
             case ELASTIC:
-                float elasticDiff = progress - displayProgress;
-                if (Math.abs(elasticDiff) < 0.001f) {
+                float e = progress - displayProgress;
+                if (Math.abs(e) < 0.001f) {
                     displayProgress = progress;
                 } else {
-                    float elasticSpeed = speed * 2.0f;
-                    if (elasticDiff > 0) {
-                        displayProgress += elasticDiff * elasticSpeed;
+                    float es = speed * 2.0f;
+                    if (e > 0) {
+                        displayProgress += e * es;
                         if (displayProgress > progress) {
                             displayProgress = progress + (displayProgress - progress) * 0.5f;
                             if (displayProgress > progress * 1.2f) displayProgress = progress * 1.2f;
                         }
                     } else {
-                        displayProgress += elasticDiff * elasticSpeed * 1.5f;
-                        if (displayProgress < progress) {
+                        displayProgress += e * es * 1.5f;
+                        if (displayProgress < progress)
                             displayProgress = progress - (progress - displayProgress) * 0.3f;
-                        }
                     }
                 }
                 break;
