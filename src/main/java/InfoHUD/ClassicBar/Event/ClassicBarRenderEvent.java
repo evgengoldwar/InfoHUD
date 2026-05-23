@@ -40,7 +40,7 @@ public class ClassicBarRenderEvent {
                 barHeight,
                 currentArmor,
                 maxArmor,
-                true,
+                false,
                 0xFFAAAAAA,
                 0xFF333333,
                 null,
