@@ -9,7 +9,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import InfoHUD.ClassicBar.Enum.IconPosition;
 import InfoHUD.ClassicBar.Enum.TextPosition;
 import InfoHUD.ClassicBar.Renderer.ProgressBar;
-import InfoHUD.InfoHUD;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClassicBarRenderEvent {
