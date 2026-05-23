@@ -238,9 +238,7 @@ public class ProgressBarAPI {
 
         int textOffset = 0;
         if (numberFormat != NumberFormat.NONE) {
-            String text = getFormattedText();
-            int textWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-            textOffset = textWidth + 4;
+            textOffset = getMaxTextWidth() + 4;
         }
 
         if (showGlow && displayProgress >= 1.0f) {
@@ -549,5 +547,26 @@ public class ProgressBarAPI {
 
     private int getRainbowColor(float hue) {
         return Color.HSBtoRGB(hue, 0.8f, 1.0f);
+    }
+
+    private int getMaxTextWidth() {
+        Minecraft mc = Minecraft.getMinecraft();
+        String maxText = "";
+
+        switch (numberFormat) {
+            case FRACTION:
+                maxText = (int)maxProgress + "/" + (int)maxProgress;
+                break;
+            case PERCENTAGE:
+                maxText = "100%";
+                break;
+            case CURRENT, MAX:
+                maxText = String.valueOf((int)maxProgress);
+                break;
+            default:
+                return 0;
+        }
+
+        return mc.fontRenderer.getStringWidth(maxText);
     }
 }

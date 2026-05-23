@@ -19,7 +19,7 @@ public class ClassicBarRenderEvent {
     private static final int BAR_WIDTH = 81;
     private static final int BAR_HEIGHT = 12;
     private static final int ICON_SIZE = 9;
-    private static final int GAP = 2;
+    private static final int GAP = 5;
 
     private static final int ARMOR_FILL_COLOR = 0xFF9999AA;
     private static final int ARMOR_BG_COLOR = 0xFF252533;
@@ -81,9 +81,9 @@ public class ClassicBarRenderEvent {
             .setBorderWidth(1)
             .setAnimationStyle(AnimationStyle.BOUNCE)
             .setAnimationSpeed(0.15f)
-            .setShowGlow(true)
+            .setShowGlow(false)
             .setGlowColor(0xFFFF4444)
-            .setShowShine(true);
+            .setShowShine(false);
 
         foodBar = new ProgressBarAPI(rightBarX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(FOOD_FILL_COLOR)
             .setBackgroundColor(FOOD_BG_COLOR)
@@ -96,7 +96,7 @@ public class ClassicBarRenderEvent {
             .setAnimationStyle(AnimationStyle.SMOOTH)
             .setAnimationSpeed(0.12f)
             .setShowGlow(false)
-            .setShowShine(true);
+            .setShowShine(false);
     }
 
     private void updateBarPositions(int leftBarX, int rightBarX, int barY) {
@@ -139,7 +139,7 @@ public class ClassicBarRenderEvent {
                     .setAnimationStyle(AnimationStyle.ELASTIC)
                     .setAnimationSpeed(0.2f)
                     .setShowGlow(false)
-                    .setShowShine(true);
+                    .setShowShine(false);
             }
             armorBar.setProgress(currentArmor, maxArmor);
         } else {
