@@ -94,10 +94,10 @@ public class ClassicBarRenderEvent {
             .setShowGradient(true)
             .setEnableDamageFlash(false);
 
-        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0x88FFFF44)
+        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT - 1).setFillColor(0x66FFFF44)
             .setShowBackground(false)
             .setShowBorder(false)
-            .setShowGradient(false)
+            .setShowGradient(true)
             .setAnimationStyle(AnimationStyle.NONE)
             .setTextSide(Side.NONE)
             .setNumberFormat(NumberFormat.NONE);
