@@ -3,15 +3,23 @@ package InfoHUD.ClassicBar.Event;
 import InfoHUD.ClassicBar.Enum.IconPosition;
 import InfoHUD.ClassicBar.Enum.TextPosition;
 import InfoHUD.ClassicBar.Renderer.ProgressBar;
+import InfoHUD.InfoHUD;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class ClassicBarRenderEvent {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+
+    private static final ResourceLocation ICON_HEART = getIcon("heart");
+
+    private static ResourceLocation getIcon(String name) {
+        return new ResourceLocation("infohud","textures/gui/" + name + ".png");
+    }
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
@@ -44,7 +52,7 @@ public class ClassicBarRenderEvent {
                 0xFFAAAAAA,
                 0xFF333333,
                 null,
-                16,
+                8,
                 IconPosition.LEFT,
                 TextPosition.LEFT
             );
