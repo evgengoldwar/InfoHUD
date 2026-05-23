@@ -15,24 +15,15 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ClassicBarRenderEvent {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final int BAR_WIDTH = 81;
-    private static final int BAR_HEIGHT = 10;
-    private static final int ICON_SIZE = 9;
-    private static final int GAP = 5;
+    private static final int BAR_WIDTH = 81, BAR_HEIGHT = 10, ICON_SIZE = 9, GAP = 5;
 
     private static final ResourceLocation ICON_ARMOR = new ResourceLocation("infohud", "textures/gui/armor.png");
     private static final ResourceLocation ICON_HEART = new ResourceLocation("infohud", "textures/gui/heart.png");
     private static final ResourceLocation ICON_FOOD = new ResourceLocation("infohud", "textures/gui/food.png");
     private static final ResourceLocation ICON_BUBBLE = new ResourceLocation("infohud", "textures/gui/bubble.png");
 
-    private ProgressBarBuilder healthBar;
-    private ProgressBarBuilder armorBar;
-    private ProgressBarBuilder foodBar;
-    private ProgressBarBuilder airBar;
-    private ProgressBarBuilder foodPreviewBar;
-
-    private int lastWidth;
-    private int lastHeight;
+    private ProgressBarBuilder healthBar, armorBar, foodBar, airBar, foodPreviewBar;
+    private int lastWidth, lastHeight;
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
@@ -125,10 +116,12 @@ public class ClassicBarRenderEvent {
         if (mc.thePlayer.getAir() < 300) airBar.setProgress(mc.thePlayer.getAir(), 300F);
 
         ItemStack held = mc.thePlayer.getHeldItem();
-        if (held != null && held.getItem() instanceof ItemFood food) {
+        if (held != null && held.getItem() instanceof ItemFood) {
+            ItemFood food = (ItemFood) held.getItem();
             float currentFood = mc.thePlayer.getFoodStats()
                 .getFoodLevel();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
+            foodPreviewBar.setMinProgress(currentFood / 20F);
             foodPreviewBar.setProgress(futureFood, 20F);
         }
     }

@@ -25,7 +25,7 @@ public class ProgressBarBuilder {
         ELASTIC
     }
 
-    float progress, displayProgress, maxProgress, currentProgress;
+    float progress, displayProgress, maxProgress, currentProgress, minProgress;
     int x, y, width, height;
     int backgroundColor, fillColor, borderColor, textColor;
     Side textSide, iconSide;
@@ -51,6 +51,7 @@ public class ProgressBarBuilder {
         this.displayProgress = 0.0f;
         this.maxProgress = 100;
         this.currentProgress = 0;
+        this.minProgress = 0;
         this.backgroundColor = 0xFF444444;
         this.fillColor = 0xFF00FF00;
         this.borderColor = 0xFF000000;
@@ -87,6 +88,11 @@ public class ProgressBarBuilder {
 
     public ProgressBarBuilder setProgress(float progress) {
         return setProgress(progress * maxProgress, maxProgress);
+    }
+
+    public ProgressBarBuilder setMinProgress(float min) {
+        this.minProgress = Math.max(0, Math.min(1, min));
+        return this;
     }
 
     public ProgressBarBuilder setEnableDamageFlash(boolean enable) {

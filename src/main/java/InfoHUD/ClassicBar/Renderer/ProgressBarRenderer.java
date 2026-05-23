@@ -72,30 +72,28 @@ public class ProgressBarRenderer {
             }
         }
 
+        int minX = (int) (b.width * b.minProgress);
         int fillWidth = (int) (b.width * b.displayProgress);
-        if (fillWidth > 0) {
+
+        if (fillWidth > minX) {
+            int startX = drawX + minX;
+            int w = fillWidth - minX;
             if (b.showGradient) {
-                drawGradientRect(
-                    drawX,
-                    drawY,
-                    drawX + fillWidth,
-                    drawY + b.height,
-                    b.fillColor,
-                    darken(b.fillColor, 0.6f));
-                if (fillWidth > 2) {
+                drawGradientRect(startX, drawY, startX + w, drawY + b.height, b.fillColor, darken(b.fillColor, 0.6f));
+                if (w > 2) {
                     drawGradientRect(
-                        drawX + 1,
+                        startX + 1,
                         drawY + 1,
-                        drawX + fillWidth - 1,
+                        startX + w - 1,
                         drawY + b.height / 3,
                         lighten(b.fillColor, 0.3f),
                         lighten(b.fillColor, 0.1f));
                 }
-                if (fillWidth > 2 && b.height > 4) {
-                    drawRect(drawX + 1, drawY + b.height - 2, drawX + fillWidth - 1, drawY + b.height - 1, 0x22000000);
+                if (w > 2 && b.height > 4) {
+                    drawRect(startX + 1, drawY + b.height - 2, startX + w - 1, drawY + b.height - 1, 0x22000000);
                 }
             } else {
-                drawRect(drawX, drawY, drawX + fillWidth, drawY + b.height, b.fillColor);
+                drawRect(startX, drawY, startX + w, drawY + b.height, b.fillColor);
             }
         }
 
@@ -172,7 +170,6 @@ public class ProgressBarRenderer {
         float r2 = (float) (color2 >> 16 & 255) / 255.0F;
         float g2 = (float) (color2 >> 8 & 255) / 255.0F;
         float b2 = (float) (color2 & 255) / 255.0F;
-
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.instance;
