@@ -41,6 +41,9 @@ public class ProgressBarBuilder {
     float damageFlash;
     boolean firstRender;
     boolean enableDamageFlash;
+    float alpha;
+    float targetAlpha;
+    boolean fadeEnabled;
 
     public ProgressBarBuilder(int x, int y, int width, int height) {
         this.x = x;
@@ -69,6 +72,9 @@ public class ProgressBarBuilder {
         this.showGradient = true;
         this.firstRender = true;
         this.enableDamageFlash = true;
+        this.alpha = 1.0f;
+        this.targetAlpha = 1.0f;
+        this.fadeEnabled = false;
     }
 
     public ProgressBarBuilder setProgress(float current, float max) {
@@ -92,6 +98,22 @@ public class ProgressBarBuilder {
 
     public ProgressBarBuilder setMinProgress(float min) {
         this.minProgress = Math.max(0, Math.min(1, min));
+        return this;
+    }
+
+    public ProgressBarBuilder setAlpha(float alpha) {
+        this.alpha = Math.max(0, Math.min(1, alpha));
+        return this;
+    }
+
+    public ProgressBarBuilder setFade(boolean enabled) {
+        this.fadeEnabled = enabled;
+        if (!enabled) this.alpha = 1.0f;
+        return this;
+    }
+
+    public ProgressBarBuilder setTargetAlpha(float target) {
+        this.targetAlpha = Math.max(0, Math.min(1, target));
         return this;
     }
 
@@ -199,6 +221,11 @@ public class ProgressBarBuilder {
         lastUpdateTime = currentTime;
         if (deltaTime > 0.1f) deltaTime = 0.1f;
         float speed = animationSpeed * deltaTime * 60;
+
+        if (fadeEnabled) {
+            alpha += (targetAlpha - alpha) * speed;
+            if (Math.abs(alpha - targetAlpha) < 0.01f) alpha = targetAlpha;
+        }
 
         switch (animationStyle) {
             case NONE:

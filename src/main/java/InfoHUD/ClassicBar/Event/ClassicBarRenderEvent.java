@@ -24,6 +24,7 @@ public class ClassicBarRenderEvent {
 
     private ProgressBarBuilder healthBar, armorBar, foodBar, airBar, foodPreviewBar;
     private int lastWidth, lastHeight;
+    private boolean foodPreviewVisible;
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
@@ -94,13 +95,16 @@ public class ClassicBarRenderEvent {
             .setShowGradient(true)
             .setEnableDamageFlash(false);
 
-        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT - 1).setFillColor(0x66FFFF44)
+        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFDD44)
             .setShowBackground(false)
             .setShowBorder(false)
             .setShowGradient(true)
-            .setAnimationStyle(AnimationStyle.NONE)
+            .setAnimationStyle(AnimationStyle.SMOOTH)
+            .setAnimationSpeed(0.1f)
             .setTextSide(Side.NONE)
-            .setNumberFormat(NumberFormat.NONE);
+            .setNumberFormat(NumberFormat.NONE)
+            .setFade(true)
+            .setAlpha(0f);
     }
 
     private void updateAllProgress() {
@@ -116,13 +120,24 @@ public class ClassicBarRenderEvent {
         if (mc.thePlayer.getAir() < 300) airBar.setProgress(mc.thePlayer.getAir(), 300F);
 
         ItemStack held = mc.thePlayer.getHeldItem();
-        if (held != null && held.getItem() instanceof ItemFood) {
+        boolean shouldShow = held != null && held.getItem() instanceof ItemFood
+            && System.currentTimeMillis() % 1000 < 500;
+
+        if (shouldShow) {
             ItemFood food = (ItemFood) held.getItem();
             float currentFood = mc.thePlayer.getFoodStats()
                 .getFoodLevel();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
             foodPreviewBar.setMinProgress(currentFood / 20F);
             foodPreviewBar.setProgress(futureFood, 20F);
+        }
+
+        if (shouldShow && !foodPreviewVisible) {
+            foodPreviewBar.setTargetAlpha(1f);
+            foodPreviewVisible = true;
+        } else if (!shouldShow && foodPreviewVisible) {
+            foodPreviewBar.setTargetAlpha(0f);
+            foodPreviewVisible = false;
         }
     }
 
@@ -131,12 +146,7 @@ public class ClassicBarRenderEvent {
         if (armor > 0) armorBar.render();
         healthBar.render();
         foodBar.render();
-
-        ItemStack held = mc.thePlayer.getHeldItem();
-        if (held != null && held.getItem() instanceof ItemFood && System.currentTimeMillis() % 1000 < 500) {
-            foodPreviewBar.render();
-        }
-
+        foodPreviewBar.render();
         if (mc.thePlayer.getAir() < 300) airBar.render();
     }
 }

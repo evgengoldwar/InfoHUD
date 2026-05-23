@@ -12,6 +12,8 @@ public class ProgressBarRenderer {
         builder.updateAnimation();
         builder.updateEffects();
 
+        if (builder.alpha <= 0.01f) return;
+
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -26,13 +28,17 @@ public class ProgressBarRenderer {
             : 0;
 
         if (builder.icon != null && builder.iconSide == ProgressBarBuilder.Side.LEFT) {
-            drawIcon(builder, barX, barY + (builder.height - builder.iconHeight) / 2);
+            drawIcon(builder, barX, barY + (builder.height - builder.iconHeight) / 2, builder.alpha);
             barX += iconOffset;
         }
 
         if (builder.textSide == ProgressBarBuilder.Side.LEFT
             && builder.numberFormat != ProgressBarBuilder.NumberFormat.NONE) {
-            drawText(builder, builder.x + (builder.iconSide == ProgressBarBuilder.Side.LEFT ? iconOffset : 0), barY);
+            drawText(
+                builder,
+                builder.x + (builder.iconSide == ProgressBarBuilder.Side.LEFT ? iconOffset : 0),
+                barY,
+                builder.alpha);
             barX += textOffset;
         }
 
@@ -40,14 +46,15 @@ public class ProgressBarRenderer {
 
         if (builder.textSide == ProgressBarBuilder.Side.RIGHT
             && builder.numberFormat != ProgressBarBuilder.NumberFormat.NONE) {
-            drawText(builder, barX + builder.width + 3, barY);
+            drawText(builder, barX + builder.width + 3, barY, builder.alpha);
         }
 
         if (builder.icon != null && builder.iconSide == ProgressBarBuilder.Side.RIGHT) {
             drawIcon(
                 builder,
                 barX + builder.width + (builder.textSide == ProgressBarBuilder.Side.RIGHT ? textOffset : 0) + 3,
-                barY + (builder.height - builder.iconHeight) / 2);
+                barY + (builder.height - builder.iconHeight) / 2,
+                builder.alpha);
         }
 
         GL11.glDisable(GL11.GL_BLEND);
@@ -55,19 +62,23 @@ public class ProgressBarRenderer {
     }
 
     private static void drawProgressBar(ProgressBarBuilder b, int drawX, int drawY) {
+        float a = b.alpha;
+
         if (b.damageFlash > 0.1f) {
             drawRect(
                 drawX - 1,
                 drawY - 1,
                 drawX + b.width + 1,
                 drawY + b.height + 1,
-                0x44FFFFFF | ((int) (b.damageFlash * 100) << 24));
+                ((int) (a * 0x44) << 24) | 0xFFFFFF | ((int) (b.damageFlash * 100) << 24));
         }
 
         if (b.showBackground) {
-            drawRect(drawX, drawY, drawX + b.width, drawY + b.height, b.backgroundColor);
+            int bg = applyAlpha(b.backgroundColor, a);
+            drawRect(drawX, drawY, drawX + b.width, drawY + b.height, bg);
             for (int i = 0; i < b.width; i += 3) {
                 int alpha = (i % 6 == 0) ? 0x15 : 0x08;
+                alpha = (int) (alpha * a);
                 drawRect(drawX + i, drawY + 1, drawX + i + 2, drawY + b.height - 1, (alpha << 24) | 0x000000);
             }
         }
@@ -78,47 +89,81 @@ public class ProgressBarRenderer {
         if (fillWidth > minX) {
             int startX = drawX + minX;
             int w = fillWidth - minX;
+            int fill = applyAlpha(b.fillColor, a);
             if (b.showGradient) {
-                drawGradientRect(startX, drawY, startX + w, drawY + b.height, b.fillColor, darken(b.fillColor, 0.6f));
+                drawGradientRect(
+                    startX,
+                    drawY,
+                    startX + w,
+                    drawY + b.height,
+                    fill,
+                    applyAlpha(darken(b.fillColor, 0.6f), a));
                 if (w > 2) {
                     drawGradientRect(
                         startX + 1,
                         drawY + 1,
                         startX + w - 1,
                         drawY + b.height / 3,
-                        lighten(b.fillColor, 0.3f),
-                        lighten(b.fillColor, 0.1f));
+                        applyAlpha(lighten(b.fillColor, 0.3f), a),
+                        applyAlpha(lighten(b.fillColor, 0.1f), a));
                 }
                 if (w > 2 && b.height > 4) {
-                    drawRect(startX + 1, drawY + b.height - 2, startX + w - 1, drawY + b.height - 1, 0x22000000);
+                    drawRect(
+                        startX + 1,
+                        drawY + b.height - 2,
+                        startX + w - 1,
+                        drawY + b.height - 1,
+                        ((int) (0x22 * a) << 24) | 0x000000);
                 }
             } else {
-                drawRect(startX, drawY, startX + w, drawY + b.height, b.fillColor);
+                drawRect(startX, drawY, startX + w, drawY + b.height, fill);
             }
         }
 
         if (b.showBorder) {
-            drawRect(drawX - 1, drawY - 1, drawX + b.width + 1, drawY + b.height + 1, 0x44000000);
+            int border = applyAlpha(b.borderColor, a);
+            drawRect(
+                drawX - 1,
+                drawY - 1,
+                drawX + b.width + 1,
+                drawY + b.height + 1,
+                ((int) (0x44 * a) << 24) | 0x000000);
             for (int i = 0; i < b.borderWidth; i++) {
-                drawRectOutline(drawX - i, drawY - i, drawX + b.width + i, drawY + b.height + i, b.borderColor);
+                drawRectOutline(drawX - i, drawY - i, drawX + b.width + i, drawY + b.height + i, border);
             }
-            drawRect(drawX, drawY, drawX + b.width, drawY + 1, 0x33FFFFFF);
-            drawRect(drawX, drawY, drawX + 1, drawY + b.height, 0x33FFFFFF);
-            drawRect(drawX + b.width - 1, drawY, drawX + b.width, drawY + b.height, 0x33000000);
-            drawRect(drawX, drawY + b.height - 1, drawX + b.width, drawY + b.height, 0x33000000);
+            drawRect(drawX, drawY, drawX + b.width, drawY + 1, ((int) (0x33 * a) << 24) | 0xFFFFFF);
+            drawRect(drawX, drawY, drawX + 1, drawY + b.height, ((int) (0x33 * a) << 24) | 0xFFFFFF);
+            drawRect(
+                drawX + b.width - 1,
+                drawY,
+                drawX + b.width,
+                drawY + b.height,
+                ((int) (0x33 * a) << 24) | 0x000000);
+            drawRect(
+                drawX,
+                drawY + b.height - 1,
+                drawX + b.width,
+                drawY + b.height,
+                ((int) (0x33 * a) << 24) | 0x000000);
         }
     }
 
-    private static void drawText(ProgressBarBuilder b, int drawX, int drawY) {
+    private static int applyAlpha(int color, float alpha) {
+        int a = (int) (((color >> 24) & 0xFF) * alpha);
+        return (a << 24) | (color & 0x00FFFFFF);
+    }
+
+    private static void drawText(ProgressBarBuilder b, int drawX, int drawY, float alpha) {
         String text = getFormattedText(b);
         Minecraft mc = Minecraft.getMinecraft();
         int centeredY = drawY + (b.height - mc.fontRenderer.FONT_HEIGHT) / 2;
-        mc.fontRenderer.drawStringWithShadow(text, drawX, centeredY, b.textColor);
+        int color = applyAlpha(b.textColor, alpha);
+        mc.fontRenderer.drawStringWithShadow(text, drawX, centeredY, color);
     }
 
-    private static void drawIcon(ProgressBarBuilder b, int drawX, int drawY) {
+    private static void drawIcon(ProgressBarBuilder b, int drawX, int drawY, float alpha) {
         Minecraft.getMinecraft().renderEngine.bindTexture(b.icon);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
         Gui.func_146110_a(drawX, drawY, b.iconU, b.iconV, b.iconWidth, b.iconHeight, b.iconWidth, b.iconHeight);
     }
 
