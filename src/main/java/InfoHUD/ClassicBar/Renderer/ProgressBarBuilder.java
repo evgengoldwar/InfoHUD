@@ -4,9 +4,26 @@ import net.minecraft.util.ResourceLocation;
 
 public class ProgressBarBuilder {
 
-    public enum Side { LEFT, RIGHT, NONE }
-    public enum NumberFormat { FRACTION, PERCENTAGE, CURRENT, MAX, NONE }
-    public enum AnimationStyle { NONE, SMOOTH, BOUNCE, ELASTIC }
+    public enum Side {
+        LEFT,
+        RIGHT,
+        NONE
+    }
+
+    public enum NumberFormat {
+        FRACTION,
+        PERCENTAGE,
+        CURRENT,
+        MAX,
+        NONE
+    }
+
+    public enum AnimationStyle {
+        NONE,
+        SMOOTH,
+        BOUNCE,
+        ELASTIC
+    }
 
     float progress, displayProgress, maxProgress, currentProgress;
     int x, y, width, height;
@@ -70,14 +87,38 @@ public class ProgressBarBuilder {
         return setProgress(progress * maxProgress, maxProgress);
     }
 
-    public ProgressBarBuilder setBackgroundColor(int color) { this.backgroundColor = color; return this; }
-    public ProgressBarBuilder setFillColor(int color) { this.fillColor = color; return this; }
-    public ProgressBarBuilder setBorderColor(int color) { this.borderColor = color; return this; }
-    public ProgressBarBuilder setTextColor(int color) { this.textColor = color; return this; }
-    public ProgressBarBuilder setTextSide(Side side) { this.textSide = side; return this; }
-    public ProgressBarBuilder setNumberFormat(NumberFormat format) { this.numberFormat = format; return this; }
+    public ProgressBarBuilder setBackgroundColor(int color) {
+        this.backgroundColor = color;
+        return this;
+    }
 
-    public ProgressBarBuilder setIcon(ResourceLocation icon, int width, int height, float u, float v, float u2, float v2) {
+    public ProgressBarBuilder setFillColor(int color) {
+        this.fillColor = color;
+        return this;
+    }
+
+    public ProgressBarBuilder setBorderColor(int color) {
+        this.borderColor = color;
+        return this;
+    }
+
+    public ProgressBarBuilder setTextColor(int color) {
+        this.textColor = color;
+        return this;
+    }
+
+    public ProgressBarBuilder setTextSide(Side side) {
+        this.textSide = side;
+        return this;
+    }
+
+    public ProgressBarBuilder setNumberFormat(NumberFormat format) {
+        this.numberFormat = format;
+        return this;
+    }
+
+    public ProgressBarBuilder setIcon(ResourceLocation icon, int width, int height, float u, float v, float u2,
+        float v2) {
         this.icon = icon;
         this.iconWidth = width;
         this.iconHeight = height;
@@ -88,15 +129,52 @@ public class ProgressBarBuilder {
         return this;
     }
 
-    public ProgressBarBuilder setIconSide(Side side) { this.iconSide = side; return this; }
-    public ProgressBarBuilder setShowBackground(boolean show) { this.showBackground = show; return this; }
-    public ProgressBarBuilder setShowBorder(boolean show) { this.showBorder = show; return this; }
-    public ProgressBarBuilder setBorderWidth(int width) { this.borderWidth = width; return this; }
-    public ProgressBarBuilder setPosition(int x, int y) { this.x = x; this.y = y; return this; }
-    public ProgressBarBuilder setSize(int width, int height) { this.width = width; this.height = height; return this; }
-    public ProgressBarBuilder setAnimationStyle(AnimationStyle style) { this.animationStyle = style; return this; }
-    public ProgressBarBuilder setAnimationSpeed(float speed) { this.animationSpeed = speed; return this; }
-    public ProgressBarBuilder setShowGradient(boolean show) { this.showGradient = show; return this; }
+    public ProgressBarBuilder setIconSide(Side side) {
+        this.iconSide = side;
+        return this;
+    }
+
+    public ProgressBarBuilder setShowBackground(boolean show) {
+        this.showBackground = show;
+        return this;
+    }
+
+    public ProgressBarBuilder setShowBorder(boolean show) {
+        this.showBorder = show;
+        return this;
+    }
+
+    public ProgressBarBuilder setBorderWidth(int width) {
+        this.borderWidth = width;
+        return this;
+    }
+
+    public ProgressBarBuilder setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    public ProgressBarBuilder setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
+    public ProgressBarBuilder setAnimationStyle(AnimationStyle style) {
+        this.animationStyle = style;
+        return this;
+    }
+
+    public ProgressBarBuilder setAnimationSpeed(float speed) {
+        this.animationSpeed = speed;
+        return this;
+    }
+
+    public ProgressBarBuilder setShowGradient(boolean show) {
+        this.showGradient = show;
+        return this;
+    }
 
     public void render() {
         ProgressBarRenderer.render(this);

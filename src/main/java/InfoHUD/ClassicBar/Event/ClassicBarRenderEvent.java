@@ -15,117 +15,128 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ClassicBarRenderEvent {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final int BAR_WIDTH = 81, BAR_HEIGHT = 10, ICON_SIZE = 9, GAP = 2;
 
     private static final ResourceLocation ICON_ARMOR = new ResourceLocation("infohud", "textures/gui/armor.png");
     private static final ResourceLocation ICON_HEART = new ResourceLocation("infohud", "textures/gui/heart.png");
     private static final ResourceLocation ICON_FOOD = new ResourceLocation("infohud", "textures/gui/food.png");
     private static final ResourceLocation ICON_BUBBLE = new ResourceLocation("infohud", "textures/gui/bubble.png");
 
+    private ProgressBarBuilder healthBar, armorBar, foodBar, airBar, foodPreviewBar;
+    private int lastWidth, lastHeight;
+
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
+        if (mc.thePlayer == null || mc.theWorld == null) return;
+
         int width = event.resolution.getScaledWidth();
         int height = event.resolution.getScaledHeight();
 
-        int barX = width / 2 - 120;
-        int barY = height - 32 - 10;
-        int barWidth = 81;
-        int barHeight = 10;
-        int iconSize = 9;
-
-        float currentHP = mc.thePlayer.getHealth();
-        float maxHP = mc.thePlayer.getMaxHealth();
-        float currentArmor = mc.thePlayer.getTotalArmorValue();
-        float maxArmor = 20F;
-        float currentFood = mc.thePlayer.getFoodStats().getFoodLevel();
-        float maxFood = 20F;
-
-        if (currentArmor > 0F) {
-            new ProgressBarBuilder(barX, barY - barHeight - 2, barWidth, barHeight)
-                .setProgress(currentArmor, maxArmor)
-                .setFillColor(0xFF9999AA)
-                .setBackgroundColor(0xFF252533)
-                .setTextColor(0xFFCCCCDD)
-                .setIcon(ICON_ARMOR, iconSize, iconSize, 0, 0, 16, 16)
-                .setIconSide(Side.LEFT)
-                .setTextSide(Side.LEFT)
-                .setNumberFormat(NumberFormat.CURRENT)
-                .setBorderWidth(1)
-                .setShowGradient(true)
-                .setAnimationStyle(AnimationStyle.NONE)
-                .render();
+        if (healthBar == null || width != lastWidth || height != lastHeight) {
+            lastWidth = width;
+            lastHeight = height;
+            createAllBars();
         }
 
-        new ProgressBarBuilder(barX, barY, barWidth, barHeight)
-            .setProgress(currentHP, maxHP)
-            .setFillColor(0xFFFF5555)
+        updateAllProgress();
+        renderAllBars();
+    }
+
+    private void createAllBars() {
+        int leftX = lastWidth / 2 - 120;
+        int rightX = lastWidth / 2 + 10;
+        int barY = lastHeight - 32 - 10;
+
+        armorBar = new ProgressBarBuilder(leftX, barY - BAR_HEIGHT - GAP, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFF9999AA)
+            .setBackgroundColor(0xFF252533)
+            .setTextColor(0xFFCCCCDD)
+            .setIcon(ICON_ARMOR, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIconSide(Side.LEFT)
+            .setTextSide(Side.LEFT)
+            .setNumberFormat(NumberFormat.CURRENT)
+            .setBorderWidth(1)
+            .setShowGradient(true)
+            .setAnimationStyle(AnimationStyle.NONE);
+
+        healthBar = new ProgressBarBuilder(leftX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFF5555)
             .setBackgroundColor(0xFF222222)
             .setTextColor(0xFFFF5555)
-            .setIcon(ICON_HEART, iconSize, iconSize, 0, 0, 16, 16)
+            .setIcon(ICON_HEART, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
             .setIconSide(Side.LEFT)
             .setTextSide(Side.LEFT)
             .setNumberFormat(NumberFormat.CURRENT)
             .setBorderWidth(1)
             .setShowGradient(true)
             .setAnimationStyle(AnimationStyle.BOUNCE)
-            .setAnimationSpeed(0.15f)
-            .render();
+            .setAnimationSpeed(0.15f);
 
-        int rightBarX = width / 2 + 10;
-
-        new ProgressBarBuilder(rightBarX, barY, barWidth, barHeight)
-            .setProgress(currentFood, maxFood)
-            .setFillColor(0xFFFFAA00)
+        foodBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFAA00)
             .setBackgroundColor(0xFF222222)
             .setTextColor(0xFFFFAA00)
-            .setIcon(ICON_FOOD, iconSize, iconSize, 0, 0, 16, 16)
+            .setIcon(ICON_FOOD, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
             .setIconSide(Side.RIGHT)
             .setTextSide(Side.RIGHT)
             .setNumberFormat(NumberFormat.CURRENT)
             .setBorderWidth(1)
             .setShowGradient(true)
             .setAnimationStyle(AnimationStyle.SMOOTH)
-            .setAnimationSpeed(0.12f)
-            .render();
+            .setAnimationSpeed(0.12f);
 
-        ItemStack heldItem = mc.thePlayer.getHeldItem();
-        if (heldItem != null && heldItem.getItem() instanceof ItemFood) {
-            ItemFood food = (ItemFood) heldItem.getItem();
-            int foodHealAmount = food.func_150905_g(heldItem);
-            float futureFood = Math.min(currentFood + foodHealAmount, maxFood);
+        airBar = new ProgressBarBuilder(rightX, barY - BAR_HEIGHT - GAP, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFF4488FF)
+            .setBackgroundColor(0xFF222222)
+            .setTextColor(0xFF88CCFF)
+            .setIcon(ICON_BUBBLE, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIconSide(Side.RIGHT)
+            .setTextSide(Side.RIGHT)
+            .setNumberFormat(NumberFormat.FRACTION)
+            .setBorderWidth(1)
+            .setShowGradient(true)
+            .setAnimationStyle(AnimationStyle.SMOOTH)
+            .setAnimationSpeed(0.1f);
 
-            long time = System.currentTimeMillis() % 1000;
-            if (time < 500) {
-                new ProgressBarBuilder(rightBarX, barY, barWidth, barHeight)
-                    .setProgress(futureFood, maxFood)
-                    .setFillColor(0x88FFFF44)
-                    .setShowBackground(false)
-                    .setShowBorder(false)
-                    .setShowGradient(false)
-                    .setAnimationStyle(AnimationStyle.NONE)
-                    .setTextSide(Side.NONE)
-                    .setNumberFormat(NumberFormat.NONE)
-                    .render();
-            }
+        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0x88FFFF44)
+            .setShowBackground(false)
+            .setShowBorder(false)
+            .setShowGradient(false)
+            .setAnimationStyle(AnimationStyle.NONE)
+            .setTextSide(Side.NONE)
+            .setNumberFormat(NumberFormat.NONE);
+    }
+
+    private void updateAllProgress() {
+        healthBar.setProgress(mc.thePlayer.getHealth(), mc.thePlayer.getMaxHealth());
+        foodBar.setProgress(
+            mc.thePlayer.getFoodStats()
+                .getFoodLevel(),
+            20F);
+
+        float armor = mc.thePlayer.getTotalArmorValue();
+        if (armor > 0) armorBar.setProgress(armor, 20F);
+
+        if (mc.thePlayer.getAir() < 300) airBar.setProgress(mc.thePlayer.getAir(), 300F);
+
+        ItemStack held = mc.thePlayer.getHeldItem();
+        if (held != null && held.getItem() instanceof ItemFood) {
+            ItemFood food = (ItemFood) held.getItem();
+            float currentFood = mc.thePlayer.getFoodStats()
+                .getFoodLevel();
+            float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
+            foodPreviewBar.setProgress(futureFood, 20F);
+        }
+    }
+
+    private void renderAllBars() {
+        float armor = mc.thePlayer.getTotalArmorValue();
+        if (armor > 0) armorBar.render();
+        healthBar.render();
+        foodBar.render();
+
+        ItemStack held = mc.thePlayer.getHeldItem();
+        if (held != null && held.getItem() instanceof ItemFood && System.currentTimeMillis() % 1000 < 500) {
+            foodPreviewBar.render();
         }
 
-        if (mc.thePlayer.getAir() < 300) {
-            float currentAir = mc.thePlayer.getAir();
-            float maxAir = 300F;
-
-            new ProgressBarBuilder(rightBarX, barY - barHeight - 2, barWidth, barHeight)
-                .setProgress(currentAir, maxAir)
-                .setFillColor(0xFF4488FF)
-                .setBackgroundColor(0xFF222222)
-                .setTextColor(0xFF88CCFF)
-                .setIcon(ICON_BUBBLE, iconSize, iconSize, 0, 0, 16, 16)
-                .setIconSide(Side.RIGHT)
-                .setTextSide(Side.RIGHT)
-                .setNumberFormat(NumberFormat.FRACTION)
-                .setBorderWidth(1)
-                .setShowGradient(true)
-                .setAnimationStyle(AnimationStyle.SMOOTH)
-                .setAnimationSpeed(0.1f)
-                .render();
-        }
+        if (mc.thePlayer.getAir() < 300) airBar.render();
     }
 }
