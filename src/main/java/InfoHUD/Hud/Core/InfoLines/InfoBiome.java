@@ -11,10 +11,7 @@ public class InfoBiome extends InfoLine {
 
     @Override
     public String getLineString() {
-        return tr(
-            "info_biome",
-            getBiome().biomeName,
-            String.format("%.0f", getBiome().rainfall * 100));
+        return tr("info_biome", getBiome().biomeName, String.format("%.0f", getBiome().rainfall * 100));
     }
 
     @Override

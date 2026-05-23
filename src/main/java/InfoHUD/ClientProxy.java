@@ -3,6 +3,7 @@ package InfoHUD;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
+import InfoHUD.ClassicBar.ClassicBar;
 import InfoHUD.Commands.CommandHUD;
 import InfoHUD.Hud.Hud;
 import InfoHUD.KeyBinds.KeyBindHandler;
@@ -20,6 +21,7 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
 
         Hud.initEvent();
+        ClassicBar.initEvent();
 
         ClientCommandHandler.instance.registerCommand(new CommandHUD());
 
