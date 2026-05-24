@@ -63,7 +63,7 @@ public class ClassicBarRenderEvent {
     }
 
     private void createAllBars() {
-        int leftX = lastWidth / 2 - 118;
+        int leftX = lastWidth / 2 - 91;
         int rightX = lastWidth / 2 + 10;
         int barY = lastHeight - 32 - 10;
 
