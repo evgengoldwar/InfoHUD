@@ -33,6 +33,8 @@ public class ClassicBarRenderEvent {
     private ProgressBarBuilder foodBar;
     private ProgressBarBuilder airBar;
     private ProgressBarBuilder foodPreviewBar;
+    private ProgressBarBuilder saturationBar;
+    private ProgressBarBuilder saturationPreviewBar;
     private int lastWidth;
     private int lastHeight;
     private boolean foodPreviewVisible;
@@ -111,7 +113,27 @@ public class ClassicBarRenderEvent {
             .setShowGradient(true)
             .setEnableDamageFlash(false);
 
-        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFDD44)
+        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFAA00)
+            .setShowBackground(false)
+            .setShowBorder(false)
+            .setShowGradient(true)
+            .setAnimationStyle(AnimationStyle.SMOOTH)
+            .setAnimationSpeed(0.1f)
+            .setTextSide(Side.NONE)
+            .setNumberFormat(NumberFormat.NONE)
+            .setFade(true)
+            .setAlpha(0f);
+
+        saturationBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFEE44)
+            .setShowBackground(false)
+            .setShowBorder(false)
+            .setShowGradient(true)
+            .setTextSide(Side.NONE)
+            .setAnimationStyle(AnimationStyle.SMOOTH)
+            .setAnimationSpeed(0.1f)
+            .setAlpha(0.3f);
+
+        saturationPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFEE44)
             .setShowBackground(false)
             .setShowBorder(false)
             .setShowGradient(true)
@@ -126,6 +148,7 @@ public class ClassicBarRenderEvent {
     private void updateAllProgress() {
         healthBar.setProgress(playerStats.getCurrentHealth(), playerStats.getMaxHealth());
         foodBar.setProgress(playerStats.getFood(), 20F);
+        saturationBar.setProgress(playerStats.getSaturation(), 20F);
 
         float armor = playerStats.getArmor();
 
@@ -146,17 +169,33 @@ public class ClassicBarRenderEvent {
 
         if (shouldShow) {
             ItemFood food = (ItemFood) held.getItem();
+
             float currentFood = playerStats.getFood();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
+
+            float currentSaturation = playerStats.getSaturation();
+            int healAmount = food.func_150905_g(held);
+            float saturationModifier = food.func_150906_h(held);
+
+            float rawSaturationGain = healAmount * saturationModifier * 2.0F;
+            float futureSaturationRaw = currentSaturation + rawSaturationGain;
+
+            float futureSaturation = Math.min(futureSaturationRaw, futureFood);
+
             foodPreviewBar.setMinProgress(currentFood / 20F);
             foodPreviewBar.setProgress(futureFood, 20F);
+
+            saturationPreviewBar.setMinProgress(currentSaturation / 20F);
+            saturationPreviewBar.setProgress(futureSaturation, 20F);
         }
 
         if (shouldShow && !foodPreviewVisible) {
-            foodPreviewBar.setTargetAlpha(1f);
+            foodPreviewBar.setTargetAlpha(0.5f);
+            saturationPreviewBar.setTargetAlpha(0.5f);
             foodPreviewVisible = true;
         } else if (!shouldShow && foodPreviewVisible) {
             foodPreviewBar.setTargetAlpha(0f);
+            saturationPreviewBar.setTargetAlpha(0f);
             foodPreviewVisible = false;
         }
     }
@@ -169,6 +208,8 @@ public class ClassicBarRenderEvent {
         healthBar.render();
         foodBar.render();
         foodPreviewBar.render();
+        saturationBar.render();
+        saturationPreviewBar.render();
 
         if (playerStats.getAir() < 300) {
             airBar.render();
