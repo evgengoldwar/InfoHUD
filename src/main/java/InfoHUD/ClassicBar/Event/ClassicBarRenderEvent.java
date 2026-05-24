@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import InfoHUD.ClassicBar.Core.PlayerStats;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.AnimationStyle;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.NumberFormat;
@@ -35,6 +36,7 @@ public class ClassicBarRenderEvent {
     private int lastWidth;
     private int lastHeight;
     private boolean foodPreviewVisible;
+    private final PlayerStats playerStats = new PlayerStats();
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
@@ -45,6 +47,7 @@ public class ClassicBarRenderEvent {
 
         int width = event.resolution.getScaledWidth();
         int height = event.resolution.getScaledHeight();
+        playerStats.updateStats(playerMP);
 
         if (healthBar == null || width != lastWidth || height != lastHeight) {
             lastWidth = width;
@@ -52,8 +55,8 @@ public class ClassicBarRenderEvent {
             createAllBars();
         }
 
-        updateAllProgress(playerMP);
-        renderAllBars(playerMP);
+        updateAllProgress();
+        renderAllBars();
     }
 
     private void createAllBars() {
@@ -120,26 +123,30 @@ public class ClassicBarRenderEvent {
             .setAlpha(0f);
     }
 
-    private void updateAllProgress(EntityClientPlayerMP playerMP) {
-        healthBar.setProgress(playerMP.getHealth(), playerMP.getMaxHealth());
-        foodBar.setProgress(
-            playerMP.getFoodStats()
-                .getFoodLevel(),
-            20F);
+    private void updateAllProgress() {
+        healthBar.setProgress(playerStats.getCurrentHealth(), playerStats.getMaxHealth());
+        foodBar.setProgress(playerStats.getFood(), 20F);
 
-        float armor = playerMP.getTotalArmorValue();
-        if (armor > 0) armorBar.setProgress(armor, 20F);
+        float armor = playerStats.getArmor();
 
-        if (playerMP.getAir() < 300) airBar.setProgress(playerMP.getAir(), 300F);
+        if (armor > 0) {
+            armorBar.setProgress(armor, 20F);
+        }
 
-        ItemStack held = playerMP.getHeldItem();
+        int air = playerStats.getAir();
+
+        if (air < 300 && air >= 0) {
+            airBar.setProgress(air, 300F);
+        }
+
+        ItemStack held = playerStats.getHeldItem();
+
         boolean shouldShow = held != null && held.getItem() instanceof ItemFood
             && System.currentTimeMillis() % 1000 < 500;
 
         if (shouldShow) {
             ItemFood food = (ItemFood) held.getItem();
-            float currentFood = playerMP.getFoodStats()
-                .getFoodLevel();
+            float currentFood = playerStats.getFood();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
             foodPreviewBar.setMinProgress(currentFood / 20F);
             foodPreviewBar.setProgress(futureFood, 20F);
@@ -154,12 +161,17 @@ public class ClassicBarRenderEvent {
         }
     }
 
-    private void renderAllBars(EntityClientPlayerMP playerMP) {
-        float armor = playerMP.getTotalArmorValue();
-        if (armor > 0) armorBar.render();
+    private void renderAllBars() {
+        if (playerStats.getArmor() > 0) {
+            armorBar.render();
+        }
+
         healthBar.render();
         foodBar.render();
         foodPreviewBar.render();
-        if (playerMP.getAir() < 300) airBar.render();
+
+        if (playerStats.getAir() < 300) {
+            airBar.render();
+        }
     }
 }
