@@ -9,6 +9,7 @@ public class ConfigRegister {
         register(HudConfig.class);
         register(GeneralConfig.class);
         register(LightOverlayConfig.class);
+        register(ClassicBarConfig.class);
     }
 
     private static void register(Class<?> configClass) {

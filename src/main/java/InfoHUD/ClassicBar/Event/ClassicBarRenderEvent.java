@@ -1,5 +1,6 @@
 package InfoHUD.ClassicBar.Event;
 
+import InfoHUD.Configs.ClassicBarConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemFood;
@@ -41,10 +42,14 @@ public class ClassicBarRenderEvent {
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
+        if (!ClassicBarConfig.ClassicBarEnable) return;
+
         EntityClientPlayerMP playerMP = mc.thePlayer;
         World world = mc.theWorld;
 
         if (playerMP == null || world == null) return;
+
+        if (playerMP.capabilities.isCreativeMode) return;
 
         int width = event.resolution.getScaledWidth();
         int height = event.resolution.getScaledHeight();
