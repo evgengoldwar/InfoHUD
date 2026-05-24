@@ -42,7 +42,7 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:Backhand:1.8.8:dev") { transitive = false }
     compileOnly("com.github.GTNewHorizons:ForestryMC:4.11.23:dev") { transitive = false }
 
-//    api("com.github.GTNewHorizons:TinkersConstruct:1.14.4-GTNH:dev")
+//    implementation("com.github.GTNewHorizons:TinkersConstruct:1.14.4-GTNH:dev")
 //    compileOnly("com.github.GTNewHorizons:IguanaTweaksTConstruct:2.6.6:dev") { transitive = false }
 //    compileOnly("com.github.GTNewHorizons:TiC-Tooltips:1.4.0:dev") { transitive = false }
 //    implementation rfg.deobf("curse.maven:cofh-core-69162:2388751")
