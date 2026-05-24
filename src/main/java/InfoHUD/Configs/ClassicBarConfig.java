@@ -1,8 +1,8 @@
 package InfoHUD.Configs;
 
-import com.gtnewhorizon.gtnhlib.config.Config;
-
 import static InfoHUD.InfoHUD.MODID;
+
+import com.gtnewhorizon.gtnhlib.config.Config;
 
 @Config(modid = MODID, category = "classicbar", configSubDirectory = "InfoHUD", filename = "LightOverlayConfig")
 @Config.LangKey("infohud.config.classic_bar.name")

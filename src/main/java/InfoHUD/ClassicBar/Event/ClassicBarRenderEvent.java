@@ -1,6 +1,5 @@
 package InfoHUD.ClassicBar.Event;
 
-import InfoHUD.Configs.ClassicBarConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemFood;
@@ -14,6 +13,7 @@ import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.AnimationStyle;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.NumberFormat;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.Side;
+import InfoHUD.Configs.ClassicBarConfig;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClassicBarRenderEvent {
