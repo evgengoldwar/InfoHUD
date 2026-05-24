@@ -8,6 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import org.lwjgl.opengl.GL11;
+
 import InfoHUD.ClassicBar.Core.PlayerStats;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder;
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder.AnimationStyle;
@@ -37,6 +39,7 @@ public class ClassicBarRenderEvent {
     private ProgressBarBuilder saturationPreviewBar;
     private int lastWidth;
     private int lastHeight;
+    private float lastScale = -1;
     private boolean foodPreviewVisible;
     private final PlayerStats playerStats = new PlayerStats();
 
@@ -53,16 +56,31 @@ public class ClassicBarRenderEvent {
 
         int width = event.resolution.getScaledWidth();
         int height = event.resolution.getScaledHeight();
+        float scale = ClassicBarConfig.ClassicBarScale;
+
         playerStats.updateStats(playerMP);
 
-        if (healthBar == null || width != lastWidth || height != lastHeight) {
+        if (healthBar == null || width != lastWidth || height != lastHeight || scale != lastScale) {
             lastWidth = width;
             lastHeight = height;
+            lastScale = scale;
             createAllBars();
         }
 
+        GL11.glPushMatrix();
+
+        int centerX = lastWidth / 2;
+        int barY = lastHeight - 32 - 10;
+        int anchorY = barY + BAR_HEIGHT;
+
+        GL11.glTranslatef(centerX, anchorY, 0);
+        GL11.glScalef(scale, scale, 1);
+        GL11.glTranslatef(-centerX, -anchorY, 0);
+
         updateAllProgress();
         renderAllBars();
+
+        GL11.glPopMatrix();
     }
 
     private void createAllBars() {

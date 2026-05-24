@@ -11,4 +11,9 @@ public class ClassicBarConfig {
     @Config.DefaultBoolean(false)
     @Config.Order(1)
     public static boolean ClassicBarEnable;
+
+    @Config.DefaultFloat(1.0F)
+    @Config.RangeFloat(min = 0.5F, max = 2.0F)
+    @Config.Order(2)
+    public static float ClassicBarScale;
 }
