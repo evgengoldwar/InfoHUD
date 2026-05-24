@@ -22,6 +22,7 @@ public class ClassicBarRenderEvent {
     private static final int BAR_HEIGHT = 10;
     private static final int ICON_SIZE = 9;
     private static final int GAP = 5;
+    private static final int HEALTH_SEGMENT_SIZE = 20;
 
     private static final ResourceLocation ICON_ARMOR = new ResourceLocation("infohud", "textures/gui/armor.png");
     private static final ResourceLocation ICON_HEART = new ResourceLocation("infohud", "textures/gui/heart.png");
@@ -146,24 +147,28 @@ public class ClassicBarRenderEvent {
     }
 
     private void updateAllProgress() {
-        healthBar.setProgress(playerStats.getCurrentHealth(), playerStats.getMaxHealth());
+        float currentHealth = playerStats.getCurrentHealth();
+        float maxHealth = playerStats.getMaxHealth();
+
+        int healthColor = getColorHealth(maxHealth);
+        healthBar.setFillColor(healthColor);
+        healthBar.setTextColor(healthColor);
+        healthBar.setProgress(currentHealth, maxHealth);
+
         foodBar.setProgress(playerStats.getFood(), 20F);
         saturationBar.setProgress(playerStats.getSaturation(), 20F);
 
         float armor = playerStats.getArmor();
-
         if (armor > 0) {
             armorBar.setProgress(armor, 20F);
         }
 
         int air = playerStats.getAir();
-
         if (air < 300 && air >= 0) {
             airBar.setProgress(air, 300F);
         }
 
         ItemStack held = playerStats.getHeldItem();
-
         boolean shouldShow = held != null && held.getItem() instanceof ItemFood
             && System.currentTimeMillis() % 1000 < 500;
 
@@ -179,7 +184,6 @@ public class ClassicBarRenderEvent {
 
             float rawSaturationGain = healAmount * saturationModifier * 2.0F;
             float futureSaturationRaw = currentSaturation + rawSaturationGain;
-
             float futureSaturation = Math.min(futureSaturationRaw, futureFood);
 
             foodPreviewBar.setMinProgress(currentFood / 20F);
@@ -214,5 +218,32 @@ public class ClassicBarRenderEvent {
         if (playerStats.getAir() < 300) {
             airBar.render();
         }
+    }
+
+    private int getColorHealth(float maxHealth) {
+        if (maxHealth <= 20) {
+            return 0xFFFF5555;
+        }
+
+        if (maxHealth >= 240 && maxHealth <= 260) {
+            return 0xFFFFFFFF;
+        }
+
+        int segment = (int) Math.ceil(maxHealth / HEALTH_SEGMENT_SIZE) - 1;
+
+        int cycledSegment = ((segment - 1) % 10) + 1;
+        return switch (cycledSegment) {
+            case 1 -> 0xFFFF8844;
+            case 2 -> 0xFFFFDD44;
+            case 3 -> 0xFF44FF44;
+            case 4 -> 0xFF44FFFF;
+            case 5 -> 0xFFAA44FF;
+            case 6 -> 0xFFFF66CC;
+            case 7 -> 0xFFCC4444;
+            case 8 -> 0xFF44CCCC;
+            case 9 -> 0xFF888888;
+            case 10 -> 0xFFFFFFFF;
+            default -> 0xFFFF5555;
+        };
     }
 }
