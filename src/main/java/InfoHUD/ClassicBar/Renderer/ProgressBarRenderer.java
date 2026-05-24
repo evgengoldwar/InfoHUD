@@ -165,7 +165,7 @@ public class ProgressBarRenderer {
         Minecraft mc = Minecraft.getMinecraft();
         mc.renderEngine.bindTexture(bar.icon);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
-        drawTexturedModalRect(drawX, drawY + 1, (int) bar.iconU, (int) bar.iconV, bar.iconWidth, bar.iconHeight);
+        drawTexturedModalRect(drawX, drawY, (int) bar.iconU, (int) bar.iconV, bar.iconWidth, bar.iconHeight);
     }
 
     private static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
