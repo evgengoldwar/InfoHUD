@@ -156,7 +156,7 @@ public class ProgressBarRenderer {
     private static void drawText(ProgressBarBuilder bar, int drawX, int drawY, float alpha) {
         String text = getFormattedText(bar);
         Minecraft mc = Minecraft.getMinecraft();
-        int centeredY = drawY + (bar.height - mc.fontRenderer.FONT_HEIGHT) / 2;
+        int centeredY = drawY + 1 + (bar.height - mc.fontRenderer.FONT_HEIGHT) / 2;
         int color = applyAlpha(bar.textColor, alpha);
         mc.fontRenderer.drawStringWithShadow(text, drawX, centeredY, color);
     }
@@ -165,7 +165,7 @@ public class ProgressBarRenderer {
         Minecraft mc = Minecraft.getMinecraft();
         mc.renderEngine.bindTexture(bar.icon);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
-        drawTexturedModalRect(drawX, drawY, (int) bar.iconU, (int) bar.iconV, bar.iconWidth, bar.iconHeight);
+        drawTexturedModalRect(drawX, drawY + 1, (int) bar.iconU, (int) bar.iconV, bar.iconWidth, bar.iconHeight);
     }
 
     private static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {

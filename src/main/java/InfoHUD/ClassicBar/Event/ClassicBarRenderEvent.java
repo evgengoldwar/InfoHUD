@@ -84,7 +84,7 @@ public class ClassicBarRenderEvent {
             .setIcon(VANILLA_ICONS, ICON_SIZE, ICON_SIZE, 52, 0, 52 + ICON_W, ICON_H)
             .setIconSide(Side.LEFT)
             .setTextSide(Side.LEFT)
-            .setNumberFormat(NumberFormat.CURRENT)
+            .setNumberFormat(NumberFormat.FRACTION)
             .setBorderWidth(1)
             .setShowGradient(true)
             .setAnimationStyle(AnimationStyle.BOUNCE)
