@@ -23,11 +23,9 @@ public class ClassicBarRenderEvent {
     private static final int ICON_SIZE = 9;
     private static final int GAP = 5;
     private static final int HEALTH_SEGMENT_SIZE = 20;
-
-    private static final ResourceLocation ICON_ARMOR = new ResourceLocation("infohud", "textures/gui/armor.png");
-    private static final ResourceLocation ICON_HEART = new ResourceLocation("infohud", "textures/gui/heart.png");
-    private static final ResourceLocation ICON_FOOD = new ResourceLocation("infohud", "textures/gui/food.png");
-    private static final ResourceLocation ICON_BUBBLE = new ResourceLocation("infohud", "textures/gui/bubble.png");
+    private static final ResourceLocation VANILLA_ICONS = new ResourceLocation("textures/gui/icons.png");
+    private static final int ICON_W = 8;
+    private static final int ICON_H = 8;
 
     private ProgressBarBuilder healthBar;
     private ProgressBarBuilder armorBar;
@@ -71,7 +69,7 @@ public class ClassicBarRenderEvent {
             .setFillColor(0xFF9999AA)
             .setBackgroundColor(0xFF252533)
             .setTextColor(0xFFCCCCDD)
-            .setIcon(ICON_ARMOR, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIcon(VANILLA_ICONS, ICON_SIZE, ICON_SIZE, 34, 9, 34 + ICON_W, 9 + ICON_H)
             .setIconSide(Side.LEFT)
             .setTextSide(Side.LEFT)
             .setNumberFormat(NumberFormat.CURRENT)
@@ -79,10 +77,11 @@ public class ClassicBarRenderEvent {
             .setShowGradient(true)
             .setAnimationStyle(AnimationStyle.ELASTIC);
 
-        healthBar = new ProgressBarBuilder(leftX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFF5555)
+        healthBar = new ProgressBarBuilder(leftX, barY, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFFFF5555)
             .setBackgroundColor(0xFF222222)
             .setTextColor(0xFFFF5555)
-            .setIcon(ICON_HEART, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIcon(VANILLA_ICONS, ICON_SIZE, ICON_SIZE, 52, 0, 52 + ICON_W, ICON_H)
             .setIconSide(Side.LEFT)
             .setTextSide(Side.LEFT)
             .setNumberFormat(NumberFormat.CURRENT)
@@ -91,10 +90,11 @@ public class ClassicBarRenderEvent {
             .setAnimationStyle(AnimationStyle.BOUNCE)
             .setAnimationSpeed(0.15f);
 
-        foodBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFAA00)
+        foodBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFFFFAA00)
             .setBackgroundColor(0xFF222222)
             .setTextColor(0xFFFFAA00)
-            .setIcon(ICON_FOOD, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIcon(VANILLA_ICONS, ICON_SIZE, ICON_SIZE, 52, 27, 52 + ICON_W, 27 + ICON_H)
             .setIconSide(Side.RIGHT)
             .setTextSide(Side.RIGHT)
             .setNumberFormat(NumberFormat.CURRENT)
@@ -103,10 +103,11 @@ public class ClassicBarRenderEvent {
             .setAnimationStyle(AnimationStyle.SMOOTH)
             .setAnimationSpeed(0.12f);
 
-        airBar = new ProgressBarBuilder(rightX, barY - BAR_HEIGHT - GAP, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFF4488FF)
+        airBar = new ProgressBarBuilder(rightX, barY - BAR_HEIGHT - GAP, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFF4488FF)
             .setBackgroundColor(0xFF222222)
             .setTextColor(0xFF88CCFF)
-            .setIcon(ICON_BUBBLE, ICON_SIZE, ICON_SIZE, 0, 0, 16, 16)
+            .setIcon(VANILLA_ICONS, ICON_SIZE, ICON_SIZE, 16, 18, 16 + ICON_W, 18 + ICON_H)
             .setIconSide(Side.RIGHT)
             .setTextSide(Side.RIGHT)
             .setNumberFormat(NumberFormat.FRACTION)
@@ -114,7 +115,8 @@ public class ClassicBarRenderEvent {
             .setShowGradient(true)
             .setEnableDamageFlash(false);
 
-        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFAA00)
+        foodPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFFFFAA00)
             .setShowBackground(false)
             .setShowBorder(false)
             .setShowGradient(true)
@@ -125,7 +127,8 @@ public class ClassicBarRenderEvent {
             .setFade(true)
             .setAlpha(0f);
 
-        saturationBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFEE44)
+        saturationBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFFFFEE44)
             .setShowBackground(false)
             .setShowBorder(false)
             .setShowGradient(true)
@@ -134,7 +137,8 @@ public class ClassicBarRenderEvent {
             .setAnimationSpeed(0.1f)
             .setAlpha(0.3f);
 
-        saturationPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT).setFillColor(0xFFFFEE44)
+        saturationPreviewBar = new ProgressBarBuilder(rightX, barY, BAR_WIDTH, BAR_HEIGHT)
+            .setFillColor(0xFFFFEE44)
             .setShowBackground(false)
             .setShowBorder(false)
             .setShowGradient(true)

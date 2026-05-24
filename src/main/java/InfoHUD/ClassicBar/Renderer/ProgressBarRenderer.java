@@ -162,17 +162,21 @@ public class ProgressBarRenderer {
     }
 
     private static void drawIcon(ProgressBarBuilder bar, int drawX, int drawY, float alpha) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(bar.icon);
+        Minecraft mc = Minecraft.getMinecraft();
+        mc.renderEngine.bindTexture(bar.icon);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
-        Gui.func_146110_a(
-            drawX,
-            drawY,
-            bar.iconU,
-            bar.iconV,
-            bar.iconWidth,
-            bar.iconHeight,
-            bar.iconWidth,
-            bar.iconHeight);
+        drawTexturedModalRect(drawX, drawY, (int) bar.iconU, (int) bar.iconV, bar.iconWidth, bar.iconHeight);
+    }
+
+    private static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
+        float f = 0.00390625F;
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, 0, u * f, (v + height) * f);
+        tessellator.addVertexWithUV(x + width, y + height, 0, (u + width) * f, (v + height) * f);
+        tessellator.addVertexWithUV(x + width, y, 0, (u + width) * f, v * f);
+        tessellator.addVertexWithUV(x, y, 0, u * f, v * f);
+        tessellator.draw();
     }
 
     private static String getFormattedText(ProgressBarBuilder bar) {
