@@ -1,9 +1,11 @@
 package InfoHUD.ClassicBar.Event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import InfoHUD.ClassicBar.Renderer.ProgressBarBuilder;
@@ -15,20 +17,31 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class ClassicBarRenderEvent {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final int BAR_WIDTH = 81, BAR_HEIGHT = 10, ICON_SIZE = 9, GAP = 5;
+    private static final int BAR_WIDTH = 81;
+    private static final int BAR_HEIGHT = 10;
+    private static final int ICON_SIZE = 9;
+    private static final int GAP = 5;
 
     private static final ResourceLocation ICON_ARMOR = new ResourceLocation("infohud", "textures/gui/armor.png");
     private static final ResourceLocation ICON_HEART = new ResourceLocation("infohud", "textures/gui/heart.png");
     private static final ResourceLocation ICON_FOOD = new ResourceLocation("infohud", "textures/gui/food.png");
     private static final ResourceLocation ICON_BUBBLE = new ResourceLocation("infohud", "textures/gui/bubble.png");
 
-    private ProgressBarBuilder healthBar, armorBar, foodBar, airBar, foodPreviewBar;
-    private int lastWidth, lastHeight;
+    private ProgressBarBuilder healthBar;
+    private ProgressBarBuilder armorBar;
+    private ProgressBarBuilder foodBar;
+    private ProgressBarBuilder airBar;
+    private ProgressBarBuilder foodPreviewBar;
+    private int lastWidth;
+    private int lastHeight;
     private boolean foodPreviewVisible;
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
-        if (mc.thePlayer == null || mc.theWorld == null) return;
+        EntityClientPlayerMP playerMP = mc.thePlayer;
+        World world = mc.theWorld;
+
+        if (playerMP == null || world == null) return;
 
         int width = event.resolution.getScaledWidth();
         int height = event.resolution.getScaledHeight();
@@ -39,8 +52,8 @@ public class ClassicBarRenderEvent {
             createAllBars();
         }
 
-        updateAllProgress();
-        renderAllBars();
+        updateAllProgress(playerMP);
+        renderAllBars(playerMP);
     }
 
     private void createAllBars() {
@@ -107,25 +120,25 @@ public class ClassicBarRenderEvent {
             .setAlpha(0f);
     }
 
-    private void updateAllProgress() {
-        healthBar.setProgress(mc.thePlayer.getHealth(), mc.thePlayer.getMaxHealth());
+    private void updateAllProgress(EntityClientPlayerMP playerMP) {
+        healthBar.setProgress(playerMP.getHealth(), playerMP.getMaxHealth());
         foodBar.setProgress(
-            mc.thePlayer.getFoodStats()
+            playerMP.getFoodStats()
                 .getFoodLevel(),
             20F);
 
-        float armor = mc.thePlayer.getTotalArmorValue();
+        float armor = playerMP.getTotalArmorValue();
         if (armor > 0) armorBar.setProgress(armor, 20F);
 
-        if (mc.thePlayer.getAir() < 300) airBar.setProgress(mc.thePlayer.getAir(), 300F);
+        if (playerMP.getAir() < 300) airBar.setProgress(playerMP.getAir(), 300F);
 
-        ItemStack held = mc.thePlayer.getHeldItem();
+        ItemStack held = playerMP.getHeldItem();
         boolean shouldShow = held != null && held.getItem() instanceof ItemFood
             && System.currentTimeMillis() % 1000 < 500;
 
         if (shouldShow) {
             ItemFood food = (ItemFood) held.getItem();
-            float currentFood = mc.thePlayer.getFoodStats()
+            float currentFood = playerMP.getFoodStats()
                 .getFoodLevel();
             float futureFood = Math.min(currentFood + food.func_150905_g(held), 20F);
             foodPreviewBar.setMinProgress(currentFood / 20F);
@@ -141,12 +154,12 @@ public class ClassicBarRenderEvent {
         }
     }
 
-    private void renderAllBars() {
-        float armor = mc.thePlayer.getTotalArmorValue();
+    private void renderAllBars(EntityClientPlayerMP playerMP) {
+        float armor = playerMP.getTotalArmorValue();
         if (armor > 0) armorBar.render();
         healthBar.render();
         foodBar.render();
         foodPreviewBar.render();
-        if (mc.thePlayer.getAir() < 300) airBar.render();
+        if (playerMP.getAir() < 300) airBar.render();
     }
 }
