@@ -2,6 +2,7 @@ package InfoHUD.ClassicBar.Event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -72,6 +73,8 @@ public class ClassicBarRenderEvent {
         int centerX = lastWidth / 2;
         int barY = lastHeight - 32 - 10;
         int anchorY = barY + BAR_HEIGHT;
+
+        renderHeldItemName();
 
         GL11.glTranslatef(centerX, anchorY, 0);
         GL11.glScalef(scale, scale, 1);
@@ -266,5 +269,35 @@ public class ClassicBarRenderEvent {
             case 10 -> 0xFFFFFFFF;
             default -> 0xFFFF5555;
         };
+    }
+
+    private void renderHeldItemName() {
+        ItemStack heldItem = playerStats.getHeldItem();
+        if (heldItem == null) return;
+
+        String displayName = heldItem.getDisplayName();
+        FontRenderer fontRenderer = mc.fontRenderer;
+
+        int barY = lastHeight - 32 - 10;
+
+        int topBarY = barY;
+        if (playerStats.getArmor() > 0 || playerStats.getAir() < 300) {
+            topBarY = barY - BAR_HEIGHT - GAP;
+        }
+
+        int barYMiddle = barY + BAR_HEIGHT;
+
+        float topBarOffset = topBarY - barYMiddle;
+
+        float scaledTopBarOffset = topBarOffset * lastScale;
+
+        float realTopBarY = barYMiddle + scaledTopBarOffset;
+
+        int textWidth = fontRenderer.getStringWidth(displayName);
+        int textX = lastWidth / 2 - textWidth / 2;
+
+        int textY = (int)(realTopBarY - 12);
+
+        fontRenderer.drawStringWithShadow(displayName, textX, textY, 0xFFFFFFFF);
     }
 }
