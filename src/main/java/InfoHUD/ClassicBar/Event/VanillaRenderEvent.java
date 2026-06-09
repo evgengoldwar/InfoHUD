@@ -2,6 +2,7 @@ package InfoHUD.ClassicBar.Event;
 
 import java.util.Objects;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import InfoHUD.Configs.ClassicBarConfig;
@@ -9,7 +10,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class VanillaRenderEvent {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderPre(RenderGameOverlayEvent.Pre event) {
         if (!ClassicBarConfig.ClassicBarEnable) return;
 
