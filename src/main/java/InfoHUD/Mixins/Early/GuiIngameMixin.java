@@ -5,12 +5,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import InfoHUD.Configs.ClassicBarConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -23,13 +20,13 @@ import net.minecraftforge.client.GuiIngameForge;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import InfoHUD.Configs.ClassicBarConfig;
 import InfoHUD.Configs.HudConfig;
 import InfoHUD.Hud.Core.BackhandHandler;
 import InfoHUD.Hud.Core.InfoLine;
@@ -285,10 +282,8 @@ public class GuiIngameMixin extends GuiIngame {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraftforge/client/GuiIngameForge;renderToolHightlight(II)V",
-            ordinal = 0
-        ),
-        cancellable = true
-    )
+            ordinal = 0),
+        cancellable = true)
     private void onRenderToolHighlight(float partialTicks, boolean hasScreen, int mouseX, int mouseY, CallbackInfo ci) {
         if (ClassicBarConfig.ClassicBarEnable) {
             ci.cancel();

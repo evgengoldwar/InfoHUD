@@ -302,7 +302,7 @@ public class ClassicBarRenderEvent {
         int textWidth = fontRenderer.getStringWidth(displayName);
         int textX = lastWidth / 2 - textWidth / 2;
 
-        int textY = (int)(realTopBarY - 12);
+        int textY = (int) (realTopBarY - 12);
 
         fontRenderer.drawStringWithShadow(displayName, textX, textY, 0xFFFFFFFF);
     }
