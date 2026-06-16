@@ -7,10 +7,8 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 
 public enum Mixins implements IMixins {
 
-    // MINECRAFT_LATE(new MixinBuilder("Minecraft Late")
-    // .addClientMixins(
-    // "Test")
-    // .setPhase(Phase.LATE)),
+    MINECRAFT_LATE(new MixinBuilder("Minecraft Late").addClientMixins("ArmorBarRenderMixin")
+        .setPhase(Phase.LATE)),
 
     MINECRAFT_EARLY(new MixinBuilder("Minecraft Early")
         .addClientMixins(

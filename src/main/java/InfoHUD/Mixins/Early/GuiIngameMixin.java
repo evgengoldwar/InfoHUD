@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import InfoHUD.Configs.ClassicBarConfig;
 import InfoHUD.Configs.HudConfig;
 import InfoHUD.Hud.Core.BackhandHandler;
 import InfoHUD.Hud.Core.InfoLine;
@@ -275,18 +274,5 @@ public class GuiIngameMixin extends GuiIngame {
         GL11.glPopMatrix();
 
         GL11.glPopMatrix();
-    }
-
-    @Inject(
-        method = "renderGameOverlay",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraftforge/client/GuiIngameForge;renderToolHightlight(II)V",
-            ordinal = 0),
-        cancellable = true)
-    private void onRenderToolHighlight(float partialTicks, boolean hasScreen, int mouseX, int mouseY, CallbackInfo ci) {
-        if (ClassicBarConfig.ClassicBarEnable) {
-            ci.cancel();
-        }
     }
 }
