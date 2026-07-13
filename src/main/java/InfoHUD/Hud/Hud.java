@@ -3,7 +3,6 @@ package InfoHUD.Hud;
 import java.util.ArrayList;
 import java.util.List;
 
-import InfoHUD.Hud.Core.InfoLines.InfoNutrient;
 import net.minecraftforge.common.MinecraftForge;
 
 import InfoHUD.Configs.HudConfig;
@@ -17,6 +16,7 @@ import InfoHUD.Hud.Core.InfoLines.InfoFPS;
 import InfoHUD.Hud.Core.InfoLines.InfoForestry;
 import InfoHUD.Hud.Core.InfoLines.InfoJump;
 import InfoHUD.Hud.Core.InfoLines.InfoMemory;
+import InfoHUD.Hud.Core.InfoLines.InfoNutrient;
 import InfoHUD.Hud.Core.InfoLines.InfoOreChunk;
 import InfoHUD.Hud.Core.InfoLines.InfoPing;
 import InfoHUD.Hud.Core.InfoLines.InfoPosition;

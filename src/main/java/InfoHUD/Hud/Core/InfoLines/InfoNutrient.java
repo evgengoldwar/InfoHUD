@@ -1,15 +1,15 @@
 package InfoHUD.Hud.Core.InfoLines;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import InfoHUD.Configs.HudConfig;
 import InfoHUD.Hud.Core.InfoLine;
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
 import ca.wescook.nutrition.proxy.ClientProxy;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class InfoNutrient extends InfoLine {
 
@@ -33,7 +33,8 @@ public class InfoNutrient extends InfoLine {
                 Float value = allNutrients.get(nutrient);
                 if (value != null) {
                     String color = getNutrientColor(nutrient.name);
-                    String displayName = nutrient.name.substring(0, 1).toUpperCase();
+                    String displayName = nutrient.name.substring(0, 1)
+                        .toUpperCase();
 
                     sb.append(color)
                         .append(displayName)
@@ -44,7 +45,8 @@ public class InfoNutrient extends InfoLine {
                 }
             }
 
-            return sb.toString().trim();
+            return sb.toString()
+                .trim();
         }
 
         return "";
@@ -74,7 +76,7 @@ public class InfoNutrient extends InfoLine {
     private List<Nutrient> getOrderedNutrients() {
         if (cachedNutrients == null) {
             cachedNutrients = new ArrayList<>();
-            String[] nutrientOrder = {"dairy", "fruit", "grain", "protein", "vegetable"};
+            String[] nutrientOrder = { "dairy", "fruit", "grain", "protein", "vegetable" };
 
             for (String nutrientName : nutrientOrder) {
                 for (Nutrient nutrient : NutrientList.get()) {
