@@ -3,6 +3,7 @@ package InfoHUD.Hud;
 import java.util.ArrayList;
 import java.util.List;
 
+import InfoHUD.Hud.Core.InfoLines.InfoNutrient;
 import net.minecraftforge.common.MinecraftForge;
 
 import InfoHUD.Configs.HudConfig;
@@ -83,6 +84,10 @@ public class Hud {
 
         if (Loader.isModLoaded(HudUtils.FORESTRY_ID)) {
             lines.add(new InfoForestry(HudConfig.hudOrder.ForestryOrder));
+        }
+
+        if (Loader.isModLoaded(HudUtils.NUTRIENT_ID)) {
+            lines.add(new InfoNutrient(HudConfig.hudOrder.NutrientOrder));
         }
     }
 }

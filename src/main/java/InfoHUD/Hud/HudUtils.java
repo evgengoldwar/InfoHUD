@@ -21,6 +21,7 @@ public class HudUtils {
     public static final String THAUMCRAFT_ID = "Thaumcraft";
     public static final String GREG_TECH_ID = "gregtech";
     public static final String FORESTRY_ID = "Forestry";
+    public static final String NUTRIENT_ID = "nutrition";
 
     private static NBTTagCompound getPersistentDataTag(EntityPlayer player) {
         NBTTagCompound forgeData = player.getEntityData()

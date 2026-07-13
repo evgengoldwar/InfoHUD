@@ -144,6 +144,11 @@ public class HudConfig {
         @Config.Order(18)
         public int ForestryOrder;
 
+        @Config.DefaultInt(19)
+        @Config.RangeInt(min = 1, max = 100)
+        @Config.Order(19)
+        public int NutrientOrder;
+
     }
 
     @Config.LangKey("infohud.config.hud.hud_icons.name")
@@ -220,6 +225,10 @@ public class HudConfig {
         @Config.DefaultString("Forestry:beeDroneGE")
         @Config.Order(18)
         public String ForestryItem;
+
+        @Config.DefaultString("minecraft:milk_bucket")
+        @Config.Order(19)
+        public String NutrientItem;
     }
 
     @Config.LangKey("infohud.config.hud.hud_toggles.name")
@@ -300,6 +309,10 @@ public class HudConfig {
         @Config.DefaultBoolean(true)
         @Config.Order(19)
         public boolean ForestryEnable;
+
+        @Config.DefaultBoolean(true)
+        @Config.Order(20)
+        public boolean NutrientEnable;
     }
 
 }
