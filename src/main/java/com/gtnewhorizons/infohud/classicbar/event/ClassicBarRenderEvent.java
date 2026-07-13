@@ -17,6 +17,7 @@ import com.gtnewhorizons.infohud.classicbar.renderer.ProgressBarBuilder.Animatio
 import com.gtnewhorizons.infohud.classicbar.renderer.ProgressBarBuilder.NumberFormat;
 import com.gtnewhorizons.infohud.classicbar.renderer.ProgressBarBuilder.Side;
 import com.gtnewhorizons.infohud.configs.ClassicBarConfig;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ClassicBarRenderEvent {

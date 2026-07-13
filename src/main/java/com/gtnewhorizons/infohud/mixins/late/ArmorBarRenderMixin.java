@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizons.infohud.configs.ClassicBarConfig;
+
 import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
 
 @Mixin(value = ArmorBarRenderer.class, remap = false)

@@ -8,6 +8,7 @@ import com.gtnewhorizons.infohud.commands.CommandHUD;
 import com.gtnewhorizons.infohud.hud.Hud;
 import com.gtnewhorizons.infohud.keybinds.KeyBindHandler;
 import com.gtnewhorizons.infohud.lightoverlay.OverlayEventHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 

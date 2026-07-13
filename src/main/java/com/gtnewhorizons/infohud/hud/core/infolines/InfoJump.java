@@ -7,6 +7,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class InfoJump extends InfoLine {

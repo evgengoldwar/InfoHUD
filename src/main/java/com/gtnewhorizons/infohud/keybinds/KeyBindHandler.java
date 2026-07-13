@@ -8,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.gtnewhorizons.infohud.InfoHUD;
 import com.gtnewhorizons.infohud.lightoverlay.LightLevelOverlayRenderer;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;

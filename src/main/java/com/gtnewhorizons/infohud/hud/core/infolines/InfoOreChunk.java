@@ -2,6 +2,7 @@ package com.gtnewhorizons.infohud.hud.core.infolines;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
+
 import gregtech.common.GTWorldgenerator;
 
 public class InfoOreChunk extends InfoLine {

@@ -8,6 +8,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 
 import com.gtnewhorizons.infohud.InfoHUD;
+
 import io.netty.buffer.Unpooled;
 
 public class OSLHandshakePayload {

@@ -27,10 +27,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
+import com.gtnewhorizons.infohud.hud.Hud;
 import com.gtnewhorizons.infohud.hud.core.BackhandHandler;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
 import com.gtnewhorizons.infohud.hud.core.infolines.InfoCountItem;
-import com.gtnewhorizons.infohud.hud.Hud;
 
 @Mixin(value = GuiIngameForge.class)
 public class GuiIngameMixin extends GuiIngame {

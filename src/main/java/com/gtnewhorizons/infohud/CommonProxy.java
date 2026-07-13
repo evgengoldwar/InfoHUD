@@ -1,6 +1,7 @@
 package com.gtnewhorizons.infohud;
 
 import com.gtnewhorizons.infohud.configs.ConfigRegister;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

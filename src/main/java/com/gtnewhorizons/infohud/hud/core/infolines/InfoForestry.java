@@ -5,6 +5,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
+
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
 import forestry.api.genetics.AlleleManager;

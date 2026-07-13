@@ -6,8 +6,9 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-import com.gtnewhorizons.infohud.hud.core.DataStorage;
 import com.gtnewhorizons.infohud.hud.Hud;
+import com.gtnewhorizons.infohud.hud.core.DataStorage;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;

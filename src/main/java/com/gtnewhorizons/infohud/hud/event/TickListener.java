@@ -3,6 +3,7 @@ package com.gtnewhorizons.infohud.hud.event;
 import net.minecraft.client.Minecraft;
 
 import com.gtnewhorizons.infohud.hud.core.DataStorage;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 

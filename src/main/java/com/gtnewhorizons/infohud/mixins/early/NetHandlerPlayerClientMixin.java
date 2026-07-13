@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.gtnewhorizons.infohud.hud.core.DataStorage;
 import com.gtnewhorizons.infohud.hud.network.OSLHandshakePayload;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 

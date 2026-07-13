@@ -1,9 +1,9 @@
 package com.gtnewhorizons.infohud.hud.core.infolines;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
+import com.gtnewhorizons.infohud.hud.HudUtils;
 import com.gtnewhorizons.infohud.hud.core.DataStorage;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
-import com.gtnewhorizons.infohud.hud.HudUtils;
 
 public class InfoSlimeChunk extends InfoLine {
 

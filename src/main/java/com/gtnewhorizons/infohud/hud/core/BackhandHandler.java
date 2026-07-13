@@ -7,6 +7,7 @@ import cpw.mods.fml.common.Loader;
 import xonin.backhand.api.core.BackhandUtils;
 
 public class BackhandHandler {
+
     private static final boolean BACKHAND_LOADED = Loader.isModLoaded("backhand");
 
     public static boolean isLoaded() {

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
+
 import ca.wescook.nutrition.data.NutrientManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;

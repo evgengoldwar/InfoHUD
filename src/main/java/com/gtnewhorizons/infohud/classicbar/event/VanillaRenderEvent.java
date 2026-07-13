@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import com.gtnewhorizons.infohud.configs.ClassicBarConfig;
+
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 

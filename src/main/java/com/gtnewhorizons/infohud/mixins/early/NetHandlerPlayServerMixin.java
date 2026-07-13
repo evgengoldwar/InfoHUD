@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.gtnewhorizons.infohud.InfoHUD;
 import com.gtnewhorizons.infohud.hud.core.DataStorage;
 import com.gtnewhorizons.infohud.hud.network.ServerPacketHandler;
-import com.gtnewhorizons.infohud.InfoHUD;
 
 @Mixin(NetHandlerPlayServer.class)
 public class NetHandlerPlayServerMixin {
