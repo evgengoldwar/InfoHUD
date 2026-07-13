@@ -5,7 +5,7 @@ import static InfoHUD.InfoHUD.MODID;
 import com.gtnewhorizon.gtnhlib.config.Config;
 
 @Config(modid = MODID, category = "hud", configSubDirectory = "InfoHUD", filename = "HudConfig")
-@Config.LangKey("minecraftimprovements.config.hud.name")
+@Config.LangKey("infohud.config.hud.name")
 public class HudConfig {
 
     public static final HudGeneral hudGeneral = new HudGeneral();
@@ -14,7 +14,7 @@ public class HudConfig {
     public static final HudEnabled hudEnabled = new HudEnabled();
     public static final HudPotion hudPotion = new HudPotion();
 
-    @Config.LangKey("minecraftimprovements.config.hud.hud_general.name")
+    @Config.LangKey("infohud.config.hud.hud_general.name")
     public static class HudGeneral {
 
         @Config.DefaultInt(0)
@@ -35,7 +35,7 @@ public class HudConfig {
         public boolean HudDisable;
     }
 
-    @Config.LangKey("minecraftimprovements.config.hud.hud_potion.name")
+    @Config.LangKey("infohud.config.hud.hud_potion.name")
     public static class HudPotion {
 
         @Config.DefaultBoolean(true)
@@ -51,7 +51,7 @@ public class HudConfig {
         public boolean LevelEnable;
     }
 
-    @Config.LangKey("minecraftimprovements.config.hud.hud_order.name")
+    @Config.LangKey("infohud.config.hud.hud_order.name")
     public static class HudOrder {
 
         @Config.DefaultInt(1)
@@ -146,7 +146,7 @@ public class HudConfig {
 
     }
 
-    @Config.LangKey("minecraftimprovements.config.hud.hud_icons.name")
+    @Config.LangKey("infohud.config.hud.hud_icons.name")
     public static class HudItems {
 
         @Config.DefaultString("minecraft:emerald")
@@ -222,7 +222,7 @@ public class HudConfig {
         public String ForestryItem;
     }
 
-    @Config.LangKey("minecraftimprovements.config.hud.hud_toggles.name")
+    @Config.LangKey("infohud.config.hud.hud_toggles.name")
     public static class HudEnabled {
 
         @Config.DefaultBoolean(true)

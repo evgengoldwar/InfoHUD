@@ -91,6 +91,6 @@ public abstract class InfoLine {
     }
 
     protected static String tr(String key, Object... params) {
-        return StatCollector.translateToLocalFormatted("minecraftimprovements.hud.info_line." + key, params);
+        return StatCollector.translateToLocalFormatted("infohud.hud.info_line." + key, params);
     }
 }
