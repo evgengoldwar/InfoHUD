@@ -21,11 +21,10 @@ import net.minecraft.util.MathHelper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import InfoHUD.Configs.HudConfig;
-import InfoHUD.Hud.Core.InfoLines.InfoCountItem;
-import InfoHUD.Hud.Hud;
-import InfoHUD.Utils.Position;
+import com.gtnewhorizons.infohud.configs.HudConfig;
+import com.gtnewhorizons.infohud.hud.Hud;
+import com.gtnewhorizons.infohud.hud.core.infolines.InfoCountItem;
+import com.gtnewhorizons.infohud.utils.Position;
 
 public class DataStorage {
 
