@@ -3,10 +3,10 @@
 	"modList": [{
 		"modid": "${modId}",
 		"name": "${modName}",
-		"description": "",
+		"description": "Configurable HUD showing player and world info, with a classic bar renderer and light-level overlay.",
 		"version": "${modVersion}",
 		"mcversion": "${minecraftVersion}",
-		"url": "https://github.com/evgengoldwar/MinecraftImprovements",
+		"url": "https://github.com/EvgenWarGold/InfoHUD",
 		"updateUrl": "",
 		"authorList": ["EvgenWarGold"],
 		"credits": "",
