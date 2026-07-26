@@ -10,6 +10,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 
+import InfoHUD.Utils.Position;
+
 public abstract class InfoLine {
 
     private final int order;
@@ -17,6 +19,7 @@ public abstract class InfoLine {
     private String cachedItemName = null;
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected static final String[] ROUGHDIRECTION = { "South", "West", "North", "East" };
+    public Position position = null;
 
     public InfoLine(int order) {
         this.order = order;

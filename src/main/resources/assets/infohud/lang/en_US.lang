@@ -31,6 +31,7 @@ infohud.hud.info_line.info_sessiontime.1=Session: §6%sm %ss
 infohud.hud.info_line.info_sessiontime.2=Session: §6%sh %sm %ss
 infohud.hud.info_line.info_jump=Jumps: §6%s
 infohud.keybind.desc.light_overlay=Toggle Light Overlay
+infohud.keybind.desc.open_infoline_editor=Open InfoLine Editor
 infohud.light_overlay.mode_off=§cDisabled
 infohud.light_overlay.mode_all=§aAll Light Levels
 infohud.light_overlay.mode_spawnable=§eMob Spawnable Only (0-7)

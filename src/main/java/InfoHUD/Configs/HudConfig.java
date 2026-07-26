@@ -17,14 +17,6 @@ public class HudConfig {
     @Config.LangKey("infohud.config.hud.hud_general.name")
     public static class HudGeneral {
 
-        @Config.DefaultInt(0)
-        @Config.Order(1)
-        public int HudX;
-
-        @Config.DefaultInt(0)
-        @Config.Order(2)
-        public int HudY;
-
         @Config.DefaultFloat(1.0F)
         @Config.RangeFloat(min = 0.5F, max = 2.0F)
         @Config.Order(3)
@@ -49,6 +41,14 @@ public class HudConfig {
         @Config.DefaultBoolean(true)
         @Config.Order(3)
         public boolean LevelEnable;
+
+        @Config.DefaultInt(5)
+        @Config.Order(4)
+        public int PotionX;
+
+        @Config.DefaultInt(2)
+        @Config.Order(5)
+        public int PotionY;
     }
 
     @Config.LangKey("infohud.config.hud.hud_order.name")
