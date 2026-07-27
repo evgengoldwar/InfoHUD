@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import com.gtnewhorizons.infohud.configs.ClassicBarConfig;
 import com.gtnewhorizons.infohud.hud.core.HudRenderer;
 
 @Mixin(value = GuiIngameForge.class)
@@ -26,5 +27,12 @@ public class GuiIngameMixin extends GuiIngame {
             shift = At.Shift.BEFORE))
     private void renderHud(int width, int height, CallbackInfo ci) {
         HudRenderer.renderHud(width, height);
+    }
+
+    @Inject(method = "renderToolHightlight", at = @At("HEAD"), cancellable = true, remap = false)
+    private void onRenderToolHighlight(int width, int height, CallbackInfo ci) {
+        if (ClassicBarConfig.ClassicBarEnable) {
+            ci.cancel();
+        }
     }
 }

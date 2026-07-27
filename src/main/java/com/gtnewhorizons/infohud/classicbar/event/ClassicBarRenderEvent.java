@@ -44,6 +44,8 @@ public class ClassicBarRenderEvent {
     private float lastScale = -1;
     private boolean foodPreviewVisible;
     private final PlayerStats playerStats = new PlayerStats();
+    private ItemStack cachedHeldItem;
+    private int remainingTicks;
 
     @SubscribeEvent
     public void onRender(RenderGameOverlayEvent.Post event) {
@@ -279,10 +281,26 @@ public class ClassicBarRenderEvent {
     }
 
     private void renderHeldItemName() {
-        ItemStack heldItem = playerStats.getHeldItem();
-        if (heldItem == null) return;
+        ItemStack currentHeldItem = playerStats.getHeldItem();
 
-        String displayName = heldItem.getDisplayName();
+        if (!ItemStack.areItemStacksEqual(currentHeldItem, cachedHeldItem)) {
+            cachedHeldItem = currentHeldItem;
+            if (currentHeldItem != null) {
+                remainingTicks = 1_000;
+            }
+        }
+
+        if (cachedHeldItem == null) {
+            return;
+        }
+
+        if (remainingTicks == 0) {
+            return;
+        } else {
+            remainingTicks--;
+        }
+
+        String displayName = cachedHeldItem.getDisplayName();
         FontRenderer fontRenderer = mc.fontRenderer;
 
         int barY = lastHeight - 32 - 10;
