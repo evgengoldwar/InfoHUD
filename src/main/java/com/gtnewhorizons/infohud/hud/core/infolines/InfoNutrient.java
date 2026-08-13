@@ -2,15 +2,14 @@ package com.gtnewhorizons.infohud.hud.core.infolines;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.gtnewhorizons.infohud.configs.HudConfig;
 import com.gtnewhorizons.infohud.hud.core.InfoLine;
 
-import ca.wescook.nutrition.data.NutrientManager;
+import ca.wescook.nutrition.api.INutritionManager;
+import ca.wescook.nutrition.api.NutritionManager;
 import ca.wescook.nutrition.nutrients.Nutrient;
 import ca.wescook.nutrition.nutrients.NutrientList;
-import ca.wescook.nutrition.proxy.ClientProxy;
 
 public class InfoNutrient extends InfoLine {
 
@@ -22,35 +21,28 @@ public class InfoNutrient extends InfoLine {
 
     @Override
     public String getLineString() {
-        NutrientManager localManager = ClientProxy.localNutrition;
+        INutritionManager manager = NutritionManager.instance();
+        StringBuilder sb = new StringBuilder();
 
-        if (localManager != null) {
-            Map<Nutrient, Float> allNutrients = localManager.get();
-            StringBuilder sb = new StringBuilder();
+        List<Nutrient> orderedNutrients = getOrderedNutrients();
 
-            List<Nutrient> orderedNutrients = getOrderedNutrients();
+        for (Nutrient nutrient : orderedNutrients) {
+            float value = manager.get(getPlayer(), nutrient);
+            String color = getNutrientColor(nutrient.name);
+            String displayName = nutrient.name.substring(0, 1)
+                .toUpperCase();
 
-            for (Nutrient nutrient : orderedNutrients) {
-                Float value = allNutrients.get(nutrient);
-                if (value != null) {
-                    String color = getNutrientColor(nutrient.name);
-                    String displayName = nutrient.name.substring(0, 1)
-                        .toUpperCase();
+            sb.append(color)
+                .append(displayName)
+                .append(": ")
+                .append(Math.round(value))
+                .append("% ")
+                .append("§r");
 
-                    sb.append(color)
-                        .append(displayName)
-                        .append(": ")
-                        .append(Math.round(value))
-                        .append("% ")
-                        .append("§r");
-                }
-            }
-
-            return sb.toString()
-                .trim();
         }
 
-        return "";
+        return sb.toString()
+            .trim();
     }
 
     @Override

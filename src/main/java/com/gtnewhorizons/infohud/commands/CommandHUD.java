@@ -28,9 +28,7 @@ public class CommandHUD extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         try {
             DelayedGuiDisplayTicker.create(new SimpleGuiConfig(null, MODID, MODNAME), 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     @Override
