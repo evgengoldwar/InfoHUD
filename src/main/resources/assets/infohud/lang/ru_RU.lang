@@ -268,6 +268,23 @@ infohud.tag.server_time=Реальное время на сервере (нуж�
 infohud.tag.tps_dim=TPS текущего измерения (нужен InfoHUD на сервере)
 infohud.tag.mspt_dim=MSPT текущего измерения (нужен InfoHUD на сервере)
 
+infohud.tag.held_icon=Иконка предмета в руке (с блеском зачарования)
+infohud.tag.helmet_name=Название шлема
+infohud.tag.helmet_max_dur=Максимальная прочность шлема
+infohud.tag.helmet_dur_percent=Оставшаяся прочность шлема в процентах
+infohud.tag.helmet_icon=Иконка шлема
+infohud.tag.chest_name=Название нагрудника
+infohud.tag.chest_max_dur=Максимальная прочность нагрудника
+infohud.tag.chest_dur_percent=Оставшаяся прочность нагрудника в процентах
+infohud.tag.chest_icon=Иконка нагрудника
+infohud.tag.legs_name=Название поножей
+infohud.tag.legs_max_dur=Максимальная прочность поножей
+infohud.tag.legs_dur_percent=Оставшаяся прочность поножей в процентах
+infohud.tag.legs_icon=Иконка поножей
+infohud.tag.boots_name=Название ботинок
+infohud.tag.boots_max_dur=Максимальная прочность ботинок
+infohud.tag.boots_dur_percent=Оставшаяся прочность ботинок в процентах
+infohud.tag.boots_icon=Иконка ботинок
 # Tag values
 infohud.tag_value.weather.clear=Ясно
 infohud.tag_value.weather.rain=Дождь

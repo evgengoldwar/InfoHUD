@@ -274,6 +274,23 @@ infohud.tag.server_time=Real time on the server (needs InfoHUD on the server)
 infohud.tag.tps_dim=TPS of your current dimension (needs InfoHUD on the server)
 infohud.tag.mspt_dim=MSPT of your current dimension (needs InfoHUD on the server)
 
+infohud.tag.held_icon=Icon of the held item (with enchantment glint)
+infohud.tag.helmet_name=Name of the helmet
+infohud.tag.helmet_max_dur=Maximum durability of the helmet
+infohud.tag.helmet_dur_percent=Durability left of the helmet in percent
+infohud.tag.helmet_icon=Icon of the helmet
+infohud.tag.chest_name=Name of the chestplate
+infohud.tag.chest_max_dur=Maximum durability of the chestplate
+infohud.tag.chest_dur_percent=Durability left of the chestplate in percent
+infohud.tag.chest_icon=Icon of the chestplate
+infohud.tag.legs_name=Name of the leggings
+infohud.tag.legs_max_dur=Maximum durability of the leggings
+infohud.tag.legs_dur_percent=Durability left of the leggings in percent
+infohud.tag.legs_icon=Icon of the leggings
+infohud.tag.boots_name=Name of the boots
+infohud.tag.boots_max_dur=Maximum durability of the boots
+infohud.tag.boots_dur_percent=Durability left of the boots in percent
+infohud.tag.boots_icon=Icon of the boots
 # Tag values
 infohud.tag_value.weather.clear=Clear
 infohud.tag_value.weather.rain=Rain

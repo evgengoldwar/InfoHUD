@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL12;
 import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLayoutStorage;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
+import com.gtnewhorizons.infohud.hud.tags.ItemTags;
 import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 import com.gtnewhorizons.infohud.hud.tags.VanillaTags;
 
@@ -219,7 +220,9 @@ public class HudRenderer {
     }
 
     private static void drawIcon(String name, int x, int y, int color) {
-        ItemStack stack = getIconStack(name);
+        ItemStack stack = name.startsWith(ItemTags.SLOT_PREFIX)
+            ? ItemTags.getSlotStack(name.substring(ItemTags.SLOT_PREFIX.length()))
+            : getIconStack(name);
 
         if (stack == null) {
             drawText("§c?", x + 2, y + 4, color);
