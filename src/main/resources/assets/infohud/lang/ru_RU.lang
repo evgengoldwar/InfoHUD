@@ -62,6 +62,7 @@ infohud.gui.element.potion_level=Показывать уровень
 infohud.gui.element.reset_position=Сбросить позицию
 infohud.gui.tags.title=Доступные теги
 infohud.gui.tags.subtitle=Напишите {тег}, чтобы вставить значение, {icon:minecraft:apple} - иконку предмета.
+infohud.gui.tags.conditions=Условия: §fA if {fps} < 60 and {is_day} else B§7, §f[A if ... else B]§7 внутри текста
 infohud.gui.tags.colors=Цвета (&x):
 infohud.gui.tags.copied=%s скопирован в буфер обмена
 infohud.gui.tag.unavailable=нет значения
@@ -127,6 +128,7 @@ infohud.tag_category.items=Предметы
 infohud.tag_category.target=Под прицелом
 infohud.tag_category.system=Система
 
+infohud.tag_category.conditions=Условия
 # Tags
 infohud.tag.player=Ваш ник
 infohud.tag.fps=Кадров в секунду
@@ -218,6 +220,36 @@ infohud.tag.gpu=Видеокарта
 infohud.tag.java=Версия Java
 infohud.tag.server_ip=Адрес сервера (только мультиплеер)
 infohud.tag.players=Игроков онлайн (по списку Tab)
+
+infohud.tag.disable=Скрывает строку. Используйте в условии: {disable} if {tps} < 10 else {tps}
+infohud.tag.is_day=Условие: в мире день
+infohud.tag.is_night=Условие: в мире ночь
+infohud.tag.is_full_moon=Условие: полнолуние
+infohud.tag.is_raining=Условие: идёт дождь
+infohud.tag.is_thundering=Условие: гроза
+infohud.tag.can_see_sky=Условие: над вами видно небо
+infohud.tag.is_underground=Условие: ниже Y 60 и над вами нет неба
+infohud.tag.in_overworld=Условие: вы в Обычном мире
+infohud.tag.in_nether=Условие: вы в Незере
+infohud.tag.in_end=Условие: вы в Энде
+infohud.tag.is_singleplayer=Условие: одиночная игра
+infohud.tag.is_multiplayer=Условие: игра на сервере
+infohud.tag.in_water=Условие: вы в воде
+infohud.tag.in_lava=Условие: вы в лаве
+infohud.tag.is_burning=Условие: вы горите
+infohud.tag.is_sneaking=Условие: вы крадётесь
+infohud.tag.is_sprinting=Условие: вы бежите
+infohud.tag.is_flying=Условие: вы летите
+infohud.tag.on_ground=Условие: вы стоите на земле
+infohud.tag.is_riding=Условие: вы верхом или в транспорте
+infohud.tag.is_creative=Условие: творческий режим
+infohud.tag.is_hurt=Условие: здоровье не полное
+infohud.tag.low_health=Условие: 3 сердца или меньше
+infohud.tag.is_hungry=Условие: шкала сытости не полная
+infohud.tag.has_effects=Условие: на вас есть эффекты зелий
+infohud.tag.holding_item=Условие: у вас предмет в руке
+infohud.tag.looking_at_block=Условие: вы смотрите на блок
+infohud.tag.looking_at_entity=Условие: вы смотрите на моба / сущность
 
 # Tag values
 infohud.tag_value.weather.clear=Ясно

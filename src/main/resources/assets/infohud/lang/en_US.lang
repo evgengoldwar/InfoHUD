@@ -68,6 +68,7 @@ infohud.gui.element.potion_level=Show level
 infohud.gui.element.reset_position=Reset position
 infohud.gui.tags.title=Available tags
 infohud.gui.tags.subtitle=Write {tag} in a line to insert the value, {icon:minecraft:apple} for an item icon.
+infohud.gui.tags.conditions=Conditions: §fA if {fps} < 60 and {is_day} else B§7, §f[A if ... else B]§7 inside text
 infohud.gui.tags.colors=Colors (&x):
 infohud.gui.tags.copied=Copied %s to the clipboard
 infohud.gui.tag.unavailable=no value
@@ -133,6 +134,7 @@ infohud.tag_category.items=Items
 infohud.tag_category.target=Looking at
 infohud.tag_category.system=System
 
+infohud.tag_category.conditions=Conditions
 # Tags
 infohud.tag.player=Your player name
 infohud.tag.fps=Frames per second
@@ -224,6 +226,36 @@ infohud.tag.gpu=Graphics card
 infohud.tag.java=Java version
 infohud.tag.server_ip=Server address (multiplayer only)
 infohud.tag.players=Players online (from the Tab list)
+
+infohud.tag.disable=Hides the line. Use it in a condition: {disable} if {tps} < 10 else {tps}
+infohud.tag.is_day=Condition: it is day in the world
+infohud.tag.is_night=Condition: it is night in the world
+infohud.tag.is_full_moon=Condition: full moon
+infohud.tag.is_raining=Condition: it is raining
+infohud.tag.is_thundering=Condition: thunderstorm
+infohud.tag.can_see_sky=Condition: you can see the sky
+infohud.tag.is_underground=Condition: below Y 60 and no sky above you
+infohud.tag.in_overworld=Condition: you are in the Overworld
+infohud.tag.in_nether=Condition: you are in the Nether
+infohud.tag.in_end=Condition: you are in the End
+infohud.tag.is_singleplayer=Condition: singleplayer world
+infohud.tag.is_multiplayer=Condition: playing on a server
+infohud.tag.in_water=Condition: you are in water
+infohud.tag.in_lava=Condition: you are in lava
+infohud.tag.is_burning=Condition: you are on fire
+infohud.tag.is_sneaking=Condition: you are sneaking
+infohud.tag.is_sprinting=Condition: you are sprinting
+infohud.tag.is_flying=Condition: you are flying
+infohud.tag.on_ground=Condition: you are standing on the ground
+infohud.tag.is_riding=Condition: you are riding something
+infohud.tag.is_creative=Condition: creative mode
+infohud.tag.is_hurt=Condition: health is not full
+infohud.tag.low_health=Condition: 3 hearts or less
+infohud.tag.is_hungry=Condition: food bar is not full
+infohud.tag.has_effects=Condition: you have active potion effects
+infohud.tag.holding_item=Condition: you hold an item
+infohud.tag.looking_at_block=Condition: you are looking at a block
+infohud.tag.looking_at_entity=Condition: you are looking at a mob / entity
 
 # Tag values
 infohud.tag_value.weather.clear=Clear

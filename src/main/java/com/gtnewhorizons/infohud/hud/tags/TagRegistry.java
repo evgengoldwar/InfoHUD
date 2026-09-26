@@ -31,6 +31,7 @@ public final class TagRegistry {
         ItemTags.registerTags();
         TargetTags.registerTags();
         SystemTags.registerTags();
+        ConditionTags.registerTags();
 
         if (Loader.isModLoaded(HudUtils.BLOOD_MAGIC_ID)) {
             BloodMagicTags.registerTags();

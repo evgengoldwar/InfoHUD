@@ -31,8 +31,8 @@ public class GuiTagList extends GuiScreen {
 
         int left = Math.max(10, width / 2 - 200);
         int right = Math.min(width - 10, width / 2 + 200);
-        palette.setBounds(left + 60, 30, right - left - 60);
-        tagList.setBounds(left, 34 + palette.getHeight(), right, height - 30);
+        palette.setBounds(left + 60, 40, right - left - 60);
+        tagList.setBounds(left, 44 + palette.getHeight(), right, height - 30);
     }
 
     @Override
@@ -47,7 +47,8 @@ public class GuiTagList extends GuiScreen {
 
         drawCenteredString(fr, GuiUtil.t("tags.title"), width / 2, 6, 0xFFFFFF);
         drawCenteredString(fr, "§7" + GuiUtil.t("tags.subtitle"), width / 2, 17, 0xFFFFFF);
-        fr.drawStringWithShadow("§7" + GuiUtil.t("tags.colors"), tagList.left, 32, 0xFFFFFF);
+        drawCenteredString(fr, "§7" + GuiUtil.t("tags.conditions"), width / 2, 27, 0xFFFFFF);
+        fr.drawStringWithShadow("§7" + GuiUtil.t("tags.colors"), tagList.left, 42, 0xFFFFFF);
 
         palette.draw(mouseX, mouseY);
         tagList.draw(mouseX, mouseY);
