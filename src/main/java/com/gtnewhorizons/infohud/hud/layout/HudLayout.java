@@ -14,11 +14,14 @@ public class HudLayout {
     public static final float MIN_SCALE = 0.5F;
     public static final float MAX_SCALE = 2.0F;
     public static final int DEFAULT_GROUP_X = 0;
-    public static final int DEFAULT_GROUP_Y = 40;
+    /** Below the potion effects and their label, so the labels do not overlap in the editor. */
+    public static final int DEFAULT_GROUP_Y = 56;
+    private static final int LEGACY_GROUP_Y = 40;
+    private static final int CURRENT_VERSION = 2;
     public static final int DEFAULT_POTION_X = 5;
     public static final int DEFAULT_POTION_Y = 2;
 
-    public int version = 1;
+    public int version = CURRENT_VERSION;
     public boolean hudDisabled = false;
     public float scale = 1.0F;
 
@@ -91,6 +94,12 @@ public class HudLayout {
             if (line.template == null) line.template = "";
             if (line.icon == null) line.icon = "";
         }
+
+        if (version < 2 && groupX == DEFAULT_GROUP_X && groupY == LEGACY_GROUP_Y) {
+            // the group was never moved: shift it to the new default position
+            groupY = DEFAULT_GROUP_Y;
+        }
+        version = CURRENT_VERSION;
 
         setScale(scale);
         return this;
