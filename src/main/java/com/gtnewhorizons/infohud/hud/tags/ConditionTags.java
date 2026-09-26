@@ -29,6 +29,7 @@ final class ConditionTags {
         registerCondition(cat, "in_overworld", () -> world().provider.dimensionId == 0);
         registerCondition(cat, "in_nether", () -> world().provider.dimensionId == -1);
         registerCondition(cat, "in_end", () -> world().provider.dimensionId == 1);
+        registerCondition(cat, "slime_chunk", VanillaTags::isSlimeChunk);
 
         registerCondition(cat, "is_singleplayer", mc::isSingleplayer);
         registerCondition(cat, "is_multiplayer", () -> !mc.isSingleplayer());

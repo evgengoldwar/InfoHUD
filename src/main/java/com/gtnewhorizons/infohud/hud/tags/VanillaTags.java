@@ -1,7 +1,6 @@
 package com.gtnewhorizons.infohud.hud.tags;
 
 import static com.gtnewhorizons.infohud.hud.tags.TagRegistry.register;
-import static com.gtnewhorizons.infohud.hud.tags.TagRegistry.registerCondition;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -89,7 +88,6 @@ public final class VanillaTags {
         register(cat, "time", VanillaTags::worldClock);
         register(cat, "night", VanillaTags::nightSuffix);
         register(cat, "world_age", () -> formatShortDuration(world().getTotalWorldTime() / 20));
-        registerCondition(cat, "slime_chunk", VanillaTags::isSlimeChunk);
         register(cat, "weather", VanillaTags::weather);
         register(cat, "moon_phase", () -> value("moon." + world().getMoonPhase()));
         register(cat, "entities", () -> str(world().loadedEntityList.size()));
@@ -249,7 +247,7 @@ public final class VanillaTags {
         return saved + jumpCount;
     }
 
-    private static boolean isSlimeChunk() {
+    static boolean isSlimeChunk() {
         long seed = DataStorage.worldSeed;
 
         if (seed == -1) {
