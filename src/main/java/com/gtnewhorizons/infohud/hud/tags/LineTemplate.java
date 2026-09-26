@@ -8,7 +8,6 @@ public final class LineTemplate {
     public static final String ICON_PREFIX = "icon:";
     public static final char ICON_START = '\uE000';
     public static final char ICON_END = '\uE001';
-    public static final String SPACER_PREFIX = "#";
     private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
     static final String IF = " if ";
     static final String ELSE = " else ";

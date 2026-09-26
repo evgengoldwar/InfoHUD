@@ -153,9 +153,7 @@ public class HudRenderer {
     private static int layoutLine(String text, int x, int y, boolean draw, int color) {
         FontRenderer fr = mc.fontRenderer;
         int length = text.length();
-        boolean leadingIcon = length > 1 && text.charAt(0) == LineTemplate.ICON_START
-            && !text.startsWith(LineTemplate.SPACER_PREFIX, 1);
-        int cursor = x + (leadingIcon ? 2 : 4);
+        int cursor = x + (length > 0 && text.charAt(0) == LineTemplate.ICON_START ? 2 : 4);
         String format = "";
         int i = 0;
 
@@ -175,25 +173,12 @@ public class HudRenderer {
             int end = text.indexOf(LineTemplate.ICON_END, start);
             if (end < 0) end = length;
 
-            String spec = text.substring(start + 1, end);
-            if (spec.startsWith(LineTemplate.SPACER_PREFIX)) {
-                cursor += getSpacerWidth(spec.substring(LineTemplate.SPACER_PREFIX.length()));
-            } else {
-                if (draw) drawIcon(spec, cursor, y, color);
-                cursor += ICON_SLOT;
-            }
+            if (draw) drawIcon(text.substring(start + 1, end), cursor, y, color);
+            cursor += ICON_SLOT;
             i = end + 1;
         }
 
         return cursor - x + 2;
-    }
-
-    private static int getSpacerWidth(String chars) {
-        try {
-            return Integer.parseInt(chars) * mc.fontRenderer.getCharWidth('0');
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 
     private static String getActiveFormat(String text) {

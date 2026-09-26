@@ -33,10 +33,6 @@ final class Filters {
                 if (number == null) return value;
                 return shorten(number, intArgument(argument, 1));
             }
-            case "pad":
-                return spacer(value, intArgument(argument, 0)) + value;
-            case "padr":
-                return value + spacer(value, intArgument(argument, 0));
             case "upper":
                 return changeCase(value, true);
             case "lower":
@@ -91,12 +87,5 @@ final class Filters {
             i = end + 1;
         }
         return sb.toString();
-    }
-
-    private static String spacer(String value, int width) {
-        int missing = width - LineTemplate.stripFormatting(value)
-            .length();
-        if (missing <= 0) return "";
-        return LineTemplate.ICON_START + LineTemplate.SPACER_PREFIX + missing + LineTemplate.ICON_END;
     }
 }
