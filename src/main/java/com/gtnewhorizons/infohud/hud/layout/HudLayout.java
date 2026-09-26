@@ -86,6 +86,7 @@ public class HudLayout {
             }
             if (line.template == null) line.template = "";
             line.migrateIcon();
+            line.migrateTagNames();
         }
 
         if (version < 2 && groupX == DEFAULT_GROUP_X && groupY == LEGACY_GROUP_Y) {

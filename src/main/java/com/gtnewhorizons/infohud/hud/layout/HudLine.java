@@ -1,6 +1,8 @@
 package com.gtnewhorizons.infohud.hud.layout;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,6 +56,21 @@ public class HudLine {
 
     public String renderPreview() {
         return LineTemplate.renderPreview(template);
+    }
+
+    private static final Pattern[] RENAMED_TAGS = { tagPattern("held_durability_percent"),
+        tagPattern("held_max_durability"), tagPattern("held_durability") };
+    private static final String[] NEW_TAG_NAMES = { "{held_dur_percent}", "{held_max_dur}", "{held_dur}" };
+
+    private static Pattern tagPattern(String name) {
+        return Pattern.compile("\\{\\s*" + name + "\\s*\\}", Pattern.CASE_INSENSITIVE);
+    }
+
+    void migrateTagNames() {
+        for (int i = 0; i < RENAMED_TAGS.length; i++) {
+            template = RENAMED_TAGS[i].matcher(template)
+                .replaceAll(Matcher.quoteReplacement(NEW_TAG_NAMES[i]));
+        }
     }
 
     void migrateIcon() {

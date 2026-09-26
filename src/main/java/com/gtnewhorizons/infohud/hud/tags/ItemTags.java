@@ -18,9 +18,9 @@ public final class ItemTags {
         String cat = "items";
         register(cat, "held_name", () -> held().getDisplayName());
         register(cat, "held_id", () -> HudLine.itemToString(held()));
-        register(cat, "held_durability", () -> durability(held()));
-        register(cat, "held_max_durability", () -> damageable(held()) ? String.valueOf(held().getMaxDamage()) : null);
-        register(cat, "held_durability_percent", () -> durabilityPercent(held()));
+        register(cat, "held_dur", () -> durability(held()));
+        register(cat, "held_max_dur", () -> damageable(held()) ? String.valueOf(held().getMaxDamage()) : null);
+        register(cat, "held_dur_percent", () -> durabilityPercent(held()));
         register(cat, "held_icon", () -> icon("held"));
 
         for (int slot = ARMOR_SLOTS.length - 1; slot >= 0; slot--) {
