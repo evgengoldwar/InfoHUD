@@ -1,5 +1,7 @@
 package com.gtnewhorizons.infohud.hud.core;
 
+import java.util.TimeZone;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
@@ -15,12 +17,20 @@ public class ServerSender {
 
     private static int tickCounter = 0;
     private static boolean seedSent = false;
+    private static MinecraftServer currentServer = null;
+    private static long serverStart = 0;
 
     public static void onServerTick(MinecraftServer server) {
+        if (server != currentServer) {
+            currentServer = server;
+            serverStart = System.currentTimeMillis();
+        }
+
         tickCounter++;
 
         if (tickCounter % 20 == 0) {
             sendTPSAndMem(server);
+            sendServerInfo(server);
         }
 
         sendSeed(server);
@@ -48,6 +58,38 @@ public class ServerSender {
             if (DataStorage.memSubscribers.contains(playerMP.getUniqueID())) {
                 sendMemPacket(playerMP, usedMem, maxMem, allocatedMem);
             }
+        }
+    }
+
+    private static void sendServerInfo(MinecraftServer server) {
+        if (DataStorage.serverInfoSubscribers.isEmpty()) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        long uptime = now - serverStart;
+        long localTime = now + TimeZone.getDefault()
+            .getOffset(now);
+
+        for (EntityPlayerMP player : server.getConfigurationManager().playerEntityList) {
+            if (!DataStorage.serverInfoSubscribers.contains(player.getUniqueID())) continue;
+
+            double msptDim = -1;
+            double tpsDim = -1;
+            long[] times = server.worldTickTimes.get(player.dimension);
+            if (times != null) {
+                msptDim = MathHelper.average(times) * 1.0E-6D;
+                tpsDim = Math.min(1000.0D / Math.max(msptDim, 1.0E-3D), 20.0D);
+            }
+
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeLong(uptime);
+            buffer.writeLong(localTime);
+            buffer.writeDouble(round(tpsDim));
+            buffer.writeDouble(round(msptDim));
+
+            player.playerNetServerHandler
+                .sendPacket(new S3FPacketCustomPayload(InfoHUD.NETWORK_MODID + "HUD|Server", buffer));
         }
     }
 

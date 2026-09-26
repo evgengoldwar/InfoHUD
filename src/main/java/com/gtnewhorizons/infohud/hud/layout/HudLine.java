@@ -1,0 +1,104 @@
+package com.gtnewhorizons.infohud.hud.layout;
+
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
+
+public class HudLine {
+
+    public String id;
+    public String defaultId;
+    public String template = "";
+    public String icon;
+    public boolean enabled = true;
+    public boolean inGroup = true;
+    public int x;
+    public int y;
+
+    public HudLine() {}
+
+    public HudLine(String defaultId, String template) {
+        this.id = newId();
+        this.defaultId = defaultId;
+        this.template = template;
+    }
+
+    public static String newId() {
+        return UUID.randomUUID()
+            .toString()
+            .substring(0, 8);
+    }
+
+    public HudLine copy() {
+        HudLine line = new HudLine();
+        line.id = id;
+        line.defaultId = defaultId;
+        line.template = template;
+        line.enabled = enabled;
+        line.inGroup = inGroup;
+        line.x = x;
+        line.y = y;
+        return line;
+    }
+
+    public boolean isDefault() {
+        return defaultId != null;
+    }
+
+    public String render() {
+        return LineTemplate.render(template);
+    }
+
+    public String renderPreview() {
+        return LineTemplate.renderPreview(template);
+    }
+
+    private static final Pattern[] RENAMED_TAGS = { tagPattern("held_durability_percent"),
+        tagPattern("held_max_durability"), tagPattern("held_durability") };
+    private static final String[] NEW_TAG_NAMES = { "{held_dur_percent}", "{held_max_dur}", "{held_dur}" };
+
+    private static Pattern tagPattern(String name) {
+        return Pattern.compile("\\{\\s*" + name + "\\s*\\}", Pattern.CASE_INSENSITIVE);
+    }
+
+    void migrateTagNames() {
+        for (int i = 0; i < RENAMED_TAGS.length; i++) {
+            template = RENAMED_TAGS[i].matcher(template)
+                .replaceAll(Matcher.quoteReplacement(NEW_TAG_NAMES[i]));
+        }
+    }
+
+    void migrateIcon() {
+        if (icon != null && !icon.trim()
+            .isEmpty()) {
+            template = LineTemplate.iconTag(icon.trim()) + template;
+        }
+        icon = null;
+    }
+
+    public static ItemStack parseItem(String name) {
+        if (name == null || name.isEmpty()) return null;
+
+        try {
+            String[] parts = name.split("/");
+            int meta = parts.length > 1 ? Integer.parseInt(parts[1].trim()) : 0;
+            Object item = Item.itemRegistry.getObject(parts[0].trim());
+            return item instanceof Item ? new ItemStack((Item) item, 1, meta) : null;
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    public static String itemToString(ItemStack stack) {
+        if (stack == null || stack.getItem() == null) return "";
+        Object name = Item.itemRegistry.getNameForObject(stack.getItem());
+        if (name == null) return "";
+        int meta = stack.getItemDamage();
+        return meta != 0 ? name + "/" + meta : String.valueOf(name);
+    }
+}

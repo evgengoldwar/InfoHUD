@@ -8,7 +8,7 @@ import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
 import com.gtnewhorizons.infohud.InfoHUD;
-import com.gtnewhorizons.infohud.hud.core.GuiHudEditor;
+import com.gtnewhorizons.infohud.hud.gui.GuiHudEditor;
 import com.gtnewhorizons.infohud.lightoverlay.LightLevelOverlayRenderer;
 
 import cpw.mods.fml.client.registry.ClientRegistry;

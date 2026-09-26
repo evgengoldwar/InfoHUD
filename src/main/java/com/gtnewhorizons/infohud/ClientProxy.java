@@ -1,12 +1,14 @@
 package com.gtnewhorizons.infohud;
 
+import java.io.File;
+
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizons.infohud.classicbar.ClassicBar;
 import com.gtnewhorizons.infohud.commands.CommandHUD;
 import com.gtnewhorizons.infohud.hud.Hud;
-import com.gtnewhorizons.infohud.hud.core.DataStorage;
+import com.gtnewhorizons.infohud.hud.layout.HudLayoutStorage;
 import com.gtnewhorizons.infohud.keybinds.KeyBindHandler;
 import com.gtnewhorizons.infohud.lightoverlay.OverlayEventHandler;
 
@@ -22,7 +24,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
 
-        DataStorage.init();
+        HudLayoutStorage.init(new File(event.getModConfigurationDirectory(), "InfoHUD"));
     }
 
     @Override
@@ -31,7 +33,6 @@ public class ClientProxy extends CommonProxy {
 
         Hud.initEvent();
         ClassicBar.initEvent();
-        DataStorage.loadPositions();
 
         ClientCommandHandler.instance.registerCommand(new CommandHUD());
 

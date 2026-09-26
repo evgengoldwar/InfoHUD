@@ -40,6 +40,10 @@ public class NetHandlerPlayServerMixin {
                 DataStorage.subscribeSeed(handler.playerEntity);
             }
 
+            if (channels.contains(prefix + "Server")) {
+                DataStorage.subscribeServerInfo(handler.playerEntity);
+            }
+
             ci.cancel();
         }
     }
