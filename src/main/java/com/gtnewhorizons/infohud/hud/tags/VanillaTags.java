@@ -7,9 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C16PacketClientStatus;
+import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,7 +23,9 @@ import com.gtnewhorizons.infohud.hud.HudUtils;
 import com.gtnewhorizons.infohud.hud.core.DataStorage;
 import com.gtnewhorizons.infohud.mixins.early.MinecraftAccessor;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public final class VanillaTags {
 
@@ -27,7 +33,11 @@ public final class VanillaTags {
     private static final String[] ROUGH_DIRECTION = { "South", "West", "North", "East" };
     private static final int MB = 1048576;
 
+    private static final int STATS_REFRESH_TICKS = 600;
+
     private static int jumpCount = 0;
+    private static int lastJumpStat = -1;
+    private static int statsTimer = STATS_REFRESH_TICKS;
     private static boolean jumpListenerRegistered = false;
 
     private VanillaTags() {}
@@ -67,6 +77,7 @@ public final class VanillaTags {
             "direction",
             () -> ROUGH_DIRECTION[MathHelper.floor_double(player().rotationYaw * 4.0 / 360.0 + 0.5) & 3]);
         register(cat, "light", () -> str(world().getBlockLightValue(x(), y(), z())));
+        register(cat, "light_sky", () -> str(world().getSavedLightValue(EnumSkyBlock.Sky, x(), y(), z())));
 
         cat = "world";
         register(cat, "dim_name", () -> world().provider.getDimensionName());
@@ -79,6 +90,15 @@ public final class VanillaTags {
         register(cat, "night", VanillaTags::nightSuffix);
         register(cat, "world_age", () -> formatShortDuration(world().getTotalWorldTime() / 20));
         registerCondition(cat, "slime_chunk", VanillaTags::isSlimeChunk);
+        register(cat, "weather", VanillaTags::weather);
+        register(cat, "moon_phase", () -> value("moon." + world().getMoonPhase()));
+        register(cat, "entities", () -> str(world().loadedEntityList.size()));
+        register(
+            cat,
+            "chunks",
+            () -> str(
+                world().getChunkProvider()
+                    .getLoadedChunkCount()));
 
         cat = "player";
         register(cat, "health", () -> String.format("%.0f", player().getHealth()));
@@ -91,14 +111,46 @@ public final class VanillaTags {
                     .getFoodLevel()));
         register(cat, "armor", () -> str(player().getTotalArmorValue()));
         register(cat, "xp_level", () -> str(player().experienceLevel));
+        register(cat, "xp", () -> str((int) (player().experience * player().xpBarCap())));
+        register(cat, "xp_next", () -> str(player().xpBarCap()));
+        register(
+            cat,
+            "saturation",
+            () -> String.format(
+                "%.1f",
+                player().getFoodStats()
+                    .getSaturationLevel()));
+        register(cat, "air", () -> str(Math.max(0, MathHelper.ceiling_float_int(player().getAir() * 10 / 300.0F))));
+        register(cat, "absorption", () -> String.format("%.0f", player().getAbsorptionAmount()));
         register(cat, "held_count", () -> str(countHeldItem()));
         register(cat, "jumps", () -> str(jumps()));
+        register(cat, "deaths", () -> str(stat(StatList.deathsStat)));
+        register(cat, "mob_kills", () -> str(stat(StatList.mobKillsStat)));
+        register(cat, "distance_walked", () -> String.format("%,d", stat(StatList.distanceWalkedStat) / 100));
         register(cat, "play_time", VanillaTags::playTime);
         register(cat, "session_time", VanillaTags::sessionTime);
     }
 
     public static void resetSession() {
         jumpCount = 0;
+        lastJumpStat = -1;
+        statsTimer = STATS_REFRESH_TICKS;
+    }
+
+    static String value(String key) {
+        String fullKey = "infohud.tag_value." + key;
+        return StatCollector.canTranslate(fullKey) ? StatCollector.translateToLocal(fullKey) : key;
+    }
+
+    private static String weather() {
+        if (world().isThundering()) return value("weather.thunder");
+        if (world().isRaining()) return value("weather.rain");
+        return value("weather.clear");
+    }
+
+    private static int stat(StatBase stat) {
+        return player().getStatFileWriter()
+            .writeStat(stat);
     }
 
     private static String str(long value) {
@@ -189,8 +241,12 @@ public final class VanillaTags {
     }
 
     private static int jumps() {
-        return player().getStatFileWriter()
-            .writeStat(StatList.jumpStat) + jumpCount;
+        int saved = stat(StatList.jumpStat);
+        if (saved != lastJumpStat) {
+            lastJumpStat = saved;
+            jumpCount = 0;
+        }
+        return saved + jumpCount;
     }
 
     private static boolean isSlimeChunk() {
@@ -236,7 +292,23 @@ public final class VanillaTags {
     private static void registerJumpListener() {
         if (!jumpListenerRegistered) {
             MinecraftForge.EVENT_BUS.register(new JumpListener());
+            FMLCommonHandler.instance()
+                .bus()
+                .register(new StatsRefresher());
             jumpListenerRegistered = true;
+        }
+    }
+
+    public static class StatsRefresher {
+
+        @SubscribeEvent
+        public void onClientTick(TickEvent.ClientTickEvent event) {
+            if (event.phase != TickEvent.Phase.END || mc.thePlayer == null) return;
+            if (--statsTimer > 0) return;
+
+            statsTimer = STATS_REFRESH_TICKS;
+            mc.thePlayer.sendQueue
+                .addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.REQUEST_STATS));
         }
     }
 

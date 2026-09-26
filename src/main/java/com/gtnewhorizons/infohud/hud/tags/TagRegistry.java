@@ -28,6 +28,9 @@ public final class TagRegistry {
         initialized = true;
 
         VanillaTags.registerTags();
+        ItemTags.registerTags();
+        TargetTags.registerTags();
+        SystemTags.registerTags();
 
         if (Loader.isModLoaded(HudUtils.BLOOD_MAGIC_ID)) {
             BloodMagicTags.registerTags();
