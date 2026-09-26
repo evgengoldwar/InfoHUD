@@ -40,7 +40,7 @@ public class JoinWorldEvent {
             DataStorage.initPlayer(uuid);
             DataStorage.reset();
             BloodMagicEvent.playerMaxLP.remove(playerMP.getDisplayName());
-            Hud.initLines();
+            Hud.onWorldJoin();
 
             playerMP.sendQueue.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.REQUEST_STATS));
         }

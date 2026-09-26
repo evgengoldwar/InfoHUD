@@ -6,7 +6,6 @@ import com.gtnewhorizon.gtnhlib.config.ConfigurationManager;
 public class ConfigRegister {
 
     public static void init() {
-        register(HudConfig.class);
         register(GeneralConfig.class);
         register(LightOverlayConfig.class);
         register(ClassicBarConfig.class);

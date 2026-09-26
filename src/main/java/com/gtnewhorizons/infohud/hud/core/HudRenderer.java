@@ -18,166 +18,151 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.gtnewhorizons.infohud.configs.HudConfig;
-import com.gtnewhorizons.infohud.hud.Hud;
-import com.gtnewhorizons.infohud.hud.core.infolines.InfoCountItem;
-import com.gtnewhorizons.infohud.utils.Position;
+import com.gtnewhorizons.infohud.hud.layout.HudLayout;
+import com.gtnewhorizons.infohud.hud.layout.HudLayoutStorage;
+import com.gtnewhorizons.infohud.hud.layout.HudLine;
+import com.gtnewhorizons.infohud.hud.tags.VanillaTags;
 
 public class HudRenderer {
 
+    public static final int LINE_HEIGHT = 11;
+    public static final int TEXT_COLOR = 0xFFE0E0E0;
+    public static final int POTION_ICON_SIZE = 18;
+    public static final int COUNT_ITEM_WIDTH = 18;
+    public static final int COUNT_ITEM_HEIGHT = 26;
+
     private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation(
+        "textures/gui/container/inventory.png");
 
     public static void renderHud(int screenWidth, int screenHeight) {
         if (mc.currentScreen != null) return;
         if (mc.gameSettings.showDebugInfo) return;
-        if (HudConfig.hudGeneral.HudDisable) return;
+        if (mc.thePlayer == null) return;
 
-        float scaleHud = HudConfig.hudGeneral.HudScale;
+        HudLayout layout = HudLayoutStorage.get();
+        if (layout.hudDisabled) return;
 
-        DataStorage.HudPositionsData cachedData = DataStorage.getCachedPositions();
+        float scale = layout.scale;
 
-        int effectX = cachedData != null ? cachedData.effectX : HudConfig.hudPotion.PotionX;
-        int effectY = cachedData != null ? cachedData.effectY : HudConfig.hudPotion.PotionY;
-
-        if (HudConfig.hudPotion.PotionEnable) {
-            drawPotions(effectX, effectY, scaleHud, false);
+        if (layout.potionsEnabled) {
+            drawPotions(layout, layout.potionX, layout.potionY);
         }
 
-        List<InfoLine> orderedLines = Hud.lines;
-        orderedLines.sort(Comparator.comparingInt(InfoLine::getOrder));
-        int hudY = 40;
-        int countItemX = screenWidth / 2 - 91 - 22;
-        int countItemY = screenHeight - 24;
+        int index = 0;
+        for (HudLine line : layout.lines) {
+            if (!line.enabled || !line.inGroup) continue;
 
-        for (InfoLine line : orderedLines) {
-            if (!line.canRender()) continue;
+            String text = line.render();
+            if (text == null) continue;
 
-            if (line instanceof InfoCountItem infoCountItem) {
-                int cX = countItemX;
-                int cY = countItemY;
+            drawLine(text, layout.groupX, getGroupLineY(layout, index), line.getIconStack(), scale, TEXT_COLOR, 0);
+            index++;
+        }
 
-                if (cachedData != null && cachedData.countItemX != -1 && cachedData.countItemY != -1) {
-                    cX = cachedData.countItemX;
-                    cY = cachedData.countItemY;
-                } else if (infoCountItem.position != null && infoCountItem.position.isEdit()) {
-                    cX = infoCountItem.position.getX();
-                    cY = infoCountItem.position.getY();
-                }
+        for (HudLine line : layout.lines) {
+            if (!line.enabled || line.inGroup) continue;
 
-                drawCountItem(line.getLineString(), cX, cY);
-                continue;
+            String text = line.render();
+            if (text == null) continue;
+
+            drawLine(text, line.x, line.y, line.getIconStack(), scale, TEXT_COLOR, 0);
+        }
+
+        if (layout.countItemEnabled) {
+            String count = getCountItemText();
+            if (count != null) {
+                drawCountItem(
+                    count,
+                    getCountItemX(layout, screenWidth),
+                    getCountItemY(layout, screenHeight),
+                    mc.thePlayer.getHeldItem());
             }
-
-            if (line.position == null || !line.position.isEdit()) {
-                if (cachedData != null) {
-                    DataStorage.LinePosition cachedPos = cachedData.linePositions.get(
-                        line.getClass()
-                            .getSimpleName());
-                    if (cachedPos != null && cachedPos.isSet) {
-                        line.position = new Position(cachedPos.x, cachedPos.y);
-                        line.position.setEdit();
-                    } else {
-                        line.position = new Position(0, hudY);
-                        hudY += (int) (11 * scaleHud);
-                    }
-                } else {
-                    line.position = new Position(0, hudY);
-                    hudY += (int) (11 * scaleHud);
-                }
-            }
-
-            drawLine(
-                line.getLineString(),
-                line.position.getX(),
-                line.position.getY(),
-                line.getChachedItemStack(),
-                scaleHud,
-                false,
-                null);
         }
     }
 
-    public static void renderEditor(List<InfoLine> lines, float scaleHud, int effectX, int effectY, int countItemX,
-        int countItemY, InfoLine draggingLine, InfoCountItem draggingCountItem) {
+    // ---------------------------------------------------------------------------------------------------------------
+    // Geometry helpers, shared with the editor
+    // ---------------------------------------------------------------------------------------------------------------
 
-        if (HudConfig.hudPotion.PotionEnable) {
-            drawPotions(effectX, effectY, scaleHud, true);
-        }
-
-        List<InfoLine> orderedLines = new ArrayList<>(lines);
-        orderedLines.sort(Comparator.comparingInt(InfoLine::getOrder));
-        int hudY = 40;
-
-        for (InfoLine line : orderedLines) {
-            if (!line.canRender()) continue;
-
-            if (line instanceof InfoCountItem infoCountItem) {
-                if (infoCountItem.position != null && infoCountItem.position.isEdit()) {
-                    if (draggingCountItem != null) {
-                        HudRenderer.drawRect(
-                            infoCountItem.position.getX() - 2,
-                            infoCountItem.position.getY() - 1,
-                            infoCountItem.position.getX() + 20,
-                            infoCountItem.position.getY() + 25,
-                            0x40FFFF00);
-                    } else {
-                        HudRenderer.drawRect(
-                            infoCountItem.position.getX() - 2,
-                            infoCountItem.position.getY() - 1,
-                            infoCountItem.position.getX() + 20,
-                            infoCountItem.position.getY() + 25,
-                            0x4000FFFF);
-                    }
-
-                    drawCountItem(line.getLineString(), infoCountItem.position.getX(), infoCountItem.position.getY());
-                } else {
-                    if (draggingCountItem != null) {
-                        HudRenderer
-                            .drawRect(countItemX - 2, countItemY - 1, countItemX + 20, countItemY + 25, 0x40FFFF00);
-                    } else {
-                        HudRenderer
-                            .drawRect(countItemX - 2, countItemY - 1, countItemX + 20, countItemY + 25, 0x4000FFFF);
-                    }
-
-                    drawCountItem(line.getLineString(), countItemX, countItemY);
-                }
-
-                continue;
-            }
-
-            if (line.position == null || !line.position.isEdit()) {
-                line.position = new Position(0, hudY);
-                hudY += (int) (11 * scaleHud);
-            }
-
-            drawLine(
-                line.getLineString(),
-                line.position.getX(),
-                line.position.getY(),
-                line.getChachedItemStack(),
-                scaleHud,
-                true,
-                line.equals(draggingLine) ? line : null);
-        }
+    public static int getGroupLineY(HudLayout layout, int index) {
+        return layout.groupY + (int) (index * LINE_HEIGHT * layout.scale);
     }
 
-    private static void drawLine(String text, int x, int y, ItemStack icon, float scaleHud, boolean editorMode,
-        InfoLine dragContext) {
-        GL11.glPushMatrix();
+    /** Unscaled width of a line including the icon and padding. */
+    public static int getLineWidth(String text, ItemStack icon) {
+        return mc.fontRenderer.getStringWidth(text) + (icon != null ? 14 : 6);
+    }
+
+    /** Screen rectangle {left, top, right, bottom} of a line drawn at x/y. */
+    public static int[] getLineRect(String text, ItemStack icon, int x, int y, float scale) {
+        int width = getLineWidth(text, icon);
+        return new int[] { x, y + (int) (2 * scale), x + (int) Math.ceil(width * scale),
+            y + (int) Math.ceil(13 * scale) };
+    }
+
+    public static int getCountItemX(HudLayout layout, int screenWidth) {
+        return layout.countItemX < 0 ? screenWidth / 2 - 91 - 22 : layout.countItemX;
+    }
+
+    public static int getCountItemY(HudLayout layout, int screenHeight) {
+        return layout.countItemY < 0 ? screenHeight - 24 : layout.countItemY;
+    }
+
+    /**
+     * @return the amount of the held item in the inventory, or {@code null} if it is spread over less than two slots
+     */
+    public static String getCountItemText() {
+        if (mc.thePlayer == null || mc.thePlayer.getHeldItem() == null) return null;
+        if (VanillaTags.countHeldItem(true) <= 1) return null;
+        return String.valueOf(VanillaTags.countHeldItem(false));
+    }
+
+    public static List<PotionEffect> getDisplayedPotions() {
+        List<PotionEffect> result = new ArrayList<>();
+        if (mc.thePlayer == null) return result;
+
+        Collection<PotionEffect> active = mc.thePlayer.getActivePotionEffects();
+        for (PotionEffect effect : active) {
+            Potion potion = Potion.potionTypes[effect.getPotionID()];
+            if (potion != null && potion.hasStatusIcon()) {
+                result.add(effect);
+            }
+        }
+        result.sort(Comparator.comparingInt(PotionEffect::getPotionID));
+        return result;
+    }
+
+    /** Unscaled width of one potion entry. */
+    public static int getPotionEntryWidth() {
+        return POTION_ICON_SIZE + 1 + mc.fontRenderer.getStringWidth("00") + 2;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------
+    // Drawing
+    // ---------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Draws a line with its icon. The line is scaled around its top left corner.
+     *
+     * @param color      text color, alpha is respected
+     * @param background background color, 0 for none
+     */
+    public static void drawLine(String text, int x, int y, ItemStack icon, float scale, int color, int background) {
         FontRenderer fr = mc.fontRenderer;
 
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, 0);
+        GL11.glScalef(scale, scale, scale);
+        GL11.glTranslatef(-x, -y, 0);
+
+        if (background != 0) {
+            drawRect(x, y + 2, x + getLineWidth(text, icon), y + 13, background);
+        }
+
+        int textX = x + 4;
+
         if (icon != null) {
-            GL11.glTranslatef(x, y, 0);
-            GL11.glScalef(scaleHud, scaleHud, scaleHud);
-            GL11.glTranslatef(-x, -y, 0);
-
-            if (editorMode) {
-                int lineWidth = fr.getStringWidth(text);
-                if (dragContext != null) {
-                    drawRect(x - 2, y + 1, x + lineWidth + 16, y + 14, 0x40FFFF00);
-                }
-            }
-
             GL11.glPushMatrix();
             float scaleItem = 0.5F;
             GL11.glTranslatef(x + 2, y + 2, 0);
@@ -190,101 +175,108 @@ public class HudRenderer {
 
             RenderItem renderItem = RenderItem.getInstance();
             renderItem.zLevel = 100.0F;
-            renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, icon, x + 2, y + 5);
+            try {
+                renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, icon, x + 2, y + 5);
+            } catch (Exception ignored) {}
             renderItem.zLevel = 0.0F;
 
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glPopMatrix();
 
-            fr.drawStringWithShadow(text, x + 12, y + 4, 14737632);
-        } else {
-            GL11.glTranslatef(x, y, 0);
-            GL11.glScalef(scaleHud, scaleHud, scaleHud);
-            GL11.glTranslatef(-x, -y, 0);
-
-            if (editorMode && dragContext != null) {
-                int lineWidth = fr.getStringWidth(text);
-                drawRect(x - 2, y - 1, x + lineWidth + 4, y + 11, 0x40FFFF00);
-            }
-
-            fr.drawStringWithShadow(text, x + 4, y + 4, 14737632);
+            textX = x + 12;
         }
 
+        boolean translucent = (color >>> 24) != 0xFF;
+        if (translucent) {
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        fr.drawStringWithShadow(text, textX, y + 4, color);
+
+        if (translucent) {
+            GL11.glDisable(GL11.GL_BLEND);
+        }
+
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();
     }
 
-    private static void drawPotions(int x, int y, float scaleHud, boolean editorMode) {
-        if (mc.thePlayer == null) return;
-
-        Collection<PotionEffect> activePotions = mc.thePlayer.getActivePotionEffects();
-        if (activePotions.isEmpty()) return;
+    /**
+     * @return the unscaled width of the drawn potions
+     */
+    public static int drawPotions(HudLayout layout, int x, int y) {
+        List<PotionEffect> effects = getDisplayedPotions();
+        if (effects.isEmpty()) return 0;
 
         FontRenderer fr = mc.fontRenderer;
+        float scale = layout.scale;
 
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 0);
-        GL11.glScalef(scaleHud, scaleHud, scaleHud);
+        GL11.glScalef(scale, scale, scale);
         GL11.glTranslatef(-x, -y, 0);
 
-        List<PotionEffect> sortedEffects = new ArrayList<>(activePotions);
-        sortedEffects.sort(Comparator.comparingInt(PotionEffect::getPotionID));
-
         int currentX = x;
-        int iconSize = 18;
-        int spacing = 1;
-        int levelWidth = fr.getStringWidth("00") + 2;
+        int entryWidth = getPotionEntryWidth();
 
-        for (PotionEffect effect : sortedEffects) {
+        for (PotionEffect effect : effects) {
             Potion potion = Potion.potionTypes[effect.getPotionID()];
-            if (potion == null || !potion.hasStatusIcon()) continue;
-            if (currentX + iconSize + levelWidth > mc.displayWidth / scaleHud) break;
+            if (currentX + entryWidth > mc.displayWidth / scale) break;
 
-            drawPotionIcon(potion, currentX, y, iconSize);
+            drawPotionIcon(potion, currentX, y, POTION_ICON_SIZE);
 
             int duration = effect.getDuration() / 20;
             String timeString;
             if (duration > 1800) {
                 timeString = "∞";
             } else {
-                int minutes = duration / 60;
-                int seconds = duration % 60;
-                timeString = String.format("%d:%02d", minutes, seconds);
+                timeString = String.format("%d:%02d", duration / 60, duration % 60);
             }
 
             String levelString = getLevel(effect.getAmplifier() + 1);
             int timeWidth = fr.getStringWidth(timeString);
-            int timeX = currentX + (iconSize / 2) - (timeWidth / 2);
+            int timeX = currentX + (POTION_ICON_SIZE / 2) - (timeWidth / 2);
 
-            if (HudConfig.hudPotion.TimeEnable) {
-                fr.drawStringWithShadow(timeString, timeX, y + iconSize + 1, 0xFFFFFF);
+            if (layout.potionTime) {
+                fr.drawStringWithShadow(timeString, timeX, y + POTION_ICON_SIZE + 1, 0xFFFFFF);
             }
-            if (!levelString.isEmpty() && HudConfig.hudPotion.LevelEnable) {
-                fr.drawStringWithShadow(levelString, currentX + iconSize + 3, y + (iconSize / 2) - 4, 0xFFAA00);
+            if (!levelString.isEmpty() && layout.potionLevel) {
+                fr.drawStringWithShadow(
+                    levelString,
+                    currentX + POTION_ICON_SIZE + 3,
+                    y + (POTION_ICON_SIZE / 2) - 4,
+                    0xFFAA00);
             }
 
-            currentX += iconSize + spacing + levelWidth;
+            currentX += entryWidth;
         }
 
         GL11.glPopMatrix();
+        return currentX - x;
     }
 
-    private static void drawCountItem(String text, int x, int y) {
-        ItemStack heldItem = mc.thePlayer != null ? mc.thePlayer.getHeldItem() : null;
-        if (heldItem == null) return;
-
+    public static void drawCountItem(String text, int x, int y, ItemStack stack) {
         FontRenderer fr = mc.fontRenderer;
-        RenderItem renderItem = RenderItem.getInstance();
 
         GL11.glPushMatrix();
-        RenderHelper.enableGUIStandardItemLighting();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 
-        renderItem.zLevel = 100.0F;
-        renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, heldItem, x, y);
-        renderItem.zLevel = 0.0F;
+        if (stack != null) {
+            RenderItem renderItem = RenderItem.getInstance();
+            RenderHelper.enableGUIStandardItemLighting();
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 
-        GL11.glDisable(GL11.GL_LIGHTING);
+            renderItem.zLevel = 100.0F;
+            renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, stack, x, y);
+            renderItem.zLevel = 0.0F;
+
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GL11.glDisable(GL11.GL_LIGHTING);
+        }
 
         GL11.glPushMatrix();
         float scaleText = 0.6F;
@@ -300,8 +292,7 @@ public class HudRenderer {
     }
 
     private static void drawPotionIcon(Potion potion, int x, int y, int size) {
-        ResourceLocation inventoryTexture = new ResourceLocation("textures/gui/container/inventory.png");
-        mc.renderEngine.bindTexture(inventoryTexture);
+        mc.renderEngine.bindTexture(INVENTORY_TEXTURE);
 
         int iconIndex = potion.getStatusIconIndex();
         int textureX = iconIndex % 8 * 18;
@@ -359,29 +350,14 @@ public class HudRenderer {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public static boolean isMouseOverLine(int mouseX, int mouseY, InfoLine line, float scaleHud) {
-        if (line == null || line.position == null) return false;
-
-        FontRenderer fr = mc.fontRenderer;
-        int x = line.position.getX();
-        int y = line.position.getY();
-        String text = line.getLineString();
-        int textWidth = fr.getStringWidth(text) + (line.getChachedItemStack() != null ? 16 : 4);
-        int textHeight = (int) (11 * scaleHud);
-        int scaledWidth = (int) (textWidth * scaleHud);
-
-        return mouseX >= x - 2 && mouseX <= x + scaledWidth && mouseY >= y - 1 && mouseY <= y + textHeight;
-    }
-
-    public static boolean isMouseOverEffects(int mouseX, int mouseY, int effectX, int effectY) {
-        return mouseX >= effectX - 10 && mouseX <= effectX + 250 && mouseY >= effectY - 5 && mouseY <= effectY + 30;
-    }
-
-    public static boolean isMouseOverCountItem(int mouseX, int mouseY, int countItemX, int countItemY) {
-        return mouseX >= countItemX - 2 && mouseX <= countItemX + 20
-            && mouseY >= countItemY - 1
-            && mouseY <= countItemY + 30;
+    /** Draws a 1px frame. */
+    public static void drawFrame(int left, int top, int right, int bottom, int color) {
+        drawRect(left, top, right, top + 1, color);
+        drawRect(left, bottom - 1, right, bottom, color);
+        drawRect(left, top + 1, left + 1, bottom - 1, color);
+        drawRect(right - 1, top + 1, right, bottom - 1, color);
     }
 }
