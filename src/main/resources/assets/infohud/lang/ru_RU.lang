@@ -31,6 +31,7 @@ infohud.gui.tooltip.disabled=Выключена - не показывается 
 infohud.gui.tooltip.hidden_now=Сейчас скрыта (у тега нет значения)
 infohud.gui.tooltip.group_position=№%s из %s в группе
 infohud.gui.tooltip.detached=Вне группы
+infohud.gui.tooltip.group_disabled=Группа выключена - её строки не показываются в HUD
 infohud.gui.tooltip.drag_group=ЛКМ тянуть: двигать всю группу
 infohud.gui.tooltip.shift_drag_detach=Shift+ЛКМ тянуть: вытащить из группы
 infohud.gui.tooltip.shift_drop_attach=Shift+отпустить на группе: вернуть в группу

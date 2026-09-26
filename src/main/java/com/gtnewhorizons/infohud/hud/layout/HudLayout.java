@@ -25,6 +25,7 @@ public class HudLayout {
     public boolean hudDisabled = false;
     public float scale = 1.0F;
 
+    public boolean groupEnabled = true;
     public int groupX = DEFAULT_GROUP_X;
     public int groupY = DEFAULT_GROUP_Y;
 
@@ -55,6 +56,7 @@ public class HudLayout {
         copy.version = version;
         copy.hudDisabled = hudDisabled;
         copy.scale = scale;
+        copy.groupEnabled = groupEnabled;
         copy.groupX = groupX;
         copy.groupY = groupY;
         copy.potionsEnabled = potionsEnabled;

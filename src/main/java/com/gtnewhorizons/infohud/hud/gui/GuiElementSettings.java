@@ -8,11 +8,12 @@ import org.lwjgl.input.Keyboard;
 import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 
 /**
- * Settings of the non-line HUD elements: potion effects and the held item counter.
+ * Settings of the non-line HUD elements: the line group, potion effects and the held item counter.
  */
 public class GuiElementSettings extends GuiScreen {
 
     public enum Element {
+        GROUP,
         POTIONS,
         COUNT_ITEM
     }
@@ -56,13 +57,21 @@ public class GuiElementSettings extends GuiScreen {
     }
 
     private boolean enabled(HudLayout layout) {
-        return element == Element.POTIONS ? layout.potionsEnabled : layout.countItemEnabled;
+        return switch (element) {
+            case GROUP -> layout.groupEnabled;
+            case POTIONS -> layout.potionsEnabled;
+            case COUNT_ITEM -> layout.countItemEnabled;
+        };
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        String title = GuiUtil.t(element == Element.POTIONS ? "editor.potions" : "editor.count_item");
+        String title = GuiUtil.t(switch (element) {
+            case GROUP -> "editor.group";
+            case POTIONS -> "editor.potions";
+            case COUNT_ITEM -> "editor.count_item";
+        });
         drawCenteredString(fontRendererObj, title, width / 2, height / 2 - 70, 0xFFFFFF);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -77,21 +86,28 @@ public class GuiElementSettings extends GuiScreen {
                 return;
             }
             case BTN_ENABLED -> {
-                if (element == Element.POTIONS) {
-                    layout.potionsEnabled = !layout.potionsEnabled;
-                } else {
-                    layout.countItemEnabled = !layout.countItemEnabled;
+                switch (element) {
+                    case GROUP -> layout.groupEnabled = !layout.groupEnabled;
+                    case POTIONS -> layout.potionsEnabled = !layout.potionsEnabled;
+                    case COUNT_ITEM -> layout.countItemEnabled = !layout.countItemEnabled;
                 }
             }
             case BTN_POTION_TIME -> layout.potionTime = !layout.potionTime;
             case BTN_POTION_LEVEL -> layout.potionLevel = !layout.potionLevel;
             case BTN_RESET_POS -> {
-                if (element == Element.POTIONS) {
-                    layout.potionX = HudLayout.DEFAULT_POTION_X;
-                    layout.potionY = HudLayout.DEFAULT_POTION_Y;
-                } else {
-                    layout.countItemX = -1;
-                    layout.countItemY = -1;
+                switch (element) {
+                    case GROUP -> {
+                        layout.groupX = HudLayout.DEFAULT_GROUP_X;
+                        layout.groupY = HudLayout.DEFAULT_GROUP_Y;
+                    }
+                    case POTIONS -> {
+                        layout.potionX = HudLayout.DEFAULT_POTION_X;
+                        layout.potionY = HudLayout.DEFAULT_POTION_Y;
+                    }
+                    case COUNT_ITEM -> {
+                        layout.countItemX = -1;
+                        layout.countItemY = -1;
+                    }
                 }
             }
             default -> {}

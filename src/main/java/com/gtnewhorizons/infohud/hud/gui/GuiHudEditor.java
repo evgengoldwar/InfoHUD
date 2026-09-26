@@ -240,7 +240,12 @@ public class GuiHudEditor extends GuiScreen {
 
         // group
         boolean groupActive = (dragging && dragTarget == GROUP) || isDropIntoGroup(mouseX, mouseY);
-        HudRenderer.drawRect(groupRect[0], groupRect[1], groupRect[2], groupRect[3], 0x2000FFFF);
+        HudRenderer.drawRect(
+            groupRect[0],
+            groupRect[1],
+            groupRect[2],
+            groupRect[3],
+            working.groupEnabled ? 0x2000FFFF : 0x30FF0000);
         HudRenderer.drawFrame(
             groupRect[0],
             groupRect[1],
@@ -328,7 +333,11 @@ public class GuiHudEditor extends GuiScreen {
         } else if (pressTarget == NONE && isOverGroup(mouseX, mouseY)) {
             List<String> tooltip = new ArrayList<>();
             tooltip.add("\u00a7f" + GuiUtil.t("editor.group"));
+            if (!working.groupEnabled) {
+                tooltip.add("\u00a7c" + GuiUtil.t("tooltip.group_disabled"));
+            }
             tooltip.add("\u00a7e" + GuiUtil.t("tooltip.drag_group"));
+            tooltip.add("\u00a7e" + GuiUtil.t("tooltip.rmb_settings"));
             GuiUtil.drawTooltip(fr, tooltip, mouseX, mouseY, width, height);
         } else if (pressTarget == NONE && isOverPotions(mouseX, mouseY)) {
             List<String> tooltip = new ArrayList<>();
@@ -527,6 +536,7 @@ public class GuiHudEditor extends GuiScreen {
     private void openSettings() {
         switch (pressTarget) {
             case LINE -> mc.displayGuiScreen(new GuiLineEditor(this, pressLine));
+            case GROUP -> mc.displayGuiScreen(new GuiElementSettings(this, GuiElementSettings.Element.GROUP));
             case POTIONS -> mc.displayGuiScreen(new GuiElementSettings(this, GuiElementSettings.Element.POTIONS));
             case COUNT -> mc.displayGuiScreen(new GuiElementSettings(this, GuiElementSettings.Element.COUNT_ITEM));
             default -> {}

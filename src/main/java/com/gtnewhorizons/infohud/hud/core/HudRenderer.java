@@ -51,7 +51,7 @@ public class HudRenderer {
 
         int index = 0;
         for (HudLine line : layout.lines) {
-            if (!line.enabled || !line.inGroup) continue;
+            if (!layout.groupEnabled || !line.enabled || !line.inGroup) continue;
 
             String text = line.render();
             if (text == null) continue;

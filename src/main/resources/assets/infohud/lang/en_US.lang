@@ -37,6 +37,7 @@ infohud.gui.tooltip.disabled=Disabled - not shown in the HUD
 infohud.gui.tooltip.hidden_now=Hidden right now (a tag has no value)
 infohud.gui.tooltip.group_position=#%s of %s in group
 infohud.gui.tooltip.detached=Outside the group
+infohud.gui.tooltip.group_disabled=Group disabled - its lines are not shown in the HUD
 infohud.gui.tooltip.drag_group=LMB drag: move the whole group
 infohud.gui.tooltip.shift_drag_detach=Shift+LMB drag: pull out of the group
 infohud.gui.tooltip.shift_drop_attach=Shift+drop on the group: put back into the group
