@@ -6,15 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Complete HUD configuration edited through the HUD editor GUI.
- */
 public class HudLayout {
 
     public static final float MIN_SCALE = 0.5F;
     public static final float MAX_SCALE = 2.0F;
     public static final int DEFAULT_GROUP_X = 0;
-    /** Below the potion effects and their label, so the labels do not overlap in the editor. */
     public static final int DEFAULT_GROUP_Y = 56;
     private static final int LEGACY_GROUP_Y = 40;
     private static final int CURRENT_VERSION = 2;
@@ -36,11 +32,9 @@ public class HudLayout {
     public int potionY = DEFAULT_POTION_Y;
 
     public boolean countItemEnabled = true;
-    /** -1 means "next to the hotbar". */
     public int countItemX = -1;
     public int countItemY = -1;
 
-    /** All lines. The order of the grouped lines in this list is their order inside the group. */
     public List<HudLine> lines = new ArrayList<>();
 
     public static HudLayout createDefault() {
@@ -73,9 +67,6 @@ public class HudLayout {
         return copy;
     }
 
-    /**
-     * Repairs data loaded from a hand edited or outdated file.
-     */
     public HudLayout sanitize() {
         if (lines == null) {
             lines = new ArrayList<>();
@@ -98,7 +89,6 @@ public class HudLayout {
         }
 
         if (version < 2 && groupX == DEFAULT_GROUP_X && groupY == LEGACY_GROUP_Y) {
-            // the group was never moved: shift it to the new default position
             groupY = DEFAULT_GROUP_Y;
         }
         version = CURRENT_VERSION;
@@ -143,14 +133,10 @@ public class HudLayout {
         return false;
     }
 
-    /** @return 1-based position of the line inside the group, 0 if it is not grouped */
     public int getGroupPosition(HudLine line) {
         return getGroupLines().indexOf(line) + 1;
     }
 
-    /**
-     * Moves a grouped line up (negative delta) or down (positive delta) inside the group.
-     */
     public boolean moveInGroup(HudLine line, int delta) {
         List<HudLine> group = getGroupLines();
         int index = group.indexOf(line);
@@ -165,9 +151,6 @@ public class HudLayout {
         return true;
     }
 
-    /**
-     * Puts a line back into the group at the given group position (clamped).
-     */
     public void attachToGroup(HudLine line, int groupIndex) {
         lines.remove(line);
         line.inGroup = true;

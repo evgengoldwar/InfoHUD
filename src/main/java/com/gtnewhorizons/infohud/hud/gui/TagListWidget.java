@@ -10,9 +10,6 @@ import com.gtnewhorizons.infohud.hud.core.HudRenderer;
 import com.gtnewhorizons.infohud.hud.tags.InfoTag;
 import com.gtnewhorizons.infohud.hud.tags.TagRegistry;
 
-/**
- * Scrollable list of all tags grouped by category, showing their current values.
- */
 class TagListWidget {
 
     private final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;

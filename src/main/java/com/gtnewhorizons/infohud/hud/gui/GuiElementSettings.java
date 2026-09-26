@@ -7,9 +7,6 @@ import org.lwjgl.input.Keyboard;
 
 import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 
-/**
- * Settings of the non-line HUD elements: the line group, potion effects and the held item counter.
- */
 public class GuiElementSettings extends GuiScreen {
 
     public enum Element {

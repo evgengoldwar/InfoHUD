@@ -7,21 +7,13 @@ import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 
-/**
- * One configurable HUD line. Stored in {@code config/InfoHUD/Layout.json}.
- */
 public class HudLine {
 
-    /** Unique id of this line. */
     public String id;
-    /** Id of the default line this one was created from, {@code null} for user lines. */
     public String defaultId;
-    /** Text of the line with {tags} and &amp;color codes. */
     public String template = "";
-    /** Item used as icon, e.g. {@code minecraft:emerald} or {@code minecraft:golden_apple/1}. Empty = no icon. */
     public String icon = "";
     public boolean enabled = true;
-    /** {@code true} if the line is part of the group, otherwise it is placed freely at {@link #x}/{@link #y}. */
     public boolean inGroup = true;
     public int x;
     public int y;
@@ -61,9 +53,6 @@ public class HudLine {
         return defaultId != null;
     }
 
-    /**
-     * @return text for the HUD or {@code null} if the line should not be shown right now
-     */
     public String render() {
         return LineTemplate.render(template);
     }

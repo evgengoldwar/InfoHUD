@@ -81,20 +81,14 @@ public class HudRenderer {
         }
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // Geometry helpers, shared with the editor
-    // ---------------------------------------------------------------------------------------------------------------
-
     public static int getGroupLineY(HudLayout layout, int index) {
         return layout.groupY + (int) (index * LINE_HEIGHT * layout.scale);
     }
 
-    /** Unscaled width of a line including the icon and padding. */
     public static int getLineWidth(String text, ItemStack icon) {
         return mc.fontRenderer.getStringWidth(text) + (icon != null ? 14 : 6);
     }
 
-    /** Screen rectangle {left, top, right, bottom} of a line drawn at x/y. */
     public static int[] getLineRect(String text, ItemStack icon, int x, int y, float scale) {
         int width = getLineWidth(text, icon);
         return new int[] { x, y + (int) (2 * scale), x + (int) Math.ceil(width * scale),
@@ -109,9 +103,6 @@ public class HudRenderer {
         return layout.countItemY < 0 ? screenHeight - 24 : layout.countItemY;
     }
 
-    /**
-     * @return the amount of the held item in the inventory, or {@code null} if it is spread over less than two slots
-     */
     public static String getCountItemText() {
         if (mc.thePlayer == null || mc.thePlayer.getHeldItem() == null) return null;
         if (VanillaTags.countHeldItem(true) <= 1) return null;
@@ -133,21 +124,10 @@ public class HudRenderer {
         return result;
     }
 
-    /** Unscaled width of one potion entry. */
     public static int getPotionEntryWidth() {
         return POTION_ICON_SIZE + 1 + mc.fontRenderer.getStringWidth("00") + 2;
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // Drawing
-    // ---------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Draws a line with its icon. The line is scaled around its top left corner.
-     *
-     * @param color      text color, alpha is respected
-     * @param background background color, 0 for none
-     */
     public static void drawLine(String text, int x, int y, ItemStack icon, float scale, int color, int background) {
         FontRenderer fr = mc.fontRenderer;
 
@@ -204,9 +184,6 @@ public class HudRenderer {
         GL11.glPopMatrix();
     }
 
-    /**
-     * @return the unscaled width of the drawn potions
-     */
     public static int drawPotions(HudLayout layout, int x, int y) {
         List<PotionEffect> effects = getDisplayedPotions();
         if (effects.isEmpty()) return 0;
@@ -353,7 +330,6 @@ public class HudRenderer {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    /** Draws a 1px frame. */
     public static void drawFrame(int left, int top, int right, int bottom, int color) {
         drawRect(left, top, right, top + 1, color);
         drawRect(left, bottom - 1, right, bottom, color);

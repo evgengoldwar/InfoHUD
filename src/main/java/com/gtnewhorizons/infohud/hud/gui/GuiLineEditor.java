@@ -18,9 +18,6 @@ import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
 import com.gtnewhorizons.infohud.hud.tags.InfoTag;
 
-/**
- * Settings of one line: text with tags, icon, visibility, order in the group, group membership, delete.
- */
 public class GuiLineEditor extends GuiScreen {
 
     private static final int BTN_DONE = 0;
@@ -36,7 +33,6 @@ public class GuiLineEditor extends GuiScreen {
 
     private final GuiHudEditor parent;
     private final HudLine line;
-    /** State of the whole layout when the screen was opened, restored by "Cancel". */
     private final HudLayout snapshot;
 
     private GuiTextField templateField;
@@ -54,9 +50,6 @@ public class GuiLineEditor extends GuiScreen {
         this(parent, line, parent.working.copy());
     }
 
-    /**
-     * @param snapshot layout restored by "Cancel"
-     */
     GuiLineEditor(GuiHudEditor parent, HudLine line, HudLayout snapshot) {
         this.parent = parent;
         this.line = line;
@@ -150,7 +143,6 @@ public class GuiLineEditor extends GuiScreen {
         fr.drawStringWithShadow("§7" + GuiUtil.t("line.template_label"), 10, 19, 0xFFFFFF);
         templateField.drawTextBox();
 
-        // preview
         fr.drawStringWithShadow("§7" + GuiUtil.t("line.preview"), 10, 52, 0xFFFFFF);
         int previewX = 12 + fr.getStringWidth(GuiUtil.t("line.preview"));
         String preview = line.renderPreview();
@@ -162,7 +154,6 @@ public class GuiLineEditor extends GuiScreen {
             fr.drawStringWithShadow("§8" + GuiUtil.t("tooltip.hidden_now"), rect[2] + 6, 50, 0xFFFFFF);
         }
 
-        // icon
         fr.drawStringWithShadow("§7" + GuiUtil.t("line.icon"), 10, 76, 0xFFFFFF);
         iconField.drawTextBox();
         if (!line.icon.trim()
@@ -170,7 +161,6 @@ public class GuiLineEditor extends GuiScreen {
             fr.drawStringWithShadow("§c" + GuiUtil.t("line.icon_unknown"), 316, 76, 0xFFFFFF);
         }
 
-        // tags
         palette.draw(mouseX, mouseY);
         tagList.draw(mouseX, mouseY);
 
@@ -276,7 +266,6 @@ public class GuiLineEditor extends GuiScreen {
             case BTN_DOWN -> parent.working.moveInGroup(line, 1);
             case BTN_GROUP -> {
                 if (line.inGroup) {
-                    // place it next to the group so it does not end up on top of it
                     int x = Math.min(parent.working.groupX + 150, Math.max(0, width - 100));
                     parent.working.detach(line, x, HudRenderer.getGroupLineY(parent.working, 0));
                 } else {

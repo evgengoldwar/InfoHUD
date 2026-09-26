@@ -54,9 +54,6 @@ public final class TagRegistry {
         add(new InfoTag(name, category, false, supplier));
     }
 
-    /**
-     * Registers a tag that produces no text and only decides whether the line is shown.
-     */
     public static void registerCondition(String category, String name, Supplier<Boolean> condition) {
         add(new InfoTag(name, category, true, () -> Boolean.TRUE.equals(condition.get()) ? "" : null));
     }

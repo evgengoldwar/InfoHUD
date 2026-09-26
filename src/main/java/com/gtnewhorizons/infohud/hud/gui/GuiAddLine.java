@@ -17,15 +17,11 @@ import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
 import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 
-/**
- * Lets the user add an empty line or one of the default lines (also ones that were deleted before).
- */
 public class GuiAddLine extends GuiScreen {
 
     private static final int ROW_HEIGHT = 16;
 
     private final GuiHudEditor parent;
-    /** {@code null} entry = empty custom line. */
     private final List<DefaultLines.Preset> entries = new ArrayList<>();
     private int scroll = 0;
     private int listLeft;

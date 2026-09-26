@@ -11,10 +11,6 @@ import com.gtnewhorizons.infohud.hud.HudUtils;
 
 import cpw.mods.fml.common.Loader;
 
-/**
- * Built-in lines. They are created on the first start and by "Reset to default" and can always be added again from
- * the "Add line" screen.
- */
 public final class DefaultLines {
 
     public static final class Preset {
@@ -31,7 +27,6 @@ public final class DefaultLines {
             this.modId = modId;
         }
 
-        /** Template of the line; can be overridden by the {@code infohud.default_line.<id>} lang key. */
         public String getTemplate() {
             String key = "infohud.default_line." + id;
             return StatCollector.canTranslate(key) ? StatCollector.translateToLocal(key) : template;

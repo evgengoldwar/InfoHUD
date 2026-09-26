@@ -12,9 +12,6 @@ import org.lwjgl.input.Mouse;
 
 import com.gtnewhorizons.infohud.hud.tags.InfoTag;
 
-/**
- * Reference of all available tags with descriptions and live values, plus the formatting codes.
- */
 public class GuiTagList extends GuiScreen {
 
     private final GuiScreen parent;

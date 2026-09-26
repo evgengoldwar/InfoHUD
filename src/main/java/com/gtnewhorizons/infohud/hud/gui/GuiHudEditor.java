@@ -15,15 +15,6 @@ import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLayoutStorage;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
 
-/**
- * Main HUD editor.
- * <ul>
- * <li>LMB drag on a grouped line moves the whole group</li>
- * <li>Shift + LMB drag pulls a line out of the group, Shift + drop on the group puts it back</li>
- * <li>RMB click opens the settings of the element</li>
- * </ul>
- * All changes are done on a copy of the layout and only applied with "Save".
- */
 public class GuiHudEditor extends GuiScreen {
 
     private static final int BTN_SAVE = 0;
@@ -41,7 +32,6 @@ public class GuiHudEditor extends GuiScreen {
     private static final int POTIONS = 3;
     private static final int COUNT = 4;
 
-    /** Layout being edited. Child screens modify it directly. */
     HudLayout working;
 
     private final List<LineBox> boxes = new ArrayList<>();
@@ -114,10 +104,6 @@ public class GuiHudEditor extends GuiScreen {
         hudToggleButton.displayString = GuiUtil.onOff("editor.hud", !working.hudDisabled);
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // Layout
-    // ---------------------------------------------------------------------------------------------------------------
-
     private void computeLayout() {
         boxes.clear();
         float scale = working.scale;
@@ -176,7 +162,6 @@ public class GuiHudEditor extends GuiScreen {
     }
 
     private LineBox getBoxAt(int mouseX, int mouseY) {
-        // detached lines are drawn last, so they are on top
         for (int i = boxes.size() - 1; i >= 0; i--) {
             LineBox box = boxes.get(i);
             if (inside(box.rect, mouseX, mouseY)) return box;
@@ -191,7 +176,6 @@ public class GuiHudEditor extends GuiScreen {
         return null;
     }
 
-    /** Group position a line dropped at mouseY would get. */
     private int getInsertIndex(int mouseY) {
         int index = 0;
         for (LineBox box : boxes) {
@@ -209,10 +193,6 @@ public class GuiHudEditor extends GuiScreen {
             && inside(groupRect, mouseX, mouseY);
     }
 
-    // ---------------------------------------------------------------------------------------------------------------
-    // Drawing
-    // ---------------------------------------------------------------------------------------------------------------
-
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
@@ -221,7 +201,6 @@ public class GuiHudEditor extends GuiScreen {
         FontRenderer fr = fontRendererObj;
         float scale = working.scale;
 
-        // potions
         boolean potionsActive = dragging && dragTarget == POTIONS;
         HudRenderer.drawRect(
             potionRect[0],
@@ -238,7 +217,6 @@ public class GuiHudEditor extends GuiScreen {
         drawLabel(GuiUtil.t("editor.potions"), potionRect);
         HudRenderer.drawPotions(working, working.potionX, working.potionY);
 
-        // group
         boolean groupActive = (dragging && dragTarget == GROUP) || isDropIntoGroup(mouseX, mouseY);
         HudRenderer.drawRect(
             groupRect[0],
@@ -262,7 +240,6 @@ public class GuiHudEditor extends GuiScreen {
                 0xFFFFFF);
         }
 
-        // lines
         LineBox hovered = pressTarget == NONE ? getBoxAt(mouseX, mouseY) : null;
         for (LineBox box : boxes) {
             int color = HudRenderer.TEXT_COLOR;
@@ -294,7 +271,6 @@ public class GuiHudEditor extends GuiScreen {
             HudRenderer.drawRect(groupRect[0], y - 1, groupRect[2], y + 1, 0xFFFFFF00);
         }
 
-        // held item counter
         boolean countActive = dragging && dragTarget == COUNT;
         HudRenderer.drawRect(
             countRect[0],
@@ -311,7 +287,6 @@ public class GuiHudEditor extends GuiScreen {
             countRect[1] + 1,
             count != null ? held : null);
 
-        // hints and toolbar
         String hint1 = GuiUtil.t("editor.hint1");
         String hint2 = GuiUtil.t("editor.hint2");
         int hintWidth = Math.max(fr.getStringWidth(hint1), fr.getStringWidth(hint2)) / 2 + 5;
@@ -352,7 +327,6 @@ public class GuiHudEditor extends GuiScreen {
         }
     }
 
-    /** Draws the name of a box above it, or below it when there is no room at the top of the screen. */
     private void drawLabel(String text, int[] rect) {
         int[] label = getLabelRect(text, rect);
         fontRendererObj.drawStringWithShadow("\u00a7b" + text, label[0] + 2, label[1] + 1, 0xFFFFFF);
@@ -402,10 +376,6 @@ public class GuiHudEditor extends GuiScreen {
 
         GuiUtil.drawTooltip(fr, tooltip, mouseX, mouseY, width, height);
     }
-
-    // ---------------------------------------------------------------------------------------------------------------
-    // Mouse handling
-    // ---------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
@@ -551,10 +521,6 @@ public class GuiHudEditor extends GuiScreen {
         dragging = false;
         dragTarget = NONE;
     }
-
-    // ---------------------------------------------------------------------------------------------------------------
-    // Buttons and keys
-    // ---------------------------------------------------------------------------------------------------------------
 
     @Override
     protected void actionPerformed(GuiButton button) {

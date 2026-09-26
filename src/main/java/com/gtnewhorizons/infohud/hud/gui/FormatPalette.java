@@ -6,9 +6,6 @@ import net.minecraft.client.gui.FontRenderer;
 import com.gtnewhorizons.infohud.hud.core.HudRenderer;
 import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 
-/**
- * Clickable row of Minecraft formatting codes ({@code &0 - &f, &k - &o, &r}).
- */
 class FormatPalette {
 
     static final int CELL = 12;
@@ -35,7 +32,6 @@ class FormatPalette {
         return ((count + perRow() - 1) / perRow()) * CELL;
     }
 
-    /** @return index of the code under the mouse or -1 */
     int getIndexAt(int mouseX, int mouseY) {
         if (mouseX < x || mouseY < y) return -1;
         int column = (mouseX - x) / CELL;

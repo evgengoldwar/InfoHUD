@@ -1,28 +1,15 @@
 package com.gtnewhorizons.infohud.hud.tags;
 
-/**
- * Turns a user written line template into the final HUD text.
- * <ul>
- * <li>{@code {tag}} is replaced by the value of the tag</li>
- * <li>{@code &x} (x = 0-9, a-f, k-o, r) is replaced by the Minecraft formatting code {@code §x}</li>
- * </ul>
- */
 public final class LineTemplate {
 
     public static final String FORMAT_CODES = "0123456789abcdefklmnor";
 
     private LineTemplate() {}
 
-    /**
-     * @return the rendered line, or {@code null} if it uses an unknown or currently unavailable tag
-     */
     public static String render(String template) {
         return render(template, false);
     }
 
-    /**
-     * Preview mode never returns {@code null}: unknown tags are shown in red, unavailable tags in gray.
-     */
     public static String renderPreview(String template) {
         return render(template, true);
     }

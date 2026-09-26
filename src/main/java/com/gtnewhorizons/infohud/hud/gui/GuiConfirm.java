@@ -7,9 +7,6 @@ import net.minecraft.client.gui.GuiScreen;
 
 import org.lwjgl.input.Keyboard;
 
-/**
- * Simple yes / no question that runs an action on "yes" and returns to the parent screen.
- */
 public class GuiConfirm extends GuiScreen {
 
     private final GuiScreen parent;

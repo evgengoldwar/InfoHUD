@@ -155,9 +155,6 @@ public final class VanillaTags {
         return isNight ? " (" + EnumChatFormatting.DARK_GRAY + "Night" + EnumChatFormatting.RESET + ")" : "";
     }
 
-    /**
-     * Same format that was used by the old world/play time lines: 15s, 42m or 1,234h.
-     */
     private static String formatShortDuration(long totalSeconds) {
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
@@ -212,16 +209,10 @@ public final class VanillaTags {
         return HudUtils.isSlimeChunk(seed, player(), world());
     }
 
-    /**
-     * @return how many of the held item the player has in the main inventory
-     */
     public static int countHeldItem() {
         return countHeldItem(false);
     }
 
-    /**
-     * @param stacks count inventory slots holding the item instead of the item amount
-     */
     public static int countHeldItem(boolean stacks) {
         EntityClientPlayerMP player = player();
         if (player == null) return 0;

@@ -16,16 +16,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.gtnewhorizons.infohud.InfoHUD;
 
-/**
- * Loads and saves the {@link HudLayout} to {@code config/InfoHUD/Layout.json}.
- */
 public final class HudLayoutStorage {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
         .disableHtmlEscaping()
         .create();
     private static final String FILE_NAME = "Layout.json";
-    /** File of the old position based editor, only read once for migration. */
     private static final String LEGACY_FILE_NAME = "Positions.json";
 
     private static File configDir;
@@ -40,10 +36,6 @@ public final class HudLayoutStorage {
         }
     }
 
-    /**
-     * @return the active layout used for rendering. Do not edit it directly, edit a {@link HudLayout#copy()} and
-     *         {@link #save(HudLayout)} it.
-     */
     public static HudLayout get() {
         if (layout == null) {
             load();
