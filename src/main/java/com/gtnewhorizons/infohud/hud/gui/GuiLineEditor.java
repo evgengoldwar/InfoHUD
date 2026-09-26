@@ -131,11 +131,13 @@ public class GuiLineEditor extends GuiScreen {
 
         String title = GuiUtil.t("line.title");
         if (line.inGroup) {
-            title += " §7(" + GuiUtil.t(
-                "tooltip.group_position",
-                parent.working.getGroupPosition(line),
-                parent.working.getGroupLines()
-                    .size())
+            title += " §7("
+                + GuiUtil
+                    .t(
+                        "tooltip.group_position",
+                        parent.working.getGroupPosition(line),
+                        parent.working.getGroupLines()
+                            .size())
                 + ")";
         } else {
             title += " §7(" + GuiUtil.t("tooltip.detached") + ")";

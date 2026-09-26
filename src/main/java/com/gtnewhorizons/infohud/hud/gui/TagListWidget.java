@@ -117,8 +117,7 @@ class TagListWidget {
     static String formatValue(InfoTag tag) {
         String value = tag.getValue();
         if (tag.condition) {
-            return value != null ? "§a" + GuiUtil.t("tag.condition_true")
-                : "§8" + GuiUtil.t("tag.condition_false");
+            return value != null ? "§a" + GuiUtil.t("tag.condition_true") : "§8" + GuiUtil.t("tag.condition_false");
         }
         if (value == null) return "§8" + GuiUtil.t("tag.unavailable");
         return value.isEmpty() ? "§8\"\"" : value;

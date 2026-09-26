@@ -39,7 +39,6 @@ final class ForestryTags {
 
     private static BiomeGenBase biome() {
         EntityPlayer p = player();
-        return p.worldObj
-            .getBiomeGenForCoordsBody(MathHelper.floor_double(p.posX), MathHelper.floor_double(p.posZ));
+        return p.worldObj.getBiomeGenForCoordsBody(MathHelper.floor_double(p.posX), MathHelper.floor_double(p.posZ));
     }
 }

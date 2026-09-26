@@ -52,11 +52,7 @@ public final class DefaultLines {
         Arrays.asList(
             new Preset("fps", "&6{player} &rFPS: &a{fps}", "minecraft:emerald", null),
             new Preset("ping", "Ping: &a{ping} ms", "minecraft:stone", null),
-            new Preset(
-                "tps",
-                "TPS: {tps_color}{tps} &rMSPT: {mspt_color}{mspt}",
-                "minecraft:command_block",
-                null),
+            new Preset("tps", "TPS: {tps_color}{tps} &rMSPT: {mspt_color}{mspt}", "minecraft:command_block", null),
             new Preset("memory", "RAM: &a{mem_used}MB &r/ &a{mem_max}MB", "minecraft:redstone", null),
             new Preset(
                 "server_memory",
@@ -79,11 +75,7 @@ public final class DefaultLines {
                 "minecraft:iron_ore",
                 HudUtils.GREG_TECH_ID),
             new Preset("slime_chunk", "{slime_chunk}This is a &a&nslime chunk&r", "minecraft:slime_ball", null),
-            new Preset(
-                "world_time",
-                "World time: &6{world_age} &rTime: &6{time}&r{night}",
-                "minecraft:clock",
-                null),
+            new Preset("world_time", "World time: &6{world_age} &rTime: &6{time}&r{night}", "minecraft:clock", null),
             new Preset("play_time", "Play time: &6{play_time}", "minecraft:noteblock", null),
             new Preset("session_time", "Session: &6{session_time}", "minecraft:golden_apple/1", null),
             new Preset("jumps", "Jumps: &6{jumps}", "minecraft:slime_ball", null),

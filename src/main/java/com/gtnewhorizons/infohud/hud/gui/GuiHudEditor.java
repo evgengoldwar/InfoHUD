@@ -116,8 +116,7 @@ public class GuiHudEditor extends GuiScreen {
         }
 
         if (groupRect == null) {
-            groupRect = HudRenderer
-                .getLineRect(GuiUtil.t("editor.empty_group"), working.groupX, working.groupY, scale);
+            groupRect = HudRenderer.getLineRect(GuiUtil.t("editor.empty_group"), working.groupX, working.groupY, scale);
         }
         groupRect = new int[] { groupRect[0] - 2, groupRect[1] - 2, groupRect[2] + 2, groupRect[3] + 2 };
 
@@ -125,8 +124,9 @@ public class GuiHudEditor extends GuiScreen {
             createBox(line, line.x, line.y, scale);
         }
 
-        int potionWidth = Math
-            .max(60, HudRenderer.getDisplayedPotions()
+        int potionWidth = Math.max(
+            60,
+            HudRenderer.getDisplayedPotions()
                 .size() * HudRenderer.getPotionEntryWidth());
         potionRect = new int[] { working.potionX - 2, working.potionY - 2,
             working.potionX + (int) (potionWidth * scale) + 2,
@@ -222,12 +222,8 @@ public class GuiHudEditor extends GuiScreen {
             groupRect[2],
             groupRect[3],
             working.groupEnabled ? 0x2000FFFF : 0x30FF0000);
-        HudRenderer.drawFrame(
-            groupRect[0],
-            groupRect[1],
-            groupRect[2],
-            groupRect[3],
-            groupActive ? 0xFFFFFF00 : 0x9000FFFF);
+        HudRenderer
+            .drawFrame(groupRect[0], groupRect[1], groupRect[2], groupRect[3], groupActive ? 0xFFFFFF00 : 0x9000FFFF);
         drawLabel(GuiUtil.t("editor.group"), groupRect);
         if (working.getGroupLines()
             .isEmpty()) {

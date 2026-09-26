@@ -10,8 +10,11 @@ final class ServerTags {
 
     static void registerTags() {
         String cat = "server";
-        register(cat, "server_uptime", () -> DataStorage.serverUptime < 0 ? null
-            : formatDuration((DataStorage.serverUptime + sinceReceived()) / 1000));
+        register(
+            cat,
+            "server_uptime",
+            () -> DataStorage.serverUptime < 0 ? null
+                : formatDuration((DataStorage.serverUptime + sinceReceived()) / 1000));
         register(cat, "server_time", () -> {
             if (DataStorage.serverTime < 0) return null;
             long seconds = (DataStorage.serverTime + sinceReceived()) / 1000;

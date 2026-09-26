@@ -18,9 +18,7 @@ final class BloodMagicTags {
             "lp_max",
             () -> String.format(
                 "%,d",
-                Math.max(
-                    HudUtils.getPlayerMaxLPTag(player()),
-                    BloodMagicEvent.getMaxLP(player().getDisplayName()))));
+                Math.max(HudUtils.getPlayerMaxLPTag(player()), BloodMagicEvent.getMaxLP(player().getDisplayName()))));
     }
 
     private static EntityPlayer player() {

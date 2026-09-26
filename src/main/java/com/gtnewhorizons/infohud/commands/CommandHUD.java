@@ -10,8 +10,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
 import com.gtnewhorizon.gtnhlib.config.SimpleGuiConfig;
-import com.gtnewhorizons.infohud.hud.gui.GuiHudEditor;
 import com.gtnewhorizons.infohud.hud.event.DelayedGuiDisplayTicker;
+import com.gtnewhorizons.infohud.hud.gui.GuiHudEditor;
 
 public class CommandHUD extends CommandBase {
 

@@ -57,7 +57,12 @@ public final class VanillaTags {
 
         cat = "memory";
         register(cat, "mem_used", () -> str(usedMemory()));
-        register(cat, "mem_alloc", () -> str(Runtime.getRuntime().totalMemory() / MB));
+        register(
+            cat,
+            "mem_alloc",
+            () -> str(
+                Runtime.getRuntime()
+                    .totalMemory() / MB));
         register(cat, "mem_max", () -> str(maxMemory()));
         register(cat, "mem_percent", () -> str(usedMemory() * 100 / Math.max(1, maxMemory())));
         register(cat, "server_mem_used", () -> DataStorage.serverMemUsed == -1 ? null : str(DataStorage.serverMemUsed));

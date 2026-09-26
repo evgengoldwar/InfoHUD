@@ -42,10 +42,7 @@ final class Conditions {
             }
             for (String operator : OPERATORS) {
                 if (text.startsWith(operator, i)) {
-                    return compare(
-                        value(text.substring(0, i)),
-                        value(text.substring(i + operator.length())),
-                        operator);
+                    return compare(value(text.substring(0, i)), value(text.substring(i + operator.length())), operator);
                 }
             }
         }
@@ -67,8 +64,8 @@ final class Conditions {
 
     private static String value(String operand) {
         String text = operand.trim();
-        if (text.length() >= 2 && (text.startsWith("\"") && text.endsWith("\"")
-            || text.startsWith("'") && text.endsWith("'"))) {
+        if (text.length() >= 2
+            && (text.startsWith("\"") && text.endsWith("\"") || text.startsWith("'") && text.endsWith("'"))) {
             return text.substring(1, text.length() - 1);
         }
         return LineTemplate.render(text);
@@ -88,7 +85,8 @@ final class Conditions {
 
         String value = value(text);
         if (value == null) return false;
-        String plain = LineTemplate.stripFormatting(value).trim();
+        String plain = LineTemplate.stripFormatting(value)
+            .trim();
         return !plain.isEmpty() && !plain.equals("0") && !plain.equalsIgnoreCase("false");
     }
 
@@ -102,9 +100,11 @@ final class Conditions {
         if (a != null && b != null) {
             result = Double.compare(a, b);
         } else {
-            result = LineTemplate.stripFormatting(left).trim()
+            result = LineTemplate.stripFormatting(left)
+                .trim()
                 .compareToIgnoreCase(
-                    LineTemplate.stripFormatting(right).trim());
+                    LineTemplate.stripFormatting(right)
+                        .trim());
         }
 
         return switch (operator) {
