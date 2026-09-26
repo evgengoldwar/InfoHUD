@@ -69,6 +69,7 @@ public final class VanillaTags {
         register(cat, "x", () -> str(x()));
         register(cat, "y", () -> str(y()));
         register(cat, "z", () -> str(z()));
+        register(cat, "speed", VanillaTags::speed);
         register(cat, "chunk_x", () -> str(x() >> 4));
         register(cat, "chunk_z", () -> str(z() >> 4));
         register(
@@ -87,6 +88,9 @@ public final class VanillaTags {
         register(cat, "day", () -> str(world().getWorldTime() / 24000L));
         register(cat, "time", VanillaTags::worldClock);
         register(cat, "night", VanillaTags::nightSuffix);
+        register(cat, "time_to_night", () -> formatTicks(Math.floorMod(13000L - dayTime(), 24000L)));
+        register(cat, "time_to_day", () -> formatTicks(24000L - dayTime()));
+        register(cat, "days_to_full_moon", () -> str((8 - world().getMoonPhase()) % 8));
         register(cat, "world_age", () -> formatShortDuration(world().getTotalWorldTime() / 20));
         register(cat, "weather", VanillaTags::weather);
         register(cat, "moon_phase", () -> value("moon." + world().getMoonPhase()));
@@ -111,6 +115,7 @@ public final class VanillaTags {
         register(cat, "xp_level", () -> str(player().experienceLevel));
         register(cat, "xp", () -> str((int) (player().experience * player().xpBarCap())));
         register(cat, "xp_next", () -> str(player().xpBarCap()));
+        register(cat, "xp_total", () -> str(player().experienceTotal));
         register(
             cat,
             "saturation",
@@ -191,6 +196,22 @@ public final class VanillaTags {
     private static long maxMemory() {
         return Runtime.getRuntime()
             .maxMemory() / MB;
+    }
+
+    private static long dayTime() {
+        return world().getWorldTime() % 24000L;
+    }
+
+    private static String formatTicks(long ticks) {
+        long seconds = ticks / 20;
+        return String.format("%d:%02d", seconds / 60, seconds % 60);
+    }
+
+    private static String speed() {
+        EntityClientPlayerMP player = player();
+        double dx = player.posX - player.prevPosX;
+        double dz = player.posZ - player.prevPosZ;
+        return String.format("%.2f", Math.sqrt(dx * dx + dz * dz) * 20);
     }
 
     private static String worldClock() {

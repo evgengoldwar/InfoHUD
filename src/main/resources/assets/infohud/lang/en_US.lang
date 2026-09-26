@@ -135,6 +135,7 @@ infohud.tag_category.target=Looking at
 infohud.tag_category.system=System
 
 infohud.tag_category.conditions=Conditions
+infohud.tag_category.server=Server
 # Tags
 infohud.tag.player=Your player name
 infohud.tag.fps=Frames per second
@@ -256,6 +257,22 @@ infohud.tag.has_effects=Condition: you have active potion effects
 infohud.tag.holding_item=Condition: you hold an item
 infohud.tag.looking_at_block=Condition: you are looking at a block
 infohud.tag.looking_at_entity=Condition: you are looking at a mob / entity
+
+infohud.tag.speed=Horizontal speed in blocks per second
+infohud.tag.time_to_night=Real time until night (m:ss)
+infohud.tag.time_to_day=Real time until morning (m:ss)
+infohud.tag.days_to_full_moon=Days until the next full moon (0 = tonight)
+infohud.tag.xp_total=Total experience points
+infohud.tag.cpu_cores=Number of CPU threads
+infohud.tag.cpu_usage=CPU load of the Minecraft process in percent
+infohud.tag.fps_min=Lowest FPS in the last 10 seconds
+infohud.tag.fps_avg=Average FPS in the last 10 seconds
+infohud.tag.real_time=Real time on your computer (HH:MM)
+infohud.tag.real_date=Real date on your computer
+infohud.tag.server_uptime=How long the server is running (needs InfoHUD on the server)
+infohud.tag.server_time=Real time on the server (needs InfoHUD on the server)
+infohud.tag.tps_dim=TPS of your current dimension (needs InfoHUD on the server)
+infohud.tag.mspt_dim=MSPT of your current dimension (needs InfoHUD on the server)
 
 # Tag values
 infohud.tag_value.weather.clear=Clear

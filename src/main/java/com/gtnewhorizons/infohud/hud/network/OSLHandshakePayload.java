@@ -23,6 +23,7 @@ public class OSLHandshakePayload {
         channels.add(CHANNEL + "|TPS");
         channels.add(CHANNEL + "|Mem");
         channels.add(CHANNEL + "|Seed");
+        channels.add(CHANNEL + "|Server");
 
         for (String channel : channels) {
             try {

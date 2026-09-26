@@ -129,6 +129,7 @@ infohud.tag_category.target=Под прицелом
 infohud.tag_category.system=Система
 
 infohud.tag_category.conditions=Условия
+infohud.tag_category.server=Сервер
 # Tags
 infohud.tag.player=Ваш ник
 infohud.tag.fps=Кадров в секунду
@@ -250,6 +251,22 @@ infohud.tag.has_effects=Условие: на вас есть эффекты зе
 infohud.tag.holding_item=Условие: у вас предмет в руке
 infohud.tag.looking_at_block=Условие: вы смотрите на блок
 infohud.tag.looking_at_entity=Условие: вы смотрите на моба / сущность
+
+infohud.tag.speed=Горизонтальная скорость в блоках в секунду
+infohud.tag.time_to_night=Реального времени до ночи (м:сс)
+infohud.tag.time_to_day=Реального времени до утра (м:сс)
+infohud.tag.days_to_full_moon=Дней до полнолуния (0 = этой ночью)
+infohud.tag.xp_total=Всего очков опыта
+infohud.tag.cpu_cores=Число потоков процессора
+infohud.tag.cpu_usage=Загрузка процессора процессом Minecraft в процентах
+infohud.tag.fps_min=Минимальный FPS за последние 10 секунд
+infohud.tag.fps_avg=Средний FPS за последние 10 секунд
+infohud.tag.real_time=Реальное время на компьютере (ЧЧ:ММ)
+infohud.tag.real_date=Реальная дата на компьютере
+infohud.tag.server_uptime=Сколько работает сервер (нужен InfoHUD на сервере)
+infohud.tag.server_time=Реальное время на сервере (нужен InfoHUD на сервере)
+infohud.tag.tps_dim=TPS текущего измерения (нужен InfoHUD на сервере)
+infohud.tag.mspt_dim=MSPT текущего измерения (нужен InfoHUD на сервере)
 
 # Tag values
 infohud.tag_value.weather.clear=Ясно

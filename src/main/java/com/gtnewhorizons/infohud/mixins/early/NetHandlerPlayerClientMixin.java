@@ -74,6 +74,21 @@ public class NetHandlerPlayerClientMixin {
             } catch (Exception ignored) {}
         }
 
+        if (channel.equals(OSLHandshakePayload.CHANNEL + "|Server")) {
+            ByteBuf byteBuf = Unpooled.wrappedBuffer(packet.func_149168_d());
+            try {
+                long uptime = byteBuf.readLong();
+                long time = byteBuf.readLong();
+                double tpsDim = byteBuf.readDouble();
+                double msptDim = byteBuf.readDouble();
+                DataStorage.serverUptime = uptime;
+                DataStorage.serverTime = time;
+                DataStorage.tpsDim = tpsDim;
+                DataStorage.msptDim = msptDim;
+                DataStorage.serverInfoReceived = System.currentTimeMillis();
+            } catch (Exception ignored) {}
+        }
+
         if (channel.equals(OSLHandshakePayload.CHANNEL + "|Seed")) {
             ByteBuf byteBuf = Unpooled.wrappedBuffer(packet.func_149168_d());
             try {

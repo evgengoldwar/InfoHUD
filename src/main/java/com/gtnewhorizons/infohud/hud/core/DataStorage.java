@@ -20,9 +20,15 @@ public class DataStorage {
     public static int serverMemAllocated = -1;
     public static int serverMemMax = -1;
     public static long worldSeed = -1;
+    public static long serverUptime = -1;
+    public static long serverTime = -1;
+    public static long serverInfoReceived = -1;
+    public static double tpsDim = -1;
+    public static double msptDim = -1;
     public static final Set<UUID> seedSubscribers = new HashSet<>();
     public static final Set<UUID> tpsSubscribers = new HashSet<>();
     public static final Set<UUID> memSubscribers = new HashSet<>();
+    public static final Set<UUID> serverInfoSubscribers = new HashSet<>();
     private static final Map<UUID, PlayerStats> playerStatsMap = new HashMap<>();
 
     private static class PlayerStats {
@@ -70,6 +76,10 @@ public class DataStorage {
         memSubscribers.add(player.getUniqueID());
     }
 
+    public static void subscribeServerInfo(EntityPlayerMP player) {
+        serverInfoSubscribers.add(player.getUniqueID());
+    }
+
     public static void subscribeSeed(EntityPlayerMP player) {
         seedSubscribers.add(player.getUniqueID());
     }
@@ -79,6 +89,7 @@ public class DataStorage {
         tpsSubscribers.remove(uuid);
         memSubscribers.remove(uuid);
         seedSubscribers.remove(uuid);
+        serverInfoSubscribers.remove(uuid);
     }
 
     public static void initPlayer(UUID uuid) {
@@ -90,6 +101,7 @@ public class DataStorage {
         tpsSubscribers.remove(uuid);
         memSubscribers.remove(uuid);
         seedSubscribers.remove(uuid);
+        serverInfoSubscribers.remove(uuid);
     }
 
     public static long getPlayerSessionStart(UUID uuid) {
@@ -120,5 +132,10 @@ public class DataStorage {
         serverMemMax = -1;
         serverMemUsed = -1;
         worldSeed = -1;
+        serverUptime = -1;
+        serverTime = -1;
+        serverInfoReceived = -1;
+        tpsDim = -1;
+        msptDim = -1;
     }
 }

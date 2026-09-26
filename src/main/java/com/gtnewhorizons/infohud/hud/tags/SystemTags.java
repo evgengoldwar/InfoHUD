@@ -6,7 +6,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -15,18 +19,47 @@ import net.minecraft.client.multiplayer.ServerData;
 
 import org.lwjgl.opengl.GL11;
 
+import com.gtnewhorizons.infohud.mixins.early.MinecraftAccessor;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+
 final class SystemTags {
+
+    private static final int FPS_SAMPLES = 10;
 
     private static volatile String cpuName = null;
     private static String gpuName = null;
+    private static final int[] fpsSamples = new int[FPS_SAMPLES];
+    private static int fpsSampleCount = 0;
+    private static int fpsSampleIndex = 0;
+    private static double cpuLoad = -1;
+    private static int sampleTimer = 0;
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
     private SystemTags() {}
 
     static void registerTags() {
         detectCpu();
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new Sampler());
 
         String cat = "system";
         register(cat, "cpu", () -> cpuName);
+        register(
+            cat,
+            "cpu_cores",
+            () -> String.valueOf(
+                Runtime.getRuntime()
+                    .availableProcessors()));
+        register(cat, "cpu_usage", () -> cpuLoad < 0 ? null : String.valueOf(Math.round(cpuLoad * 100)));
+        register(cat, "fps_min", () -> fpsSampleCount == 0 ? null : String.valueOf(minFps()));
+        register(cat, "fps_avg", () -> fpsSampleCount == 0 ? null : String.valueOf(avgFps()));
+        register(cat, "real_time", () -> TIME_FORMAT.format(new Date()));
+        register(cat, "real_date", () -> DATE_FORMAT.format(new Date()));
         register(cat, "gpu", SystemTags::gpu);
         register(cat, "java", () -> System.getProperty("java.version"));
         register(cat, "server_ip", () -> {
@@ -38,6 +71,47 @@ final class SystemTags {
             cat,
             "players",
             () -> String.valueOf(Minecraft.getMinecraft().thePlayer.sendQueue.playerInfoList.size()));
+    }
+
+    private static int minFps() {
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < fpsSampleCount; i++) {
+            min = Math.min(min, fpsSamples[i]);
+        }
+        return min;
+    }
+
+    private static int avgFps() {
+        int sum = 0;
+        for (int i = 0; i < fpsSampleCount; i++) {
+            sum += fpsSamples[i];
+        }
+        return Math.round((float) sum / fpsSampleCount);
+    }
+
+    private static double readCpuLoad() {
+        try {
+            OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
+            if (bean instanceof com.sun.management.OperatingSystemMXBean) {
+                return ((com.sun.management.OperatingSystemMXBean) bean).getProcessCpuLoad();
+            }
+        } catch (Throwable ignored) {}
+        return -1;
+    }
+
+    public static class Sampler {
+
+        @SubscribeEvent
+        public void onClientTick(TickEvent.ClientTickEvent event) {
+            if (event.phase != TickEvent.Phase.END) return;
+            if (++sampleTimer < 20) return;
+            sampleTimer = 0;
+
+            fpsSamples[fpsSampleIndex] = ((MinecraftAccessor) Minecraft.getMinecraft()).getFps();
+            fpsSampleIndex = (fpsSampleIndex + 1) % FPS_SAMPLES;
+            fpsSampleCount = Math.min(fpsSampleCount + 1, FPS_SAMPLES);
+            cpuLoad = readCpuLoad();
+        }
     }
 
     private static String gpu() {
