@@ -229,14 +229,14 @@ public class GuiHudEditor extends GuiScreen {
             potionRect[2],
             potionRect[3],
             potionsActive ? 0x40FFFF00 : working.potionsEnabled ? 0x2000FFFF : 0x30FF0000);
-        HudRenderer.drawFrame(potionRect[0], potionRect[1], potionRect[2], potionRect[3], 0x60FFFFFF);
-        if (HudRenderer.drawPotions(working, working.potionX, working.potionY) == 0) {
-            fr.drawStringWithShadow(
-                "§7" + GuiUtil.t("editor.potions"),
-                potionRect[0] + 4,
-                potionRect[1] + 4,
-                0xFFFFFF);
-        }
+        HudRenderer.drawFrame(
+            potionRect[0],
+            potionRect[1],
+            potionRect[2],
+            potionRect[3],
+            potionsActive ? 0xFFFFFF00 : 0x9000FFFF);
+        drawLabel(GuiUtil.t("editor.potions"), potionRect);
+        HudRenderer.drawPotions(working, working.potionX, working.potionY);
 
         // group
         boolean groupActive = (dragging && dragTarget == GROUP) || isDropIntoGroup(mouseX, mouseY);
@@ -247,9 +247,7 @@ public class GuiHudEditor extends GuiScreen {
             groupRect[2],
             groupRect[3],
             groupActive ? 0xFFFFFF00 : 0x9000FFFF);
-        if (groupRect[1] >= 10) {
-            fr.drawStringWithShadow("§b" + GuiUtil.t("editor.group"), groupRect[0] + 2, groupRect[1] - 9, 0xFFFFFF);
-        }
+        drawLabel(GuiUtil.t("editor.group"), groupRect);
         if (working.getGroupLines()
             .isEmpty()) {
             fr.drawStringWithShadow(
@@ -327,7 +325,12 @@ public class GuiHudEditor extends GuiScreen {
 
         if (hovered != null) {
             drawLineTooltip(hovered, mouseX, mouseY);
-        } else if (pressTarget == NONE && inside(potionRect, mouseX, mouseY)) {
+        } else if (pressTarget == NONE && isOverGroup(mouseX, mouseY)) {
+            List<String> tooltip = new ArrayList<>();
+            tooltip.add("\u00a7f" + GuiUtil.t("editor.group"));
+            tooltip.add("\u00a7e" + GuiUtil.t("tooltip.drag_group"));
+            GuiUtil.drawTooltip(fr, tooltip, mouseX, mouseY, width, height);
+        } else if (pressTarget == NONE && isOverPotions(mouseX, mouseY)) {
             List<String> tooltip = new ArrayList<>();
             tooltip.add("§f" + GuiUtil.t("editor.potions"));
             tooltip.add("§e" + GuiUtil.t("tooltip.rmb_settings"));
@@ -338,6 +341,27 @@ public class GuiHudEditor extends GuiScreen {
             tooltip.add("§e" + GuiUtil.t("tooltip.rmb_settings"));
             GuiUtil.drawTooltip(fr, tooltip, mouseX, mouseY, width, height);
         }
+    }
+
+    /** Draws the name of a box above it, or below it when there is no room at the top of the screen. */
+    private void drawLabel(String text, int[] rect) {
+        int[] label = getLabelRect(text, rect);
+        fontRendererObj.drawStringWithShadow("\u00a7b" + text, label[0] + 2, label[1] + 1, 0xFFFFFF);
+    }
+
+    private int[] getLabelRect(String text, int[] rect) {
+        int top = rect[1] >= 10 ? rect[1] - 10 : rect[3];
+        return new int[] { rect[0], top, rect[0] + fontRendererObj.getStringWidth(text) + 4, top + 10 };
+    }
+
+    private boolean isOverGroup(int mouseX, int mouseY) {
+        return inside(groupRect, mouseX, mouseY)
+            || inside(getLabelRect(GuiUtil.t("editor.group"), groupRect), mouseX, mouseY);
+    }
+
+    private boolean isOverPotions(int mouseX, int mouseY) {
+        return inside(potionRect, mouseX, mouseY)
+            || inside(getLabelRect(GuiUtil.t("editor.potions"), potionRect), mouseX, mouseY);
     }
 
     private void drawLineTooltip(LineBox box, int mouseX, int mouseY) {
@@ -395,7 +419,9 @@ public class GuiHudEditor extends GuiScreen {
             if (box != null) {
                 pressTarget = LINE;
                 pressLine = box.line;
-            } else if (inside(potionRect, mouseX, mouseY)) {
+            } else if (isOverGroup(mouseX, mouseY)) {
+                pressTarget = GROUP;
+            } else if (isOverPotions(mouseX, mouseY)) {
                 pressTarget = POTIONS;
             }
         }
@@ -459,6 +485,11 @@ public class GuiHudEditor extends GuiScreen {
                     dragOffsetX = pressX - pressLine.x;
                     dragOffsetY = pressY - pressLine.y;
                 }
+            }
+            case GROUP -> {
+                dragTarget = GROUP;
+                dragOffsetX = pressX - working.groupX;
+                dragOffsetY = pressY - working.groupY;
             }
             case POTIONS -> {
                 dragTarget = POTIONS;
