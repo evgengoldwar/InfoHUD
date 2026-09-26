@@ -88,23 +88,23 @@ final class Conditions {
 
         String value = value(text);
         if (value == null) return false;
-        String plain = stripFormatting(value).trim();
+        String plain = LineTemplate.stripFormatting(value).trim();
         return !plain.isEmpty() && !plain.equals("0") && !plain.equalsIgnoreCase("false");
     }
 
     private static boolean compare(String left, String right, String operator) {
         if (left == null || right == null) return false;
 
-        Double a = parseNumber(left);
-        Double b = parseNumber(right);
+        Double a = LineTemplate.parseNumber(left);
+        Double b = LineTemplate.parseNumber(right);
         int result;
 
         if (a != null && b != null) {
             result = Double.compare(a, b);
         } else {
-            result = stripFormatting(left).trim()
+            result = LineTemplate.stripFormatting(left).trim()
                 .compareToIgnoreCase(
-                    stripFormatting(right).trim());
+                    LineTemplate.stripFormatting(right).trim());
         }
 
         return switch (operator) {
@@ -115,37 +115,5 @@ final class Conditions {
             case "<" -> result < 0;
             default -> result > 0;
         };
-    }
-
-    private static Double parseNumber(String value) {
-        String plain = stripFormatting(value).replace(",", "")
-            .replace("%", "")
-            .replace(" ", "")
-            .replace(" ", "");
-        if (plain.isEmpty()) return null;
-        try {
-            return Double.parseDouble(plain);
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
-
-    private static String stripFormatting(String value) {
-        StringBuilder sb = new StringBuilder(value.length());
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (c == '§' && i + 1 < value.length()) {
-                i++;
-                continue;
-            }
-            if (c == LineTemplate.ICON_START) {
-                int end = value.indexOf(LineTemplate.ICON_END, i);
-                if (end < 0) break;
-                i = end;
-                continue;
-            }
-            sb.append(c);
-        }
-        return sb.toString();
     }
 }

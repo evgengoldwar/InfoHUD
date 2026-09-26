@@ -1,11 +1,15 @@
 package com.gtnewhorizons.infohud.hud.tags;
 
+import java.util.regex.Pattern;
+
 public final class LineTemplate {
 
     public static final String FORMAT_CODES = "0123456789abcdefklmnor";
     public static final String ICON_PREFIX = "icon:";
     public static final char ICON_START = '\uE000';
     public static final char ICON_END = '\uE001';
+    public static final String SPACER_PREFIX = "#";
+    private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
     static final String IF = " if ";
     static final String ELSE = " else ";
 
@@ -69,6 +73,87 @@ public final class LineTemplate {
         return -1;
     }
 
+    private static boolean appendTag(StringBuilder sb, String content, boolean preview) {
+        String[] parts = content.split("\\|");
+        String expression = parts[0].trim();
+        String value;
+
+        try {
+            if (IDENTIFIER.matcher(expression)
+                .matches()) {
+                InfoTag tag = TagRegistry.get(expression);
+                if (tag == null) throw new Expressions.EvalException(true);
+
+                value = tag.getValue();
+                if (value == null) {
+                    if (!preview) return false;
+                    if (!tag.condition) {
+                        sb.append("§8{")
+                            .append(content)
+                            .append("}§r");
+                    }
+                    return true;
+                }
+            } else {
+                value = formatNumber(Expressions.evaluate(expression));
+            }
+
+            for (int i = 1; i < parts.length; i++) {
+                value = Filters.apply(value, parts[i]);
+            }
+        } catch (Expressions.EvalException e) {
+            if (!preview) return false;
+            sb.append(e.unknown ? "§c{" : "§8{")
+                .append(content)
+                .append("}§r");
+            return true;
+        }
+
+        sb.append(value);
+        return true;
+    }
+
+    static String formatNumber(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) throw new Expressions.EvalException(false);
+        if (value == Math.rint(value) && Math.abs(value) < 1e15) return String.valueOf((long) value);
+        String rounded = Filters.round(value, 2);
+        rounded = rounded.replaceAll("0+$", "");
+        return rounded.endsWith(".") ? rounded.substring(0, rounded.length() - 1) : rounded;
+    }
+
+    static Double parseNumber(String value) {
+        String plain = stripFormatting(value).replace(",", "")
+            .replace("%", "")
+            .replace("\u00a0", "")
+            .replace("\u202f", "")
+            .replace(" ", "");
+        if (plain.isEmpty()) return null;
+        try {
+            return Double.parseDouble(plain);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    static String stripFormatting(String value) {
+        StringBuilder sb = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            if (c == '§' && i + 1 < value.length()) {
+                i++;
+                continue;
+            }
+            if (c == ICON_START) {
+                int end = value.indexOf(ICON_END, i);
+                if (end < 0) break;
+                i = end;
+                continue;
+            }
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
     private static String renderPlain(String text, boolean preview) {
         StringBuilder sb = new StringBuilder(text.length() + 16);
         int length = text.length();
@@ -120,27 +205,7 @@ public final class LineTemplate {
                         continue;
                     }
 
-                    InfoTag tag = TagRegistry.get(name);
-
-                    if (tag == null) {
-                        if (!preview) return null;
-                        sb.append("§c{")
-                            .append(name)
-                            .append("}§r");
-                    } else {
-                        String value = tag.getValue();
-                        if (value == null) {
-                            if (!preview) return null;
-                            if (!tag.condition) {
-                                sb.append("§8{")
-                                    .append(name)
-                                    .append("}§r");
-                            }
-                        } else {
-                            sb.append(value);
-                        }
-                    }
-
+                    if (!appendTag(sb, name, preview)) return null;
                     i = end + 1;
                     continue;
                 }

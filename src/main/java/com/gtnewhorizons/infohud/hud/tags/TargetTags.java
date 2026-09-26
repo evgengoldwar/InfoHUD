@@ -2,6 +2,8 @@ package com.gtnewhorizons.infohud.hud.tags;
 
 import static com.gtnewhorizons.infohud.hud.tags.TagRegistry.register;
 
+import java.util.Locale;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -25,7 +27,7 @@ final class TargetTags {
         register(cat, "look_entity_hp", () -> {
             Entity entity = entity();
             if (!(entity instanceof EntityLivingBase)) return null;
-            return String.format("%.0f", ((EntityLivingBase) entity).getHealth());
+            return String.format(Locale.ROOT, "%.0f", ((EntityLivingBase) entity).getHealth());
         });
     }
 

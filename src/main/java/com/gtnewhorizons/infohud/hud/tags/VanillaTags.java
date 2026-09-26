@@ -2,6 +2,8 @@ package com.gtnewhorizons.infohud.hud.tags;
 
 import static com.gtnewhorizons.infohud.hud.tags.TagRegistry.register;
 
+import java.util.Locale;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.item.Item;
@@ -83,8 +85,11 @@ public final class VanillaTags {
         register(cat, "dim_name", () -> world().provider.getDimensionName());
         register(cat, "dim_id", () -> str(world().provider.dimensionId));
         register(cat, "biome", () -> biome().biomeName);
-        register(cat, "humidity", () -> String.format("%.0f", biome().rainfall * 100));
-        register(cat, "temperature", () -> String.format("%.0f", biome().getFloatTemperature(x(), y(), z()) * 100));
+        register(cat, "humidity", () -> String.format(Locale.ROOT, "%.0f", biome().rainfall * 100));
+        register(
+            cat,
+            "temperature",
+            () -> String.format(Locale.ROOT, "%.0f", biome().getFloatTemperature(x(), y(), z()) * 100));
         register(cat, "day", () -> str(world().getWorldTime() / 24000L));
         register(cat, "time", VanillaTags::worldClock);
         register(cat, "night", VanillaTags::nightSuffix);
@@ -103,8 +108,8 @@ public final class VanillaTags {
                     .getLoadedChunkCount()));
 
         cat = "player";
-        register(cat, "health", () -> String.format("%.0f", player().getHealth()));
-        register(cat, "max_health", () -> String.format("%.0f", player().getMaxHealth()));
+        register(cat, "health", () -> String.format(Locale.ROOT, "%.0f", player().getHealth()));
+        register(cat, "max_health", () -> String.format(Locale.ROOT, "%.0f", player().getMaxHealth()));
         register(
             cat,
             "food",
@@ -120,11 +125,12 @@ public final class VanillaTags {
             cat,
             "saturation",
             () -> String.format(
+                Locale.ROOT,
                 "%.1f",
                 player().getFoodStats()
                     .getSaturationLevel()));
         register(cat, "air", () -> str(Math.max(0, MathHelper.ceiling_float_int(player().getAir() * 10 / 300.0F))));
-        register(cat, "absorption", () -> String.format("%.0f", player().getAbsorptionAmount()));
+        register(cat, "absorption", () -> String.format(Locale.ROOT, "%.0f", player().getAbsorptionAmount()));
         register(cat, "held_count", () -> str(countHeldItem()));
         register(cat, "jumps", () -> str(jumps()));
         register(cat, "deaths", () -> str(stat(StatList.deathsStat)));
@@ -211,7 +217,7 @@ public final class VanillaTags {
         EntityClientPlayerMP player = player();
         double dx = player.posX - player.prevPosX;
         double dz = player.posZ - player.prevPosZ;
-        return String.format("%.2f", Math.sqrt(dx * dx + dz * dz) * 20);
+        return String.format(Locale.ROOT, "%.2f", Math.sqrt(dx * dx + dz * dz) * 20);
     }
 
     private static String worldClock() {
