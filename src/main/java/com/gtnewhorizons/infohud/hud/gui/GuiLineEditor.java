@@ -17,6 +17,7 @@ import com.gtnewhorizons.infohud.hud.layout.DefaultLines;
 import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
 import com.gtnewhorizons.infohud.hud.tags.InfoTag;
+import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 
 public class GuiLineEditor extends GuiScreen {
 
@@ -29,7 +30,7 @@ public class GuiLineEditor extends GuiScreen {
     private static final int BTN_RESET = 6;
     private static final int BTN_DELETE = 7;
     private static final int BTN_HELD_ICON = 8;
-    private static final int BTN_NO_ICON = 9;
+    private static final int BTN_INSERT_ICON = 9;
 
     private final GuiHudEditor parent;
     private final HudLine line;
@@ -62,19 +63,19 @@ public class GuiLineEditor extends GuiScreen {
         buttonList.clear();
 
         String template = templateField != null ? templateField.getText() : line.template;
-        String icon = iconField != null ? iconField.getText() : line.icon;
+        String icon = iconField != null ? iconField.getText() : "";
 
         templateField = new GuiTextField(fontRendererObj, 10, 30, width - 20, 16);
         templateField.setMaxStringLength(512);
         templateField.setText(template);
         templateField.setFocused(true);
 
-        iconField = new GuiTextField(fontRendererObj, 40, 72, 130, 16);
+        iconField = new GuiTextField(fontRendererObj, 40, 72, 120, 16);
         iconField.setMaxStringLength(256);
         iconField.setText(icon);
 
-        buttonList.add(new GuiButton(BTN_HELD_ICON, 176, 70, 70, 20, GuiUtil.t("line.icon_held")));
-        buttonList.add(new GuiButton(BTN_NO_ICON, 250, 70, 60, 20, GuiUtil.t("line.icon_none")));
+        buttonList.add(new GuiButton(BTN_INSERT_ICON, 164, 70, 60, 20, GuiUtil.t("line.icon_insert")));
+        buttonList.add(new GuiButton(BTN_HELD_ICON, 228, 70, 70, 20, GuiUtil.t("line.icon_held")));
 
         int y = 98;
         int w = 116;
@@ -146,19 +147,29 @@ public class GuiLineEditor extends GuiScreen {
         fr.drawStringWithShadow("§7" + GuiUtil.t("line.preview"), 10, 52, 0xFFFFFF);
         int previewX = 12 + fr.getStringWidth(GuiUtil.t("line.preview"));
         String preview = line.renderPreview();
-        ItemStack icon = line.getIconStack();
-        int[] rect = HudRenderer.getLineRect(preview, icon, previewX, 46, 1.0F);
+        int[] rect = HudRenderer.getLineRect(preview, previewX, 46, 1.0F);
         HudRenderer.drawRect(rect[0] - 1, rect[1] - 1, rect[2] + 1, rect[3] + 1, 0x80000000);
-        HudRenderer.drawLine(preview, previewX, 46, icon, 1.0F, HudRenderer.TEXT_COLOR, 0);
+        HudRenderer.drawLine(preview, previewX, 46, 1.0F, HudRenderer.TEXT_COLOR, 0);
         if (line.render() == null) {
             fr.drawStringWithShadow("§8" + GuiUtil.t("tooltip.hidden_now"), rect[2] + 6, 50, 0xFFFFFF);
         }
 
         fr.drawStringWithShadow("§7" + GuiUtil.t("line.icon"), 10, 76, 0xFFFFFF);
         iconField.drawTextBox();
-        if (!line.icon.trim()
-            .isEmpty() && icon == null) {
-            fr.drawStringWithShadow("§c" + GuiUtil.t("line.icon_unknown"), 316, 76, 0xFFFFFF);
+        String iconName = iconField.getText()
+            .trim();
+        if (!iconName.isEmpty()) {
+            if (HudRenderer.getIconStack(iconName) != null) {
+                HudRenderer.drawLine(
+                    LineTemplate.renderPreview(LineTemplate.iconTag(iconName)),
+                    302,
+                    68,
+                    1.0F,
+                    HudRenderer.TEXT_COLOR,
+                    0);
+            } else {
+                fr.drawStringWithShadow("§c" + GuiUtil.t("line.icon_unknown"), 304, 76, 0xFFFFFF);
+            }
         }
 
         palette.draw(mouseX, mouseY);
@@ -212,6 +223,13 @@ public class GuiLineEditor extends GuiScreen {
         line.template = templateField.getText();
     }
 
+    private void insertIcon(String name) {
+        name = name.trim();
+        if (!name.isEmpty()) {
+            insert(LineTemplate.iconTag(name));
+        }
+    }
+
     @Override
     public void handleMouseInput() {
         super.handleMouseInput();
@@ -237,8 +255,10 @@ public class GuiLineEditor extends GuiScreen {
 
         if (templateField.textboxKeyTyped(typedChar, keyCode)) {
             line.template = templateField.getText();
+        } else if (iconField.isFocused() && keyCode == Keyboard.KEY_RETURN) {
+            insertIcon(iconField.getText());
         } else if (iconField.textboxKeyTyped(typedChar, keyCode)) {
-            line.icon = iconField.getText();
+            return;
         } else if (keyCode == Keyboard.KEY_RETURN) {
             mc.displayGuiScreen(parent);
         }
@@ -276,22 +296,17 @@ public class GuiLineEditor extends GuiScreen {
                 DefaultLines.Preset preset = DefaultLines.get(line.defaultId);
                 if (preset != null) {
                     line.template = preset.getTemplate();
-                    line.icon = preset.icon;
                     templateField.setText(line.template);
-                    iconField.setText(line.icon);
                 }
             }
             case BTN_HELD_ICON -> {
                 ItemStack held = mc.thePlayer != null ? mc.thePlayer.getHeldItem() : null;
                 if (held != null) {
-                    line.icon = HudLine.itemToString(held);
-                    iconField.setText(line.icon);
+                    iconField.setText(HudLine.itemToString(held));
+                    insertIcon(iconField.getText());
                 }
             }
-            case BTN_NO_ICON -> {
-                line.icon = "";
-                iconField.setText("");
-            }
+            case BTN_INSERT_ICON -> insertIcon(iconField.getText());
             default -> {}
         }
         updateButtons();

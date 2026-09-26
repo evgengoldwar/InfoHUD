@@ -3,8 +3,15 @@ package com.gtnewhorizons.infohud.hud.tags;
 public final class LineTemplate {
 
     public static final String FORMAT_CODES = "0123456789abcdefklmnor";
+    public static final String ICON_PREFIX = "icon:";
+    public static final char ICON_START = '\uE000';
+    public static final char ICON_END = '\uE001';
 
     private LineTemplate() {}
+
+    public static String iconTag(String item) {
+        return "{" + ICON_PREFIX + item + "}";
+    }
 
     public static String render(String template) {
         return render(template, false);
@@ -39,6 +46,17 @@ public final class LineTemplate {
                 if (end > i + 1) {
                     String name = template.substring(i + 1, end)
                         .trim();
+
+                    if (name.regionMatches(true, 0, ICON_PREFIX, 0, ICON_PREFIX.length())) {
+                        sb.append(ICON_START)
+                            .append(
+                                name.substring(ICON_PREFIX.length())
+                                    .trim())
+                            .append(ICON_END);
+                        i = end + 1;
+                        continue;
+                    }
+
                     InfoTag tag = TagRegistry.get(name);
 
                     if (tag == null) {

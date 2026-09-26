@@ -85,7 +85,7 @@ public class HudLayout {
                 ids.add(line.id);
             }
             if (line.template == null) line.template = "";
-            if (line.icon == null) line.icon = "";
+            line.migrateIcon();
         }
 
         if (version < 2 && groupX == DEFAULT_GROUP_X && groupY == LEGACY_GROUP_Y) {

@@ -12,22 +12,18 @@ public class HudLine {
     public String id;
     public String defaultId;
     public String template = "";
-    public String icon = "";
+    public String icon;
     public boolean enabled = true;
     public boolean inGroup = true;
     public int x;
     public int y;
 
-    private transient String cachedIconName;
-    private transient ItemStack cachedIcon;
-
     public HudLine() {}
 
-    public HudLine(String defaultId, String template, String icon) {
+    public HudLine(String defaultId, String template) {
         this.id = newId();
         this.defaultId = defaultId;
         this.template = template;
-        this.icon = icon;
     }
 
     public static String newId() {
@@ -41,7 +37,6 @@ public class HudLine {
         line.id = id;
         line.defaultId = defaultId;
         line.template = template;
-        line.icon = icon;
         line.enabled = enabled;
         line.inGroup = inGroup;
         line.x = x;
@@ -61,16 +56,12 @@ public class HudLine {
         return LineTemplate.renderPreview(template);
     }
 
-    public ItemStack getIconStack() {
-        String name = icon == null ? "" : icon.trim();
-
-        if (name.equals(cachedIconName)) {
-            return cachedIcon;
+    void migrateIcon() {
+        if (icon != null && !icon.trim()
+            .isEmpty()) {
+            template = LineTemplate.iconTag(icon.trim()) + template;
         }
-
-        cachedIconName = name;
-        cachedIcon = parseItem(name);
-        return cachedIcon;
+        icon = null;
     }
 
     public static ItemStack parseItem(String name) {

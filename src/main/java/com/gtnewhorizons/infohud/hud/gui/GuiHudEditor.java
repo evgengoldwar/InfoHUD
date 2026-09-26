@@ -58,7 +58,6 @@ public class GuiHudEditor extends GuiScreen {
 
         HudLine line;
         String text;
-        ItemStack icon;
         int x;
         int y;
         int[] rect;
@@ -118,7 +117,7 @@ public class GuiHudEditor extends GuiScreen {
 
         if (groupRect == null) {
             groupRect = HudRenderer
-                .getLineRect(GuiUtil.t("editor.empty_group"), null, working.groupX, working.groupY, scale);
+                .getLineRect(GuiUtil.t("editor.empty_group"), working.groupX, working.groupY, scale);
         }
         groupRect = new int[] { groupRect[0] - 2, groupRect[1] - 2, groupRect[2] + 2, groupRect[3] + 2 };
 
@@ -143,10 +142,9 @@ public class GuiHudEditor extends GuiScreen {
         LineBox box = new LineBox();
         box.line = line;
         box.text = line.renderPreview();
-        box.icon = line.getIconStack();
         box.x = x;
         box.y = y;
-        box.rect = HudRenderer.getLineRect(box.text, box.icon, x, y, scale);
+        box.rect = HudRenderer.getLineRect(box.text, x, y, scale);
         box.available = line.render() != null;
         boxes.add(box);
         return box;
@@ -258,7 +256,7 @@ public class GuiHudEditor extends GuiScreen {
                 background = 0x40FFFFFF;
             }
 
-            HudRenderer.drawLine(box.text, box.x, box.y, box.icon, scale, color, background);
+            HudRenderer.drawLine(box.text, box.x, box.y, scale, color, background);
 
             if (!box.line.inGroup) {
                 HudRenderer.drawFrame(box.rect[0] - 1, box.rect[1] - 1, box.rect[2] + 1, box.rect[3] + 1, 0x9000FF00);
@@ -307,12 +305,12 @@ public class GuiHudEditor extends GuiScreen {
             drawLineTooltip(hovered, mouseX, mouseY);
         } else if (pressTarget == NONE && isOverGroup(mouseX, mouseY)) {
             List<String> tooltip = new ArrayList<>();
-            tooltip.add("\u00a7f" + GuiUtil.t("editor.group"));
+            tooltip.add("§f" + GuiUtil.t("editor.group"));
             if (!working.groupEnabled) {
-                tooltip.add("\u00a7c" + GuiUtil.t("tooltip.group_disabled"));
+                tooltip.add("§c" + GuiUtil.t("tooltip.group_disabled"));
             }
-            tooltip.add("\u00a7e" + GuiUtil.t("tooltip.drag_group"));
-            tooltip.add("\u00a7e" + GuiUtil.t("tooltip.rmb_settings"));
+            tooltip.add("§e" + GuiUtil.t("tooltip.drag_group"));
+            tooltip.add("§e" + GuiUtil.t("tooltip.rmb_settings"));
             GuiUtil.drawTooltip(fr, tooltip, mouseX, mouseY, width, height);
         } else if (pressTarget == NONE && isOverPotions(mouseX, mouseY)) {
             List<String> tooltip = new ArrayList<>();
@@ -329,7 +327,7 @@ public class GuiHudEditor extends GuiScreen {
 
     private void drawLabel(String text, int[] rect) {
         int[] label = getLabelRect(text, rect);
-        fontRendererObj.drawStringWithShadow("\u00a7b" + text, label[0] + 2, label[1] + 1, 0xFFFFFF);
+        fontRendererObj.drawStringWithShadow("§b" + text, label[0] + 2, label[1] + 1, 0xFFFFFF);
     }
 
     private int[] getLabelRect(String text, int[] rect) {

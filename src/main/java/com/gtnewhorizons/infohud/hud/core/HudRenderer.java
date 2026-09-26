@@ -3,7 +3,9 @@ package com.gtnewhorizons.infohud.hud.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -21,6 +23,7 @@ import org.lwjgl.opengl.GL12;
 import com.gtnewhorizons.infohud.hud.layout.HudLayout;
 import com.gtnewhorizons.infohud.hud.layout.HudLayoutStorage;
 import com.gtnewhorizons.infohud.hud.layout.HudLine;
+import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 import com.gtnewhorizons.infohud.hud.tags.VanillaTags;
 
 public class HudRenderer {
@@ -30,6 +33,8 @@ public class HudRenderer {
     public static final int POTION_ICON_SIZE = 18;
     public static final int COUNT_ITEM_WIDTH = 18;
     public static final int COUNT_ITEM_HEIGHT = 26;
+    private static final int ICON_SLOT = 10;
+    private static final Map<String, ItemStack> ICON_CACHE = new HashMap<>();
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation INVENTORY_TEXTURE = new ResourceLocation(
@@ -56,7 +61,7 @@ public class HudRenderer {
             String text = line.render();
             if (text == null) continue;
 
-            drawLine(text, layout.groupX, getGroupLineY(layout, index), line.getIconStack(), scale, TEXT_COLOR, 0);
+            drawLine(text, layout.groupX, getGroupLineY(layout, index), scale, TEXT_COLOR, 0);
             index++;
         }
 
@@ -66,7 +71,7 @@ public class HudRenderer {
             String text = line.render();
             if (text == null) continue;
 
-            drawLine(text, line.x, line.y, line.getIconStack(), scale, TEXT_COLOR, 0);
+            drawLine(text, line.x, line.y, scale, TEXT_COLOR, 0);
         }
 
         if (layout.countItemEnabled) {
@@ -85,12 +90,12 @@ public class HudRenderer {
         return layout.groupY + (int) (index * LINE_HEIGHT * layout.scale);
     }
 
-    public static int getLineWidth(String text, ItemStack icon) {
-        return mc.fontRenderer.getStringWidth(text) + (icon != null ? 14 : 6);
+    public static int getLineWidth(String text) {
+        return layoutLine(text, 0, 0, false, 0);
     }
 
-    public static int[] getLineRect(String text, ItemStack icon, int x, int y, float scale) {
-        int width = getLineWidth(text, icon);
+    public static int[] getLineRect(String text, int x, int y, float scale) {
+        int width = getLineWidth(text);
         return new int[] { x, y + (int) (2 * scale), x + (int) Math.ceil(width * scale),
             y + (int) Math.ceil(13 * scale) };
     }
@@ -128,60 +133,130 @@ public class HudRenderer {
         return POTION_ICON_SIZE + 1 + mc.fontRenderer.getStringWidth("00") + 2;
     }
 
-    public static void drawLine(String text, int x, int y, ItemStack icon, float scale, int color, int background) {
-        FontRenderer fr = mc.fontRenderer;
-
+    public static void drawLine(String text, int x, int y, float scale, int color, int background) {
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, 0);
         GL11.glScalef(scale, scale, scale);
         GL11.glTranslatef(-x, -y, 0);
 
         if (background != 0) {
-            drawRect(x, y + 2, x + getLineWidth(text, icon), y + 13, background);
+            drawRect(x, y + 2, x + getLineWidth(text), y + 13, background);
         }
 
-        int textX = x + 4;
+        layoutLine(text, x, y, true, color);
 
-        if (icon != null) {
-            GL11.glPushMatrix();
-            float scaleItem = 0.5F;
-            GL11.glTranslatef(x + 2, y + 2, 0);
-            GL11.glScalef(scaleItem, scaleItem, scaleItem);
-            GL11.glTranslatef(-(x + 2), -(y + 2), 0);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glPopMatrix();
+    }
 
-            RenderHelper.enableGUIStandardItemLighting();
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+    private static int layoutLine(String text, int x, int y, boolean draw, int color) {
+        FontRenderer fr = mc.fontRenderer;
+        int length = text.length();
+        int cursor = x + (length > 0 && text.charAt(0) == LineTemplate.ICON_START ? 2 : 4);
+        String format = "";
+        int i = 0;
 
-            RenderItem renderItem = RenderItem.getInstance();
-            renderItem.zLevel = 100.0F;
-            try {
-                renderItem.renderItemAndEffectIntoGUI(fr, mc.renderEngine, icon, x + 2, y + 5);
-            } catch (Exception ignored) {}
-            renderItem.zLevel = 0.0F;
+        while (i < length) {
+            int start = text.indexOf(LineTemplate.ICON_START, i);
+            if (start < 0) start = length;
 
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glPopMatrix();
+            if (start > i) {
+                String part = format + text.substring(i, start);
+                if (draw) drawText(part, cursor, y + 4, color);
+                cursor += fr.getStringWidth(part);
+                format = getActiveFormat(part);
+            }
 
-            textX = x + 12;
+            if (start >= length) break;
+
+            int end = text.indexOf(LineTemplate.ICON_END, start);
+            if (end < 0) end = length;
+
+            if (draw) drawIcon(text.substring(start + 1, end), cursor, y, color);
+            cursor += ICON_SLOT;
+            i = end + 1;
         }
 
+        return cursor - x + 2;
+    }
+
+    private static String getActiveFormat(String text) {
+        String color = "";
+        StringBuilder styles = new StringBuilder();
+
+        for (int i = 0; i < text.length() - 1; i++) {
+            if (text.charAt(i) != '§') continue;
+
+            char code = Character.toLowerCase(text.charAt(i + 1));
+            if ((code >= '0' && code <= '9') || (code >= 'a' && code <= 'f')) {
+                color = "§" + code;
+                styles.setLength(0);
+            } else if (code == 'r') {
+                color = "";
+                styles.setLength(0);
+            } else if (code >= 'k' && code <= 'o') {
+                styles.append('§')
+                    .append(code);
+            }
+            i++;
+        }
+
+        return color + styles;
+    }
+
+    private static void drawText(String text, int x, int y, int color) {
         boolean translucent = (color >>> 24) != 0xFF;
         if (translucent) {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         }
 
-        fr.drawStringWithShadow(text, textX, y + 4, color);
+        mc.fontRenderer.drawStringWithShadow(text, x, y, color);
 
         if (translucent) {
             GL11.glDisable(GL11.GL_BLEND);
         }
+    }
 
+    private static void drawIcon(String name, int x, int y, int color) {
+        ItemStack stack = getIconStack(name);
+
+        if (stack == null) {
+            drawText("§c?", x + 2, y + 4, color);
+            return;
+        }
+
+        GL11.glPushMatrix();
+        float scaleItem = 0.5F;
+        GL11.glTranslatef(x, y + 2, 0);
+        GL11.glScalef(scaleItem, scaleItem, scaleItem);
+        GL11.glTranslatef(-x, -(y + 2), 0);
+
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+
+        RenderItem renderItem = RenderItem.getInstance();
+        renderItem.zLevel = 100.0F;
+        try {
+            renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, stack, x, y + 5);
+        } catch (Exception ignored) {}
+        renderItem.zLevel = 0.0F;
+
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();
+    }
+
+    public static ItemStack getIconStack(String name) {
+        if (ICON_CACHE.containsKey(name)) {
+            return ICON_CACHE.get(name);
+        }
+        ItemStack stack = HudLine.parseItem(name);
+        ICON_CACHE.put(name, stack);
+        return stack;
     }
 
     public static int drawPotions(HudLayout layout, int x, int y) {

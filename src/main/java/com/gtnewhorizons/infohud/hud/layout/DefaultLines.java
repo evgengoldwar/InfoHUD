@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.util.StatCollector;
 
 import com.gtnewhorizons.infohud.hud.HudUtils;
+import com.gtnewhorizons.infohud.hud.tags.LineTemplate;
 
 import cpw.mods.fml.common.Loader;
 
@@ -29,7 +30,8 @@ public final class DefaultLines {
 
         public String getTemplate() {
             String key = "infohud.default_line." + id;
-            return StatCollector.canTranslate(key) ? StatCollector.translateToLocal(key) : template;
+            String text = StatCollector.canTranslate(key) ? StatCollector.translateToLocal(key) : template;
+            return icon.isEmpty() ? text : LineTemplate.iconTag(icon) + text;
         }
 
         public String getName() {
@@ -42,7 +44,7 @@ public final class DefaultLines {
         }
 
         public HudLine create() {
-            return new HudLine(id, getTemplate(), icon);
+            return new HudLine(id, getTemplate());
         }
     }
 

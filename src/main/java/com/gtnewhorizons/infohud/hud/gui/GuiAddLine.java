@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -97,11 +96,8 @@ public class GuiAddLine extends GuiScreen {
             }
             fr.drawStringWithShadow(fr.trimStringToWidth(name, nameWidth - 4), listLeft + 4, y + 4, 0xFFFFFF);
 
-            ItemStack icon = HudLine.parseItem(preset.icon);
             String preview = LineTemplate.renderPreview(preset.getTemplate());
-            int maxWidth = listRight - listLeft - nameWidth - 20;
-            preview = fr.trimStringToWidth(preview, maxWidth);
-            HudRenderer.drawLine(preview, listLeft + nameWidth, y + 1, icon, 1.0F, HudRenderer.TEXT_COLOR, 0);
+            HudRenderer.drawLine(preview, listLeft + nameWidth, y + 1, 1.0F, HudRenderer.TEXT_COLOR, 0);
 
             if (parent.working.hasDefault(preset.id)) {
                 String added = "§8" + GuiUtil.t("add.already_added");
@@ -122,7 +118,7 @@ public class GuiAddLine extends GuiScreen {
 
         HudLayout snapshot = parent.working.copy();
         DefaultLines.Preset preset = entries.get(index);
-        HudLine line = preset == null ? new HudLine(null, "", "") : preset.create();
+        HudLine line = preset == null ? new HudLine(null, "") : preset.create();
         parent.working.lines.add(line);
 
         mc.displayGuiScreen(new GuiLineEditor(parent, line, snapshot));
