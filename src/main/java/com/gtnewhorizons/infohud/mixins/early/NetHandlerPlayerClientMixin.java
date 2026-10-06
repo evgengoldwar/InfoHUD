@@ -1,6 +1,7 @@
 package com.gtnewhorizons.infohud.mixins.early;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
@@ -38,9 +39,14 @@ public class NetHandlerPlayerClientMixin {
         if (packet == null || packet.func_149122_c() == null) {
             return;
         }
+        // Player list packets can arrive before handleJoinGame has created the local player
+        EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) {
+            return;
+        }
         if (packet.func_149122_c()
-            .equals(Minecraft.getMinecraft().thePlayer.getDisplayName())) {
-            DataStorage.setPlayerPing(Minecraft.getMinecraft().thePlayer.getUniqueID(), packet.func_149120_e());
+            .equals(player.getDisplayName())) {
+            DataStorage.setPlayerPing(player.getUniqueID(), packet.func_149120_e());
         }
     }
 
