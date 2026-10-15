@@ -34,7 +34,10 @@ final class SystemTags {
     private static final int[] fpsSamples = new int[FPS_SAMPLES];
     private static int fpsSampleCount = 0;
     private static int fpsSampleIndex = 0;
-    private static double cpuLoad = -1;
+    // Read on its own thread: on some Windows machines getProcessCpuLoad takes 100+ ms, a freeze each second if
+    // asked on the client thread.
+    private static volatile double cpuLoad = -1;
+    private static volatile boolean cpuLoadStarted = false;
     private static int sampleTimer = 0;
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
@@ -55,7 +58,10 @@ final class SystemTags {
             () -> String.valueOf(
                 Runtime.getRuntime()
                     .availableProcessors()));
-        register(cat, "cpu_usage", () -> cpuLoad < 0 ? null : String.valueOf(Math.round(cpuLoad * 100)));
+        register(cat, "cpu_usage", () -> {
+            startCpuLoadSampler();
+            return cpuLoad < 0 ? null : String.valueOf(Math.round(cpuLoad * 100));
+        });
         register(cat, "fps_min", () -> fpsSampleCount == 0 ? null : String.valueOf(minFps()));
         register(cat, "fps_avg", () -> fpsSampleCount == 0 ? null : String.valueOf(avgFps()));
         register(cat, "real_time", () -> TIME_FORMAT.format(new Date()));
@@ -99,6 +105,24 @@ final class SystemTags {
         return -1;
     }
 
+    /** Starts reading the CPU load once a line shows it; never if no line does. */
+    private static void startCpuLoadSampler() {
+        if (cpuLoadStarted) return;
+        cpuLoadStarted = true;
+        Thread thread = new Thread(() -> {
+            while (true) {
+                cpuLoad = readCpuLoad();
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }, "InfoHUD CPU load");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
     public static class Sampler {
 
         @SubscribeEvent
@@ -110,7 +134,6 @@ final class SystemTags {
             fpsSamples[fpsSampleIndex] = ((MinecraftAccessor) Minecraft.getMinecraft()).getFps();
             fpsSampleIndex = (fpsSampleIndex + 1) % FPS_SAMPLES;
             fpsSampleCount = Math.min(fpsSampleCount + 1, FPS_SAMPLES);
-            cpuLoad = readCpuLoad();
         }
     }
 
